@@ -46,6 +46,9 @@ dependencies {
     // TSID
     implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.7.5'
 
+    // swagger
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.3.0'
+
     // Spring Cloud
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
