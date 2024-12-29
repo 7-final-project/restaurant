@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -45,4 +46,11 @@ public class CategoryEntity {
 
     @Column(name = "deleted_by")
     private String deletedBy;
+
+    @Builder
+    public CategoryEntity (String name, String username) {
+        this.name = name;
+        this.createdBy = username;
+        this.modifiedBy = username;
+    }
 }
