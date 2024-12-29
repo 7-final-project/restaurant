@@ -106,4 +106,19 @@ public class RestaurantControllerV1 {
                 HttpStatus.OK
         );
     }
+
+
+    @DeleteMapping("/v1/restaurants/{restaurantId}")
+    public ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId,
+                                                   @PathVariable(name = "restaurantId") Long restaurantId) {
+
+
+        return new ResponseEntity<>(
+                ResDTO.builder()
+                        .code(HttpStatus.OK.value())
+                        .message("식당 삭제에 성공하였습니다.")
+                        .build(),
+                HttpStatus.OK
+        );
+    }
 }
