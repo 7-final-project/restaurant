@@ -3,6 +3,7 @@ package com.qring.restaurant.domain.model;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -54,7 +55,7 @@ public class RestaurantEntity {
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "modified_at" , nullable = false)
+    @Column(name = "modified_at", nullable = false)
     private LocalDateTime modifiedAt;
 
     @Column(name = "deleted_at")
@@ -68,5 +69,44 @@ public class RestaurantEntity {
 
     @Column(name = "deleted_by")
     private String deletedBy;
+
+    @Builder
+    public RestaurantEntity(Long userId, String name, int capacity, String tel, String address, String addressDetails, CategoryEntity categoryEntity, String username) {
+        this.userId = userId;
+        this.name = name;
+        this.capacity = capacity;
+        this.tel = tel;
+        this.address = address;
+        this.addressDetails = addressDetails;
+        this.category = categoryEntity;
+        this.createdBy = username;
+        this.modifiedBy = username;
+    }
+
+    // == 연관관계 메서드 == //
+    public void addOperatingHour(List<OperatingHourEntity> operatingHourEntityList) {
+        this.operatingHourEntityList.addAll(operatingHourEntityList);
+        operatingHourEntityList.forEach(operatingHourEntity -> operatingHourEntity.updateRestaurant(this));
+    }
+
+    // == 생성 메서드 == //
+    public static RestaurantEntity createRestaurantEntity(Long userId, String name, int capacity, String tel, String address, String addressDetails,
+                                                          CategoryEntity categoryEntity, List<OperatingHourEntity> operatingHourEntityList, String username) {
+
+        RestaurantEntity restaurantEntityForSave = RestaurantEntity.builder()
+                .userId(userId)
+                .name(name)
+                .capacity(capacity)
+                .tel(tel)
+                .address(address)
+                .addressDetails(addressDetails)
+                .categoryEntity(categoryEntity)
+                .username(username)
+                .build();
+
+        restaurantEntityForSave.addOperatingHour(operatingHourEntityList);
+
+        return restaurantEntityForSave;
+    }
 
 }
