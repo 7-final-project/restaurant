@@ -9,6 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -37,12 +39,15 @@ public class RestaurantEntity {
     @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(name = "address_details", nullable = false)
+    @Column(name = "address_details")
     private String addressDetails;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
+
+    @OneToMany(mappedBy = "restaurantEntity", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<OperatingHourEntity> operatingHourEntityList = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
