@@ -3,6 +3,7 @@ package com.qring.restaurant.domain.model;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -55,4 +56,18 @@ public class OperatingHourEntity {
 
     @Column(name = "deleted_by")
     private String deletedBy;
+
+    // == 연관관계 메서드 == //
+    public void updateRestaurant(RestaurantEntity restaurantEntity) {
+        this.restaurantEntity = restaurantEntity;
+    }
+
+    @Builder
+    public OperatingHourEntity(String dayOfWeek, LocalTime openAt, LocalTime closedAt, String username) {
+        this.dayOfWeek = dayOfWeek;
+        this.openAt = openAt;
+        this.closedAt = closedAt;
+        this.createdBy = username;
+        this.modifiedBy = username;
+    }
 }
