@@ -166,7 +166,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
         return new ResponseEntity<>(
                 ResDTO.<RestaurantGetByIdResDTOV1>builder()
                         .code(HttpStatus.OK.value())
-                        .message("식당 검색에 성공하였습니다.")
+                        .message("식당 상세 조회에 성공하였습니다.")
                         .data(RestaurantGetByIdResDTOV1.of(dummyRestaurantEntity))
                         .build(),
                 HttpStatus.OK
