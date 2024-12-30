@@ -2,6 +2,7 @@ package com.qring.restaurant.presentation.v1.controller;
 
 import com.qring.restaurant.application.global.dto.ResDTO;
 import com.qring.restaurant.application.v1.res.RestaurantGetByIdResDTOV1;
+import com.qring.restaurant.infrastructure.docs.RestaurantControllerSwagger;
 import com.qring.restaurant.presentation.v1.req.PostRestaurantReqDTOV1;
 import com.qring.restaurant.application.v1.res.RestaurantSearchResDTOV1;
 import com.qring.restaurant.domain.model.CategoryEntity;
@@ -24,7 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/restaurants")
-public class RestaurantControllerV1 {
+public class RestaurantControllerV1 implements RestaurantControllerSwagger {
 
     @PostMapping
     public ResponseEntity<ResDTO<RestaurantPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId,
@@ -39,13 +40,13 @@ public class RestaurantControllerV1 {
         List<OperatingHourEntity> dummyOperatingHourList = List.of(
                 OperatingHourEntity.builder()
                         .dayOfWeek("Monday")
-                        .openAt(LocalTime.of(9, 0))
-                        .closedAt(LocalTime.of(22, 0))
+                        .openAt(LocalTime.parse("09:00"))
+                        .closedAt(LocalTime.parse("18:00"))
                         .build(),
                 OperatingHourEntity.builder()
                         .dayOfWeek("Tuesday")
-                        .openAt(LocalTime.of(9, 0))
-                        .closedAt(LocalTime.of(22, 0))
+                        .openAt(LocalTime.parse("09:00"))
+                        .closedAt(LocalTime.parse("18:00"))
                         .build()
         );
 
@@ -92,18 +93,27 @@ public class RestaurantControllerV1 {
                         .tel("123-456-7890")
                         .address("서울시 강남구")
                         .addressDetails("1층")
+                        .categoryEntity(CategoryEntity.builder()
+                                .name("한식")
+                                .build())
                         .build(),
                 RestaurantEntity.builder()
                         .name("맛있는집")
                         .tel("234-567-8901")
                         .address("서울시 송파구")
                         .addressDetails("2층")
+                        .categoryEntity(CategoryEntity.builder()
+                                .name("한식")
+                                .build())
                         .build(),
                 RestaurantEntity.builder()
                         .name("수미식당")
                         .tel("345-678-9012")
                         .address("서울시 서초구")
                         .addressDetails("3층")
+                        .categoryEntity(CategoryEntity.builder()
+                                .name("일식")
+                                .build())
                         .build()
         );
 
@@ -128,13 +138,13 @@ public class RestaurantControllerV1 {
         List<OperatingHourEntity> dummyOperatingHourList = List.of(
                 OperatingHourEntity.builder()
                         .dayOfWeek("Monday")
-                        .openAt(LocalTime.of(9, 0))
-                        .closedAt(LocalTime.of(22, 0))
+                        .openAt(LocalTime.parse("09:00"))
+                        .closedAt(LocalTime.parse("18:00"))
                         .build(),
                 OperatingHourEntity.builder()
                         .dayOfWeek("Tuesday")
-                        .openAt(LocalTime.of(9, 0))
-                        .closedAt(LocalTime.of(22, 0))
+                        .openAt(LocalTime.parse("09:00"))
+                        .closedAt(LocalTime.parse("18:00"))
                         .build()
         );
 
