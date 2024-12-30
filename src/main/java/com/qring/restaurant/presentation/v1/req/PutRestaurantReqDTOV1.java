@@ -39,6 +39,7 @@ public class PutRestaurantReqDTOV1 {
         private String address;
 
         private String addressDetails;
+
     }
 
     @Getter
@@ -55,6 +56,7 @@ public class PutRestaurantReqDTOV1 {
 
         @NotNull(message = "마감 시간을 입력해주세요")
         private LocalTime closedAt;
+
     }
 }
 
