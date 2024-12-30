@@ -1,4 +1,4 @@
-package com.qring.restaurant.application.v1.res;
+package com.qring.restaurant.presentation.v1.req;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

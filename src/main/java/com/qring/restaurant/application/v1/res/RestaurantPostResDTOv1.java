@@ -1,4 +1,4 @@
-package com.qring.restaurant.presentation.v1.req;
+package com.qring.restaurant.application.v1.res;
 
 import com.qring.restaurant.domain.model.OperatingHourEntity;
 import com.qring.restaurant.domain.model.RestaurantEntity;

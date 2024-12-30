@@ -1,13 +1,13 @@
 package com.qring.restaurant.presentation.v1.controller;
 
 import com.qring.restaurant.application.global.dto.ResDTO;
-import com.qring.restaurant.application.v1.res.PostRestaurantReqDTOv1;
+import com.qring.restaurant.presentation.v1.req.PostRestaurantReqDTOv1;
 import com.qring.restaurant.application.v1.res.RestaurantSearchResDTOV1;
 import com.qring.restaurant.domain.model.CategoryEntity;
 import com.qring.restaurant.domain.model.OperatingHourEntity;
 import com.qring.restaurant.domain.model.RestaurantEntity;
 import com.qring.restaurant.presentation.v1.req.PutRestaurantReqDTOV1;
-import com.qring.restaurant.presentation.v1.req.RestaurantPostResDTOv1;
+import com.qring.restaurant.application.v1.res.RestaurantPostResDTOv1;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
