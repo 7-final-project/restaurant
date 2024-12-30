@@ -1,6 +1,7 @@
 package com.qring.restaurant.presentation.v1.controller;
 
 import com.qring.restaurant.application.global.dto.ResDTO;
+import com.qring.restaurant.application.v1.res.RestaurantGetByIdResDTOV1;
 import com.qring.restaurant.presentation.v1.req.PostRestaurantReqDTOV1;
 import com.qring.restaurant.application.v1.res.RestaurantSearchResDTOV1;
 import com.qring.restaurant.domain.model.CategoryEntity;
@@ -113,6 +114,49 @@ public class RestaurantControllerV1 {
                         .code(HttpStatus.OK.value())
                         .message("식당 검색에 성공하였습니다.")
                         .data(RestaurantSearchResDTOV1.of(dummyRestaurantPage))
+                        .build(),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/v1/restaurants/{restaurantId}")
+    public ResponseEntity<ResDTO<RestaurantGetByIdResDTOV1>> getBy(@PathVariable(name = "restaurantId") Long restaurantId) {
+
+        // -----
+        // TODO: 더미 데이터를 반환합니다. 추후 실제 데이터 로직으로 변경하세요.
+        List<OperatingHourEntity> dummyOperatingHourList = List.of(
+                OperatingHourEntity.builder()
+                        .dayOfWeek("Monday")
+                        .openAt(LocalTime.of(9, 0))
+                        .closedAt(LocalTime.of(22, 0))
+                        .build(),
+                OperatingHourEntity.builder()
+                        .dayOfWeek("Tuesday")
+                        .openAt(LocalTime.of(9, 0))
+                        .closedAt(LocalTime.of(22, 0))
+                        .build()
+        );
+
+        RestaurantEntity dummyRestaurantEntity = RestaurantEntity.createRestaurantEntity(
+                1L,
+                "왕가탕후루",
+                50,
+                "010-9876-5432",
+                "서울특별시 강남구 테헤란로",
+                "2층 201호",
+                CategoryEntity.builder()
+                        .name("한식")
+                        .build(),
+                dummyOperatingHourList,
+                "dummyUser"
+        );
+        // -----
+
+        return new ResponseEntity<>(
+                ResDTO.<RestaurantGetByIdResDTOV1>builder()
+                        .code(HttpStatus.OK.value())
+                        .message("식당 검색에 성공하였습니다.")
+                        .data(RestaurantGetByIdResDTOV1.of(dummyRestaurantEntity))
                         .build(),
                 HttpStatus.OK
         );
