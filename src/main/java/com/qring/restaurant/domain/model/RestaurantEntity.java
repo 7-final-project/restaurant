@@ -61,10 +61,10 @@ public class RestaurantEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @Column(name = "created_by", updatable = false)
+    @Column(name = "created_by", nullable = false, updatable = false)
     private String createdBy;
 
-    @Column(name = "modified_by")
+    @Column(name = "modified_by", nullable = false)
     private String modifiedBy;
 
     @Column(name = "deleted_by")
