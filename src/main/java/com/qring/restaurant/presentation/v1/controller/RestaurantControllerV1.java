@@ -2,12 +2,18 @@ package com.qring.restaurant.presentation.v1.controller;
 
 import com.qring.restaurant.application.global.dto.ResDTO;
 import com.qring.restaurant.application.v1.res.PostRestaurantReqDTOv1;
+import com.qring.restaurant.application.v1.res.RestaurantSearchResDTOV1;
 import com.qring.restaurant.domain.model.CategoryEntity;
 import com.qring.restaurant.domain.model.OperatingHourEntity;
 import com.qring.restaurant.domain.model.RestaurantEntity;
 import com.qring.restaurant.presentation.v1.req.PutRestaurantReqDTOV1;
 import com.qring.restaurant.presentation.v1.req.RestaurantPostResDTOv1;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -61,6 +67,54 @@ public class RestaurantControllerV1 {
                         .data(RestaurantPostResDTOv1.of(dummyRestaurantEntity))
                         .build(),
                 HttpStatus.CREATED
+        );
+    }
+
+    @GetMapping("/v1/restaurants")
+    public ResponseEntity<ResDTO<RestaurantSearchResDTOV1>> searchBy(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                                                                     @RequestParam(name = "userId", required = false) Long userId,
+                                                                     @RequestParam(name = "name", required = false) String name,
+                                                                     @RequestParam(name = "sort", required = false) String sort) {
+
+        // --
+        // TODO : 본인 식당 / 식당 이름 / 식당 생성 최신순 / 식당 생성 오래된순 조회
+        // FIXME : 평점순으로도 조회할 수 있어야 하지 않을까 ? -> 총 평점은 리뷰가 아니라 식당이 가져야 하는 것이 아닐까 ?
+        // --
+
+        // -----
+        // TODO : 더미 데이터입니다. 추후 삭제하세요.
+
+        List<RestaurantEntity> dummyRestaurants = List.of(
+                RestaurantEntity.builder()
+                        .name("왕가탕후루")
+                        .tel("123-456-7890")
+                        .address("서울시 강남구")
+                        .addressDetails("1층")
+                        .build(),
+                RestaurantEntity.builder()
+                        .name("맛있는집")
+                        .tel("234-567-8901")
+                        .address("서울시 송파구")
+                        .addressDetails("2층")
+                        .build(),
+                RestaurantEntity.builder()
+                        .name("수미식당")
+                        .tel("345-678-9012")
+                        .address("서울시 서초구")
+                        .addressDetails("3층")
+                        .build()
+        );
+
+        Page<RestaurantEntity> dummyRestaurantPage = new PageImpl<>(dummyRestaurants, pageable, dummyRestaurants.size());
+        // ----- 추후 삭제하시면 됩니다.
+
+        return new ResponseEntity<>(
+                ResDTO.<RestaurantSearchResDTOV1>builder()
+                        .code(HttpStatus.OK.value())
+                        .message("식당 검색에 성공하였습니다.")
+                        .data(RestaurantSearchResDTOV1.of(dummyRestaurantPage))
+                        .build(),
+                HttpStatus.OK
         );
     }
 
