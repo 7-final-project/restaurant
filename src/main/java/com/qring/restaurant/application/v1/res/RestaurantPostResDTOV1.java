@@ -14,12 +14,12 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RestaurantPostResDTOv1 {
+public class RestaurantPostResDTOV1 {
 
     private Restaurant restaurant;
 
-    public static RestaurantPostResDTOv1 of(RestaurantEntity restaurantEntity) {
-        return RestaurantPostResDTOv1.builder()
+    public static RestaurantPostResDTOV1 of(RestaurantEntity restaurantEntity) {
+        return RestaurantPostResDTOV1.builder()
                 .restaurant(Restaurant.from(restaurantEntity))
                 .build();
     }

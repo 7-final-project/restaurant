@@ -1,13 +1,13 @@
 package com.qring.restaurant.presentation.v1.controller;
 
 import com.qring.restaurant.application.global.dto.ResDTO;
-import com.qring.restaurant.presentation.v1.req.PostRestaurantReqDTOv1;
+import com.qring.restaurant.presentation.v1.req.PostRestaurantReqDTOV1;
 import com.qring.restaurant.application.v1.res.RestaurantSearchResDTOV1;
 import com.qring.restaurant.domain.model.CategoryEntity;
 import com.qring.restaurant.domain.model.OperatingHourEntity;
 import com.qring.restaurant.domain.model.RestaurantEntity;
 import com.qring.restaurant.presentation.v1.req.PutRestaurantReqDTOV1;
-import com.qring.restaurant.application.v1.res.RestaurantPostResDTOv1;
+import com.qring.restaurant.application.v1.res.RestaurantPostResDTOV1;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,8 +25,8 @@ import java.util.List;
 public class RestaurantControllerV1 {
 
     @PostMapping("/v1/restaurants")
-    public ResponseEntity<ResDTO<RestaurantPostResDTOv1>> postBy(@RequestHeader("X-User-Id") Long userId,
-                                                                 @Valid @RequestBody PostRestaurantReqDTOv1 dto) {
+    public ResponseEntity<ResDTO<RestaurantPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId,
+                                                                 @Valid @RequestBody PostRestaurantReqDTOV1 dto) {
 
         // -----
         // TODO : 더미 데이터입니다. 추후 삭제하세요.
@@ -61,10 +61,10 @@ public class RestaurantControllerV1 {
         // ----- 추후 삭제하시면 됩니다.
 
         return new ResponseEntity<>(
-                ResDTO.<RestaurantPostResDTOv1>builder()
+                ResDTO.<RestaurantPostResDTOV1>builder()
                         .code(HttpStatus.CREATED.value())
                         .message("식당 생성에 성공하였습니다.")
-                        .data(RestaurantPostResDTOv1.of(dummyRestaurantEntity))
+                        .data(RestaurantPostResDTOV1.of(dummyRestaurantEntity))
                         .build(),
                 HttpStatus.CREATED
         );

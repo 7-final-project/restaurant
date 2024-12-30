@@ -11,7 +11,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class PostRestaurantReqDTOv1 {
+public class PostRestaurantReqDTOV1 {
 
     @Valid
     @NotNull(message = "식당 정보를 입력해주세요.")
