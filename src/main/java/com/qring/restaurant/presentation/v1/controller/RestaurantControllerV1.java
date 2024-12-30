@@ -23,9 +23,10 @@ import java.time.LocalTime;
 import java.util.List;
 
 @RestController
+@RequestMapping("/v1/restaurants")
 public class RestaurantControllerV1 {
 
-    @PostMapping("/v1/restaurants")
+    @PostMapping
     public ResponseEntity<ResDTO<RestaurantPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId,
                                                                  @Valid @RequestBody PostRestaurantReqDTOV1 dto) {
 
@@ -71,7 +72,7 @@ public class RestaurantControllerV1 {
         );
     }
 
-    @GetMapping("/v1/restaurants")
+    @GetMapping
     public ResponseEntity<ResDTO<RestaurantSearchResDTOV1>> searchBy(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                                                      @RequestParam(name = "userId", required = false) Long userId,
                                                                      @RequestParam(name = "name", required = false) String name,
@@ -119,7 +120,7 @@ public class RestaurantControllerV1 {
         );
     }
 
-    @GetMapping("/v1/restaurants/{restaurantId}")
+    @GetMapping("/{restaurantId}")
     public ResponseEntity<ResDTO<RestaurantGetByIdResDTOV1>> getBy(@PathVariable(name = "restaurantId") Long restaurantId) {
 
         // -----
@@ -162,7 +163,7 @@ public class RestaurantControllerV1 {
         );
     }
 
-    @PutMapping("/v1/restaurants/{restaurantId}")
+    @PutMapping("/{restaurantId}")
     public ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-User-Id") Long userId,
                                                 @PathVariable(name = "restaurantId") Long restaurantId,
                                                 @Valid @RequestBody PutRestaurantReqDTOV1 dto) {
@@ -206,7 +207,7 @@ public class RestaurantControllerV1 {
     }
 
 
-    @DeleteMapping("/v1/restaurants/{restaurantId}")
+    @DeleteMapping("/{restaurantId}")
     public ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId,
                                                    @PathVariable(name = "restaurantId") Long restaurantId) {
 
