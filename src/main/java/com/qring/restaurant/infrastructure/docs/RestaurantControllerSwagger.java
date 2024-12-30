@@ -51,8 +51,8 @@ public interface RestaurantControllerSwagger {
             @ApiResponse(responseCode = "200", description = "식당 상세 조회 성공", content = @Content(schema = @Schema(implementation = ResDTO.class))),
             @ApiResponse(responseCode = "400", description = "식당 상세 조회 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
-    @GetMapping("/{restaurantId}")
-    ResponseEntity<ResDTO<RestaurantGetByIdResDTOV1>> getBy(@PathVariable(name = "restaurantId") Long restaurantId);
+    @GetMapping("/{id}")
+    ResponseEntity<ResDTO<RestaurantGetByIdResDTOV1>> getBy(@PathVariable(name = "id") Long id);
 
 
     @Operation(summary = "식당 수정", description = "식당을 수정하는 API 입니다.")
@@ -60,8 +60,8 @@ public interface RestaurantControllerSwagger {
             @ApiResponse(responseCode = "200", description = "식당 수정 성공", content = @Content(schema = @Schema(implementation = ResDTO.class))),
             @ApiResponse(responseCode = "400", description = "식당 수정 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
-    @PutMapping("/{restaurantId}")
-    ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-User-Id") Long userId, @PathVariable(name = "restaurantId") Long restaurantId, @Valid @RequestBody PutRestaurantReqDTOV1 dto);
+    @PutMapping("/{id}")
+    ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-User-Id") Long userId, @PathVariable(name = "id") Long id, @Valid @RequestBody PutRestaurantReqDTOV1 dto);
 
 
     @Operation(summary = "식당 삭제", description = "식당을 삭제하는 API 입니다.")
@@ -69,6 +69,6 @@ public interface RestaurantControllerSwagger {
             @ApiResponse(responseCode = "200", description = "식당 삭제 성공", content = @Content(schema = @Schema(implementation = ResDTO.class))),
             @ApiResponse(responseCode = "400", description = "식당 삭제 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
-    @DeleteMapping("/{restaurantId}")
-    ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId, @PathVariable(name = "restaurantId") Long restaurantId);
+    @DeleteMapping("/{id}")
+    ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId, @PathVariable(name = "id") Long id);
 }

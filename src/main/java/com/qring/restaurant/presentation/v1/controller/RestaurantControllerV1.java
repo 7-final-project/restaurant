@@ -130,8 +130,8 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
         );
     }
 
-    @GetMapping("/{restaurantId}")
-    public ResponseEntity<ResDTO<RestaurantGetByIdResDTOV1>> getBy(@PathVariable(name = "restaurantId") Long restaurantId) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ResDTO<RestaurantGetByIdResDTOV1>> getBy(@PathVariable(name = "id") Long id) {
 
         // -----
         // TODO: 더미 데이터를 반환합니다. 추후 실제 데이터 로직으로 변경하세요.
@@ -173,9 +173,9 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
         );
     }
 
-    @PutMapping("/{restaurantId}")
+    @PutMapping("/{id}")
     public ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-User-Id") Long userId,
-                                                @PathVariable(name = "restaurantId") Long restaurantId,
+                                                @PathVariable(name = "id") Long id,
                                                 @Valid @RequestBody PutRestaurantReqDTOV1 dto) {
 
         // -----
@@ -217,9 +217,9 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
     }
 
 
-    @DeleteMapping("/{restaurantId}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId,
-                                                   @PathVariable(name = "restaurantId") Long restaurantId) {
+                                                   @PathVariable(name = "id") Long id) {
 
 
         return new ResponseEntity<>(

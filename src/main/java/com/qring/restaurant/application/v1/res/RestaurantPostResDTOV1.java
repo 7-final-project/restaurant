@@ -31,7 +31,7 @@ public class RestaurantPostResDTOV1 {
     public static class Restaurant {
 
         private Long userId;
-        private Long restaurantId;
+        private Long id;
         private Long categoryId;
         private String name;
         private String tel;
@@ -43,7 +43,7 @@ public class RestaurantPostResDTOV1 {
         public static Restaurant from(RestaurantEntity restaurantEntity) {
             return Restaurant.builder()
                     .userId(restaurantEntity.getUserId())
-                    .restaurantId(restaurantEntity.getId())
+                    .id(restaurantEntity.getId())
                     .categoryId(restaurantEntity.getCategory().getId())
                     .name(restaurantEntity.getName())
                     .tel(restaurantEntity.getTel())
