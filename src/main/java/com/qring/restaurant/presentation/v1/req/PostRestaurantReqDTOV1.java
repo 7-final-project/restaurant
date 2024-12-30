@@ -19,7 +19,7 @@ public class PostRestaurantReqDTOV1 {
 
     @Valid
     @NotNull(message = "식당 운영 시간을 입력해주세요.")
-    List<OperatingHour> OperatingHourList;
+    List<OperatingHour> operatingHourList;
 
     @Getter
     public static class Restaurant {
