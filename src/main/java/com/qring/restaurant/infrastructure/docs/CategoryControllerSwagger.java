@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Tag(name = "Category", description = "카테고리 관련 API")
+@Tag(name = "Category", description = "생성, 조회, 검색, 수정, 삭제 관련 카테고리 API")
 @RequestMapping("/v1/restaurants/category")
 public interface CategoryControllerSwagger {
 

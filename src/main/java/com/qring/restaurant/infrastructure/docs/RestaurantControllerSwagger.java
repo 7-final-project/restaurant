@@ -23,7 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-@Tag(name = "Restaurant", description = "생성, 조회, 검색, 수정, 삭제 관련 리뷰 API")
+@Tag(name = "Restaurant", description = "생성, 조회, 검색, 수정, 삭제 관련 식당 API")
 @RequestMapping("/v1/restaurants")
 public interface RestaurantControllerSwagger {
 
