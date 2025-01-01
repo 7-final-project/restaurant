@@ -27,24 +27,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/restaurants")
 public interface RestaurantControllerSwagger {
 
-    @Operation(summary = "카테고리 생성", description = "카테고리를 생성하는 API 입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "카테고리 생성 성공", content = @Content(schema = @Schema(implementation = ResDTO.class))),
-            @ApiResponse(responseCode = "400", description = "카테고리 생성 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
-    })
-    @PostMapping("/category")
-    ResponseEntity<ResDTO<CategoryPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId, @Valid @RequestBody PostCategoryReqDTOV1 dto);
-
-
-
-
-
-
-
-
-
-
-
     @Operation(summary = "식당 생성", description = "식당을 생성하는 API 입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "식당 생성 성공", content = @Content(schema = @Schema(implementation = ResDTO.class))),
