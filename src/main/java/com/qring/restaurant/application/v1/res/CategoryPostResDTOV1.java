@@ -1,5 +1,6 @@
 package com.qring.restaurant.application.v1.res;
 
+import com.qring.restaurant.domain.model.CategoryEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,9 +14,9 @@ public class CategoryPostResDTOV1 {
 
     private Category category;
 
-    public static CategoryPostResDTOV1 of(Long id, String name) {
+    public static CategoryPostResDTOV1 of(CategoryEntity categoryEntity) {
         return CategoryPostResDTOV1.builder()
-                .category(Category.from(id, name))
+                .category(Category.from(categoryEntity))
                 .build();
     }
 
@@ -27,10 +28,10 @@ public class CategoryPostResDTOV1 {
         private Long id;
         private String name;
 
-        public static Category from(Long id, String name) {
+        public static Category from(CategoryEntity categoryEntity) {
             return Category.builder()
-                    .id(id)
-                    .name(name)
+                    .id(categoryEntity.getId())
+                    .name(categoryEntity.getName())
                     .build();
         }
     }
