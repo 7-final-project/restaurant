@@ -31,13 +31,14 @@ public interface CategoryControllerSwagger {
     @PostMapping
     ResponseEntity<ResDTO<CategoryPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId, @Valid @RequestBody PostCategoryReqDTOV1 dto);
 
-    @Operation(summary = "카테고리 검색", description = "카테고리를 검색하는 API 입니다.")
+    @Operation(summary = "카테고리 검색", description = "카테고리를 검색하는 API입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "카테고리 검색 성공", content = @Content(schema = @Schema(implementation = ResDTO.class))),
-            @ApiResponse(responseCode = "400", description = "카테고리 검색 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
+            @ApiResponse(responseCode = "400", description = "카테고리 검색 실패", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
-    @GetMapping("/v1/reviews")
-    ResponseEntity<ResDTO<CategorySearchResDTOV1>> searchBy(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+    @GetMapping
+    ResponseEntity<ResDTO<CategorySearchResDTOV1>> searchBy(Pageable pageable,
+                                                            @RequestParam(name = "name", required = false) String name,
                                                             @RequestParam(name = "sort", required = false) String sort);
 
 
