@@ -3,6 +3,7 @@ package com.qring.restaurant.presentation.v1.controller;
 import com.qring.restaurant.application.global.dto.ResDTO;
 import com.qring.restaurant.application.v1.res.CategoryPostResDTOV1;
 import com.qring.restaurant.domain.model.CategoryEntity;
+import com.qring.restaurant.infrastructure.docs.CategoryControllerSwagger;
 import com.qring.restaurant.presentation.v1.req.PostCategoryReqDTOV1;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/restaurants/category")
-public class CategoryControllerV1 {
+public class CategoryControllerV1 implements CategoryControllerSwagger {
 
     @PostMapping
     public ResponseEntity<ResDTO<CategoryPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId,
