@@ -40,11 +40,22 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
                                                                @PathVariable Long id,
                                                                @Valid @RequestBody PutCategoryDTOV1 dto) {
 
-
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(HttpStatus.OK.value())
                         .message("카테고리 수정에 성공했습니다.")
+                        .build(),
+                HttpStatus.OK
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId, @PathVariable Long id) {
+
+        return new ResponseEntity<>(
+                ResDTO.builder()
+                        .code(HttpStatus.OK.value())
+                        .message("카테고리 삭제에 성공했습니다.")
                         .build(),
                 HttpStatus.OK
         );
