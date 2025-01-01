@@ -44,7 +44,9 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
 
     @GetMapping
     public ResponseEntity<ResDTO<CategorySearchResDTOV1>> searchBy(@PageableDefault(sort = "id") Pageable pageable,
-                                                                   @RequestParam(name = "name", required = false) String name) {
+                                                                   @RequestParam(name = "name", required = false) String name,
+                                                                   @RequestParam(name = "sort", required = false) String sort
+    ) {
 
         // -- TODO : 더미 데이터를 사용한 카테고리 검색. 추후 실제 데이터로 변경
         List<CategoryEntity> dummyCategories = List.of(
