@@ -1,6 +1,7 @@
 package com.qring.restaurant.presentation.v1.controller;
 
 import com.qring.restaurant.application.global.dto.ResDTO;
+import com.qring.restaurant.application.v1.res.CategoryGetByIdResDTOV1;
 import com.qring.restaurant.application.v1.res.CategoryPostResDTOV1;
 import com.qring.restaurant.application.v1.res.CategorySearchResDTOV1;
 import com.qring.restaurant.domain.model.CategoryEntity;
@@ -74,6 +75,27 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
                 HttpStatus.OK
         );
     }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResDTO<CategoryGetByIdResDTOV1>> getBy(@PathVariable Long id) {
+
+        // ----- 더미 데이터 생성 (추후 삭제)
+        CategoryEntity dummyCategoryEntity = CategoryEntity.builder()
+                .name("한식")
+                .build();
+        // ----- 추후 실제 데이터로 대체
+
+        return new ResponseEntity<>(
+                ResDTO.<CategoryGetByIdResDTOV1>builder()
+                        .code(HttpStatus.OK.value())
+                        .message("카테고리 상세 조회에 성공했습니다.")
+                        .data(CategoryGetByIdResDTOV1.of(dummyCategoryEntity))
+                        .build(),
+                HttpStatus.OK
+        );
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-User-Id") Long userId,
