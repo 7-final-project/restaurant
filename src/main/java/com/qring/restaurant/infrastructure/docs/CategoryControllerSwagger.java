@@ -27,6 +27,7 @@ public interface CategoryControllerSwagger {
     @PostMapping
     ResponseEntity<ResDTO<CategoryPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId, @Valid @RequestBody PostCategoryReqDTOV1 dto);
 
+
     @Operation(summary = "카테고리 수정", description = "카테고리를 수정하는 API 입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "카테고리 수정 성공", content = @Content(schema = @Schema(implementation = ResDTO.class))),
@@ -36,6 +37,15 @@ public interface CategoryControllerSwagger {
     ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-User-Id") Long userId,
                                          @PathVariable Long id,
                                          @Valid @RequestBody PutCategoryDTOV1 dto);
+
+
+    @Operation(summary = "카테고리 삭제", description = "카테고리를 삭제하는 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "리뷰 삭제 성공", content = @Content(schema = @Schema(implementation = ResDTO.class))),
+            @ApiResponse(responseCode = "400", description = "리뷰 삭제 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
+    })
+    @DeleteMapping("/{id}")
+    ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId, @PathVariable Long id);
 
 
 
