@@ -2,9 +2,11 @@ package com.qring.restaurant.infrastructure.docs;
 
 
 import com.qring.restaurant.application.global.dto.ResDTO;
+import com.qring.restaurant.application.v1.res.CategoryPostResDTOV1;
 import com.qring.restaurant.application.v1.res.RestaurantGetByIdResDTOV1;
 import com.qring.restaurant.application.v1.res.RestaurantPostResDTOV1;
 import com.qring.restaurant.application.v1.res.RestaurantSearchResDTOV1;
+import com.qring.restaurant.presentation.v1.req.PostCategoryReqDTOV1;
 import com.qring.restaurant.presentation.v1.req.PostRestaurantReqDTOV1;
 import com.qring.restaurant.presentation.v1.req.PutRestaurantReqDTOV1;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,9 +23,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-@Tag(name = "Review", description = "생성, 조회, 검색, 수정, 삭제 관련 리뷰 API")
+@Tag(name = "Restaurant", description = "생성, 조회, 검색, 수정, 삭제 관련 리뷰 API")
 @RequestMapping("/v1/restaurants")
 public interface RestaurantControllerSwagger {
+
+    @Operation(summary = "카테고리 생성", description = "카테고리를 생성하는 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "카테고리 생성 성공", content = @Content(schema = @Schema(implementation = ResDTO.class))),
+            @ApiResponse(responseCode = "400", description = "카테고리 생성 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
+    })
+    @PostMapping("/category")
+    ResponseEntity<ResDTO<CategoryPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId, @Valid @RequestBody PostCategoryReqDTOV1 dto);
+
+
+
+
+
+
+
+
+
+
 
     @Operation(summary = "식당 생성", description = "식당을 생성하는 API 입니다.")
     @ApiResponses(value = {
