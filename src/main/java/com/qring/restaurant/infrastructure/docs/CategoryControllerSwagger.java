@@ -1,6 +1,7 @@
 package com.qring.restaurant.infrastructure.docs;
 
 import com.qring.restaurant.application.global.dto.ResDTO;
+import com.qring.restaurant.application.v1.res.CategoryGetByIdResDTOV1;
 import com.qring.restaurant.application.v1.res.CategoryPostResDTOV1;
 import com.qring.restaurant.application.v1.res.CategorySearchResDTOV1;
 import com.qring.restaurant.presentation.v1.req.PostCategoryReqDTOV1;
@@ -41,6 +42,14 @@ public interface CategoryControllerSwagger {
                                                             @RequestParam(name = "name", required = false) String name,
                                                             @RequestParam(name = "sort", required = false) String sort);
 
+
+    @Operation(summary = "카테고리 상세 조회", description = "카테고리 ID로 상세 조회를 수행하는 API입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "카테고리 상세 조회 성공", content = @Content(schema = @Schema(implementation = ResDTO.class))),
+            @ApiResponse(responseCode = "404", description = "카테고리 상세 조회 실패", content = @Content(schema = @Schema(implementation = ResDTO.class)))
+    })
+    @GetMapping("/{id}")
+    ResponseEntity<ResDTO<CategoryGetByIdResDTOV1>> getBy(@PathVariable Long id);
 
 
     @Operation(summary = "카테고리 수정", description = "카테고리를 수정하는 API 입니다.")
