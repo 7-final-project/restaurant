@@ -2,11 +2,9 @@ package com.qring.restaurant.infrastructure.docs;
 
 
 import com.qring.restaurant.application.global.dto.ResDTO;
-import com.qring.restaurant.application.v1.res.CategoryPostResDTOV1;
 import com.qring.restaurant.application.v1.res.RestaurantGetByIdResDTOV1;
 import com.qring.restaurant.application.v1.res.RestaurantPostResDTOV1;
 import com.qring.restaurant.application.v1.res.RestaurantSearchResDTOV1;
-import com.qring.restaurant.presentation.v1.req.PostCategoryReqDTOV1;
 import com.qring.restaurant.presentation.v1.req.PostRestaurantReqDTOV1;
 import com.qring.restaurant.presentation.v1.req.PutRestaurantReqDTOV1;
 import io.swagger.v3.oas.annotations.Operation;
