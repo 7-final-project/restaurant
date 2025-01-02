@@ -45,8 +45,7 @@ public interface RestaurantControllerSwagger {
                                                               @RequestParam(name = "name", required = false) String name,
                                                               @RequestParam(name = "sort", required = false) String sort,
                                                               @RequestParam(name = "address", required = false) String address,
-                                                              @RequestParam(name = "category", required = false) String category,
-                                                              @RequestParam(name = "ratingSort", required = false) String ratingSort);
+                                                              @RequestParam(name = "category", required = false) String category);
 
 
     @Operation(summary = "식당 상세 조회", description = "식당을 상세 조회하는 API 입니다.")
