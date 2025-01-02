@@ -79,7 +79,10 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
     public ResponseEntity<ResDTO<RestaurantSearchResDTOV1>> searchBy(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                                                      @RequestParam(name = "userId", required = false) Long userId,
                                                                      @RequestParam(name = "name", required = false) String name,
-                                                                     @RequestParam(name = "sort", required = false) String sort) {
+                                                                     @RequestParam(name = "sort", required = false) String sort,
+                                                                     @RequestParam(name = "address", required = false) String address,
+                                                                     @RequestParam(name = "category", required = false) String category,
+                                                                     @RequestParam(name = "ratingSort", required = false) String ratingSort) {
 
         // --
         // TODO : 본인 식당 / 식당 이름 / 식당 생성 최신순 / 식당 생성 오래된순 조회
