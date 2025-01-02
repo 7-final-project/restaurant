@@ -38,6 +38,7 @@ public class RestaurantPostResDTOV1 {
         private int capacity;
         private String address;
         private String addressDetails;
+        private Double ratingAverage;
         private List<OperatingHour> operatingHourList;
 
         public static Restaurant from(RestaurantEntity restaurantEntity) {
