@@ -43,6 +43,9 @@ public class RestaurantEntity {
     @Column(name = "address_details")
     private String addressDetails;
 
+    @Column(name = "rating_average")
+    private Double ratingAverage = 0.0;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
@@ -71,13 +74,14 @@ public class RestaurantEntity {
     private String deletedBy;
 
     @Builder
-    public RestaurantEntity(Long userId, String name, int capacity, String tel, String address, String addressDetails, CategoryEntity categoryEntity, String username) {
+    public RestaurantEntity(Long userId, String name, int capacity, String tel, String address, String addressDetails, Double ratingAverage, CategoryEntity categoryEntity, String username) {
         this.userId = userId;
         this.name = name;
         this.capacity = capacity;
         this.tel = tel;
         this.address = address;
         this.addressDetails = addressDetails;
+        this.ratingAverage = ratingAverage;
         this.category = categoryEntity;
         this.createdBy = username;
         this.modifiedBy = username;
@@ -90,7 +94,8 @@ public class RestaurantEntity {
     }
 
     // == 생성 메서드 == //
-    public static RestaurantEntity createRestaurantEntity(Long userId, String name, int capacity, String tel, String address, String addressDetails,
+    public static RestaurantEntity createRestaurantEntity(Long userId, String name, int capacity, String tel,
+                                                          String address, String addressDetails,
                                                           CategoryEntity categoryEntity, List<OperatingHourEntity> operatingHourEntityList, String username) {
 
         RestaurantEntity restaurantEntityForSave = RestaurantEntity.builder()
@@ -100,6 +105,28 @@ public class RestaurantEntity {
                 .tel(tel)
                 .address(address)
                 .addressDetails(addressDetails)
+                .categoryEntity(categoryEntity)
+                .username(username)
+                .build();
+
+        restaurantEntityForSave.addOperatingHour(operatingHourEntityList);
+
+        return restaurantEntityForSave;
+    }
+
+    // == 반환 메서드 == //
+    public static RestaurantEntity responseRestaurantEntity(Long userId, String name, int capacity, String tel,
+                                                          String address, String addressDetails, Double ratingAverage,
+                                                          CategoryEntity categoryEntity, List<OperatingHourEntity> operatingHourEntityList, String username) {
+
+        RestaurantEntity restaurantEntityForSave = RestaurantEntity.builder()
+                .userId(userId)
+                .name(name)
+                .capacity(capacity)
+                .tel(tel)
+                .address(address)
+                .addressDetails(addressDetails)
+                .ratingAverage(ratingAverage)
                 .categoryEntity(categoryEntity)
                 .username(username)
                 .build();
