@@ -93,6 +93,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
                         .tel("123-456-7890")
                         .address("서울시 강남구")
                         .addressDetails("1층")
+                        .ratingAverage(4.5)
                         .categoryEntity(CategoryEntity.builder()
                                 .name("한식")
                                 .build())
@@ -102,6 +103,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
                         .tel("234-567-8901")
                         .address("서울시 송파구")
                         .addressDetails("2층")
+                        .ratingAverage(4.0)
                         .categoryEntity(CategoryEntity.builder()
                                 .name("한식")
                                 .build())
@@ -111,6 +113,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
                         .tel("345-678-9012")
                         .address("서울시 서초구")
                         .addressDetails("3층")
+                        .ratingAverage(3.8)
                         .categoryEntity(CategoryEntity.builder()
                                 .name("일식")
                                 .build())
@@ -148,13 +151,14 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
                         .build()
         );
 
-        RestaurantEntity dummyRestaurantEntity = RestaurantEntity.createRestaurantEntity(
+        RestaurantEntity dummyRestaurantEntity = RestaurantEntity.responseRestaurantEntity(
                 1L,
                 "왕가탕후루",
                 50,
                 "010-9876-5432",
                 "서울특별시 강남구 테헤란로",
                 "2층 201호",
+                4.5,
                 CategoryEntity.builder()
                         .name("한식")
                         .build(),
