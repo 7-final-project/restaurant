@@ -123,7 +123,7 @@ public class RestaurantEntity {
 
     // == 반환 메서드 == //
     public static RestaurantEntity responseRestaurantEntity(Long userId, String name, int capacity, String tel,
-                                                          String address, String addressDetails, Double ratingAverage,
+                                                          String address, String addressDetails, Double ratingAverage, OperationStatus operationStatus,
                                                           CategoryEntity categoryEntity, List<OperatingHourEntity> operatingHourEntityList, String username) {
 
         RestaurantEntity restaurantEntityForSave = RestaurantEntity.builder()
@@ -134,6 +134,7 @@ public class RestaurantEntity {
                 .address(address)
                 .addressDetails(addressDetails)
                 .ratingAverage(ratingAverage)
+                .operationStatus(operationStatus)
                 .categoryEntity(categoryEntity)
                 .username(username)
                 .build();
