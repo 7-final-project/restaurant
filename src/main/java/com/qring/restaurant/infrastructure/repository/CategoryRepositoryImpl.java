@@ -62,6 +62,12 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
+    public boolean existsByNameAndDeletedAtIsNull(String name) {
+        // JPA를 사용하여 존재 여부 확인
+        return jpaCategoryRepository.existsByNameAndDeletedAtIsNull(name);
+    }
+
+    @Override
     public CategoryEntity updateCategory(CategoryEntity categoryEntity) {
         // 기존 카테고리를 수정하여 저장
         Optional<CategoryEntity> existingCategory = jpaCategoryRepository.findByIdAndDeletedAtIsNull(categoryEntity.getId());

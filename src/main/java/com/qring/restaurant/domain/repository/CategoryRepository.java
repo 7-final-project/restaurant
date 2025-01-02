@@ -20,6 +20,9 @@ public interface CategoryRepository {
     // 특정 ID를 가진 카테고리 존재 여부 확인
     boolean existsByIdAndDeletedAtIsNull(Long id);
 
+    // 특정 이름을 가진 카테고리 존재 여부 확인
+    boolean existsByNameAndDeletedAtIsNull(String name);
+
     // 카테고리 수정
     CategoryEntity updateCategory(CategoryEntity categoryEntity);
 
