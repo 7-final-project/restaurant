@@ -4,11 +4,13 @@ import com.qring.restaurant.application.global.dto.ResDTO;
 import com.qring.restaurant.application.v1.res.CategoryGetByIdResDTOV1;
 import com.qring.restaurant.application.v1.res.CategoryPostResDTOV1;
 import com.qring.restaurant.application.v1.res.CategorySearchResDTOV1;
+import com.qring.restaurant.application.v1.service.CategoryService;
 import com.qring.restaurant.domain.model.CategoryEntity;
 import com.qring.restaurant.infrastructure.docs.CategoryControllerSwagger;
 import com.qring.restaurant.presentation.v1.req.PostCategoryReqDTOV1;
 import com.qring.restaurant.presentation.v1.req.PutCategoryDTOV1;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -22,85 +24,61 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/restaurants/category")
-public class CategoryControllerV1 implements CategoryControllerSwagger {
+@RequiredArgsConstructor
+public class CategoryControllerV1 {
+
+    private final CategoryService categoryService;
 
     @PostMapping
     public ResponseEntity<ResDTO<CategoryPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId,
                                                                @Valid @RequestBody PostCategoryReqDTOV1 dto) {
-        // -----
-        // TODO : 더미데이터입니다.
-        CategoryEntity dummyReviewEntity = CategoryEntity.builder()
-                .name("한식")
-                .build();
-        // ----- 추후 삭제
+        CategoryEntity category = categoryService.createCategory(userId, dto);
 
         return new ResponseEntity<>(
                 ResDTO.<CategoryPostResDTOV1>builder()
                         .code(HttpStatus.CREATED.value())
                         .message("카테고리 생성에 성공했습니다.")
-                        .data(CategoryPostResDTOV1.of(dummyReviewEntity))
+                        .data(CategoryPostResDTOV1.of(category))
                         .build(),
                 HttpStatus.CREATED
         );
     }
 
     @GetMapping
-    public ResponseEntity<ResDTO<CategorySearchResDTOV1>> searchBy(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+    public ResponseEntity<ResDTO<CategorySearchResDTOV1>> searchBy(@PageableDefault Pageable pageable,
                                                                    @RequestParam(name = "name", required = false) String name,
-                                                                   @RequestParam(name = "sort", required = false) String sort
-    ) {
+                                                                   @RequestParam(name = "sort", required = false) String sort) {
+        Page<CategoryEntity> categories = categoryService.searchCategories(name, sort, pageable);
 
-        // -- TODO : 더미 데이터를 사용한 카테고리 검색. 추후 실제 데이터로 변경
-        List<CategoryEntity> dummyCategories = List.of(
-                CategoryEntity.builder()
-                        .name("한식")
-                        .build(),
-                CategoryEntity.builder()
-                        .name("양식")
-                        .build(),
-                CategoryEntity.builder()
-                        .name("일식")
-                        .build()
-        );
-
-        Page<CategoryEntity> dummyPage = new PageImpl<>(dummyCategories, pageable, dummyCategories.size());
-
-        // -- 응답 DTO로 변환
         return new ResponseEntity<>(
                 ResDTO.<CategorySearchResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("카테고리 검색에 성공했습니다.")
-                        .data(CategorySearchResDTOV1.of(dummyPage))
+                        .data(CategorySearchResDTOV1.of(categories))
                         .build(),
                 HttpStatus.OK
         );
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<ResDTO<CategoryGetByIdResDTOV1>> getBy(@PathVariable Long id) {
-
-        // ----- 더미 데이터 생성 (추후 삭제)
-        CategoryEntity dummyCategoryEntity = CategoryEntity.builder()
-                .name("한식")
-                .build();
-        // ----- 추후 실제 데이터로 대체
+        CategoryEntity category = categoryService.getCategoryById(id);
 
         return new ResponseEntity<>(
                 ResDTO.<CategoryGetByIdResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("카테고리 상세 조회에 성공했습니다.")
-                        .data(CategoryGetByIdResDTOV1.of(dummyCategoryEntity))
+                        .data(CategoryGetByIdResDTOV1.of(category))
                         .build(),
                 HttpStatus.OK
         );
     }
 
-
     @PutMapping("/{id}")
     public ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-User-Id") Long userId,
-                                                               @PathVariable Long id,
-                                                               @Valid @RequestBody PutCategoryDTOV1 dto) {
+                                                @PathVariable Long id,
+                                                @Valid @RequestBody PutCategoryDTOV1 dto) {
+        categoryService.updateCategory(userId, id, dto);
 
         return new ResponseEntity<>(
                 ResDTO.builder()
@@ -112,7 +90,9 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId, @PathVariable Long id) {
+    public ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId,
+                                                   @PathVariable Long id) {
+        categoryService.deleteCategory(userId, id);
 
         return new ResponseEntity<>(
                 ResDTO.builder()
@@ -122,5 +102,4 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
                 HttpStatus.OK
         );
     }
-
 }
