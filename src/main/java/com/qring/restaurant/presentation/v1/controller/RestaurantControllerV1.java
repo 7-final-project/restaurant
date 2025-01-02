@@ -40,12 +40,12 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
 
         List<OperatingHourEntity> dummyOperatingHourList = List.of(
                 OperatingHourEntity.builder()
-                        .dayOfWeek("Monday")
+                        .dayOfWeek("월요일")
                         .openAt(LocalTime.parse("09:00"))
                         .closedAt(LocalTime.parse("18:00"))
                         .build(),
                 OperatingHourEntity.builder()
-                        .dayOfWeek("Tuesday")
+                        .dayOfWeek("화요일")
                         .openAt(LocalTime.parse("09:00"))
                         .closedAt(LocalTime.parse("18:00"))
                         .build()
@@ -145,12 +145,12 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
         // TODO: 더미 데이터를 반환합니다. 추후 실제 데이터 로직으로 변경하세요.
         List<OperatingHourEntity> dummyOperatingHourList = List.of(
                 OperatingHourEntity.builder()
-                        .dayOfWeek("Monday")
+                        .dayOfWeek("월요일")
                         .openAt(LocalTime.parse("09:00"))
                         .closedAt(LocalTime.parse("18:00"))
                         .build(),
                 OperatingHourEntity.builder()
-                        .dayOfWeek("Tuesday")
+                        .dayOfWeek("화요일")
                         .openAt(LocalTime.parse("09:00"))
                         .closedAt(LocalTime.parse("18:00"))
                         .build()
