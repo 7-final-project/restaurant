@@ -3,10 +3,7 @@ package com.qring.restaurant.domain.model;
 import com.qring.restaurant.domain.model.constraint.OperationStatus;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -18,6 +15,7 @@ import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "p_restaurant")
 public class RestaurantEntity {
