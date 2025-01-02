@@ -2,6 +2,7 @@ package com.qring.restaurant.presentation.v1.controller;
 
 import com.qring.restaurant.application.global.dto.ResDTO;
 import com.qring.restaurant.application.v1.res.RestaurantGetByIdResDTOV1;
+import com.qring.restaurant.domain.model.constraint.OperationStatus;
 import com.qring.restaurant.infrastructure.docs.RestaurantControllerSwagger;
 import com.qring.restaurant.presentation.v1.req.PostRestaurantReqDTOV1;
 import com.qring.restaurant.application.v1.res.RestaurantSearchResDTOV1;
@@ -57,6 +58,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
                 "010-1234-5678",
                 "서울특별시 강남구 역삼동",
                 "역삼역 근처 1번 출구",
+                OperationStatus.OPEN,
                 dummyCategoryEntity,
                 dummyOperatingHourList,
                 "dummyUsername"
@@ -94,6 +96,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
                         .address("서울시 강남구")
                         .addressDetails("1층")
                         .ratingAverage(4.5)
+                        .operationStatus(OperationStatus.OPEN)
                         .categoryEntity(CategoryEntity.builder()
                                 .name("한식")
                                 .build())
@@ -104,6 +107,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
                         .address("서울시 송파구")
                         .addressDetails("2층")
                         .ratingAverage(4.0)
+                        .operationStatus(OperationStatus.CLOSED)
                         .categoryEntity(CategoryEntity.builder()
                                 .name("한식")
                                 .build())
@@ -114,6 +118,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
                         .address("서울시 서초구")
                         .addressDetails("3층")
                         .ratingAverage(3.8)
+                        .operationStatus(OperationStatus.OPEN)
                         .categoryEntity(CategoryEntity.builder()
                                 .name("일식")
                                 .build())
@@ -159,6 +164,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
                 "서울특별시 강남구 테헤란로",
                 "2층 201호",
                 4.5,
+                OperationStatus.OPEN,
                 CategoryEntity.builder()
                         .name("한식")
                         .build(),
