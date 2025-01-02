@@ -2,6 +2,7 @@ package com.qring.restaurant.application.v1.res;
 
 import com.qring.restaurant.domain.model.OperatingHourEntity;
 import com.qring.restaurant.domain.model.RestaurantEntity;
+import com.qring.restaurant.domain.model.constraint.OperationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,6 +40,7 @@ public class RestaurantPostResDTOV1 {
         private String address;
         private String addressDetails;
         private Double ratingAverage;
+        private OperationStatus operationStatus;
         private List<OperatingHour> operatingHourList;
 
         public static Restaurant from(RestaurantEntity restaurantEntity) {
@@ -51,6 +53,7 @@ public class RestaurantPostResDTOV1 {
                     .capacity(restaurantEntity.getCapacity())
                     .address(restaurantEntity.getAddress())
                     .addressDetails(restaurantEntity.getAddressDetails())
+                    .operationStatus(restaurantEntity.getOperationStatus())
                     .operatingHourList(OperatingHour.from(restaurantEntity.getOperatingHourEntityList()))
                     .build();
         }
