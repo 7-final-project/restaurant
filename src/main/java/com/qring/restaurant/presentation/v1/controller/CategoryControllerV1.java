@@ -45,11 +45,11 @@ public class CategoryControllerV1 {
     }
 
     @GetMapping
-    public ResponseEntity<ResDTO<CategorySearchResDTOV1>> searchBy(@PageableDefault Pageable pageable,
-                                                                   @RequestParam(name = "name", required = false) String name,
-                                                                   @RequestParam(name = "sort", required = false) String sort) {
-        Page<CategoryEntity> categories = categoryService.searchCategories(name, sort, pageable);
+    public ResponseEntity<ResDTO<CategorySearchResDTOV1>> search() {
+        // 모든 카테고리 조회
+        List<CategoryEntity> categories = categoryService.findAllCategoriesByDeletedAtIsNull();
 
+        // 결과를 DTO로 변환하여 응답 반환
         return new ResponseEntity<>(
                 ResDTO.<CategorySearchResDTOV1>builder()
                         .code(HttpStatus.OK.value())
@@ -59,6 +59,8 @@ public class CategoryControllerV1 {
                 HttpStatus.OK
         );
     }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ResDTO<CategoryGetByIdResDTOV1>> getBy(@PathVariable Long id) {

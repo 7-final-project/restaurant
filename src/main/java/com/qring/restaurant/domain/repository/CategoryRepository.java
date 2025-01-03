@@ -4,6 +4,7 @@ import com.qring.restaurant.domain.model.CategoryEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CategoryRepository {
@@ -14,8 +15,8 @@ public interface CategoryRepository {
     // 특정 ID를 가진 카테고리 조회 (삭제되지 않은 상태)
     Optional<CategoryEntity> findByIdAndDeletedAtIsNull(Long id);
 
-    // 조건 기반 카테고리 검색 (이름과 정렬 조건)
-    Page<CategoryEntity> findAllByConditions(String name, String sort, Pageable pageable);
+    // DeletedAt이 NULL인 모든 카테고리 조회
+    List<CategoryEntity> findAllByDeletedAtIsNull();
 
     // 특정 ID를 가진 카테고리 존재 여부 확인
     boolean existsByIdAndDeletedAtIsNull(Long id);

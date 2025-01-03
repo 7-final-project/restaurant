@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +33,9 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public Page<CategoryEntity> searchCategories(String name, String sort, Pageable pageable) {
-        return categoryRepository.findAllByConditions(name, sort, pageable);
+    // 모든 카테고리 가져오기
+    public List<CategoryEntity> findAllCategoriesByDeletedAtIsNull() {
+        return categoryRepository.findAllByDeletedAtIsNull();
     }
 
     public CategoryEntity getCategoryById(Long id) {

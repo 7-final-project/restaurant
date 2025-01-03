@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -15,11 +15,11 @@ import java.util.List;
 @AllArgsConstructor
 public class CategorySearchResDTOV1 {
 
-    private CategoryPage categoryPage;
+    private List<Category> categories;
 
-    public static CategorySearchResDTOV1 of(Page<CategoryEntity> categoryEntityPage) {
+    public static CategorySearchResDTOV1 of(List<CategoryEntity> categoryEntityList) {
         return CategorySearchResDTOV1.builder()
-                .categoryPage(CategoryPage.from(categoryEntityPage))
+                .categories(Category.from(categoryEntityList))
                 .build();
     }
 
@@ -27,60 +27,22 @@ public class CategorySearchResDTOV1 {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class CategoryPage {
+    public static class Category {
 
-        private List<Category> content;
-        private PageDetails page;
+        private Long id;
+        private String name;
 
-        public static CategoryPage from(Page<CategoryEntity> categoryEntityPage) {
-            return CategoryPage.builder()
-                    .content(Category.from(categoryEntityPage.getContent()))
-                    .page(PageDetails.from(categoryEntityPage))
+        public static List<Category> from(List<CategoryEntity> categoryEntityList) {
+            return categoryEntityList.stream()
+                    .map(Category::from)
+                    .collect(Collectors.toList());
+        }
+
+        public static Category from(CategoryEntity categoryEntity) {
+            return Category.builder()
+                    .id(categoryEntity.getId())
+                    .name(categoryEntity.getName())
                     .build();
-        }
-
-        @Getter
-        @Builder
-        @NoArgsConstructor
-        @AllArgsConstructor
-        public static class Category {
-
-            private Long id;
-            private String name;
-
-            public static List<Category> from(List<CategoryEntity> categoryEntityList) {
-                return categoryEntityList.stream()
-                        .map(Category::from)
-                        .toList();
-            }
-
-            public static Category from(CategoryEntity categoryEntity) {
-                return Category.builder()
-                        .id(categoryEntity.getId())
-                        .name(categoryEntity.getName())
-                        .build();
-            }
-        }
-
-        @Getter
-        @Builder
-        @NoArgsConstructor
-        @AllArgsConstructor
-        public static class PageDetails {
-
-            private int size;
-            private int number;
-            private long totalElements;
-            private int totalPages;
-
-            public static PageDetails from(Page<CategoryEntity> categoryEntityPage) {
-                return PageDetails.builder()
-                        .size(categoryEntityPage.getSize())
-                        .number(categoryEntityPage.getNumber())
-                        .totalElements(categoryEntityPage.getTotalElements())
-                        .totalPages(categoryEntityPage.getTotalPages())
-                        .build();
-            }
         }
     }
 }

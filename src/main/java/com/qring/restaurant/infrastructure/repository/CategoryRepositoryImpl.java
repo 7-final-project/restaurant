@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -38,22 +39,14 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
-    public Page<CategoryEntity> findAllByConditions(String name, String sort, Pageable pageable) {
-        // QueryDSL을 사용하여 동적 쿼리 생성 및 실행
-        QueryResults<CategoryEntity> results = queryFactory
+    public List<CategoryEntity> findAllByDeletedAtIsNull() {
+        // QueryDSL을 사용하여 DeletedAt이 NULL인 모든 카테고리 조회
+        return queryFactory
                 .selectFrom(categoryEntity)
-                .where(
-                        nameContains(name), // 이름 조건
-                        categoryEntity.deletedAt.isNull() // 삭제되지 않은 상태
-                )
-                .orderBy(getOrderSpecifier(sort)) // 정렬 조건
-                .offset(pageable.getOffset()) // 페이지 시작
-                .limit(pageable.getPageSize()) // 페이지 크기
-                .fetchResults(); // 결과 조회
-
-        // 결과를 Page 객체로 변환
-        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+                .where(categoryEntity.deletedAt.isNull()) // 삭제되지 않은 데이터 조건
+                .fetch(); // 결과 조회
     }
+
 
     @Override
     public boolean existsByIdAndDeletedAtIsNull(Long id) {
@@ -90,17 +83,5 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         });
     }
 
-    // 이름 검색 조건 생성
-    private BooleanExpression nameContains(String name) {
-        return name == null ? null : categoryEntity.name.containsIgnoreCase(name);
-    }
 
-    // 정렬 조건 생성
-    private OrderSpecifier<?> getOrderSpecifier(String sort) {
-        if ("oldest".equalsIgnoreCase(sort)) {
-            return categoryEntity.createdAt.asc(); // 오래된 순
-        } else {
-            return categoryEntity.createdAt.desc(); // 최신순 (기본값)
-        }
-    }
 }
