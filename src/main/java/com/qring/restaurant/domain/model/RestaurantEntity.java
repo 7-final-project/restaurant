@@ -46,13 +46,14 @@ public class RestaurantEntity {
     private Double ratingAverage = 0.0;
 
     @Column(name = "operation_status")
+    @Enumerated(EnumType.STRING)
     private OperationStatus operationStatus;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
 
-    @OneToMany(mappedBy = "restaurantEntity", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "restaurantEntity", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<OperatingHourEntity> operatingHourEntityList = new ArrayList<>();
 
     @CreationTimestamp
@@ -140,6 +141,18 @@ public class RestaurantEntity {
         restaurantEntityForSave.addOperatingHour(operatingHourEntityList);
 
         return restaurantEntityForSave;
+    }
+
+    // == 식당 정보 업데이트 메서드 == //
+    public void updateRestaurantEntity(String name, int capacity, String tel, String address,
+                                       String addressDetails, OperationStatus operationStatus, CategoryEntity category) {
+        this.name = name;
+        this.capacity = capacity;
+        this.tel = tel;
+        this.address = address;
+        this.addressDetails = addressDetails;
+        this.operationStatus = operationStatus;
+        this.category = category;
     }
 
 }

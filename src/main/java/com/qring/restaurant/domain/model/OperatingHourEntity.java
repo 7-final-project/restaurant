@@ -62,6 +62,13 @@ public class OperatingHourEntity {
         this.restaurantEntity = restaurantEntity;
     }
 
+    // == 운영 시간 업데이트 메서드 == //
+    public void updateOperatingHourEntity(String dayOfWeek, LocalTime openAt, LocalTime closedAt) {
+        this.dayOfWeek = dayOfWeek;
+        this.openAt = openAt;
+        this.closedAt = closedAt;
+    }
+
     @Builder
     public OperatingHourEntity(String dayOfWeek, LocalTime openAt, LocalTime closedAt, String username) {
         this.dayOfWeek = dayOfWeek;
