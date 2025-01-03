@@ -56,7 +56,6 @@ public class CategoryControllerV1 implements CategoryControllerSwagger{
     }
 
 
-
     @GetMapping("/{id}")
     public ResponseEntity<ResDTO<CategoryGetByIdResDTOV1>> getBy(@PathVariable Long id) {
         CategoryEntity category = categoryService.getCategoryById(id);
