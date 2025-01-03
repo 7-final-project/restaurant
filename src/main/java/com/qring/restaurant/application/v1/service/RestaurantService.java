@@ -59,7 +59,6 @@ public class RestaurantService {
                 operatingHours,
                 String.valueOf(userId)
         );
-
         restaurant = restaurantRepository.save(restaurant);
         return RestaurantPostResDTOV1.of(restaurant); // DTO로 변환
     }
@@ -122,13 +121,31 @@ public class RestaurantService {
     // 운영 상태 결정
     private OperationStatus determineOperationStatus(List<OperatingHourEntity> operatingHours) {
         LocalDateTime now = LocalDateTime.now();
-        String currentDay = now.getDayOfWeek().toString();
+        java.time.DayOfWeek currentDay = now.getDayOfWeek(); // Java 표준 DayOfWeek
         LocalTime currentTime = now.toLocalTime();
 
-        return operatingHours.stream()
-                .filter(hour -> hour.getDayOfWeek().equalsIgnoreCase(currentDay))
-                .anyMatch(hour -> currentTime.isAfter(hour.getOpenAt()) && currentTime.isBefore(hour.getClosedAt()))
-                ? OperationStatus.OPEN
-                : OperationStatus.CLOSED;
+        System.out.println("Current Day: " + currentDay);
+        System.out.println("Current Time: " + currentTime);
+
+        // 오늘 요일을 우리의 커스텀 DayOfWeek로 변환
+        com.qring.restaurant.domain.model.constraint.DayOfWeek currentDayInCustomEnum =
+                com.qring.restaurant.domain.model.constraint.DayOfWeek.valueOf(currentDay.name()); // 커스텀 DayOfWeek로 매핑
+
+        // 오늘 요일의 운영 시간을 순회하며 현재 시간이 범위 내에 있는지 확인
+        for (OperatingHourEntity hour : operatingHours) {
+            System.out.println("Checking day: " + hour.getDayOfWeek() + ", Open: " + hour.getOpenAt() + ", Closed: " + hour.getClosedAt());
+
+            // 현재 요일과 운영 시간 비교
+            if (hour.getDayOfWeek().equals(currentDayInCustomEnum.getDescription())) { // description과 비교
+                if (!currentTime.isBefore(hour.getOpenAt()) && !currentTime.isAfter(hour.getClosedAt())) {
+                    System.out.println("OperationStatus: OPEN");
+                    return OperationStatus.OPEN; // 현재 시간이 운영 시간 범위 내에 있으면 OPEN 반환
+                }
+            }
+        }
+
+        System.out.println("OperationStatus: CLOSED");
+        return OperationStatus.CLOSED; // 운영 시간이 없거나 현재 시간이 범위 밖이면 CLOSED 반환
     }
+
 }

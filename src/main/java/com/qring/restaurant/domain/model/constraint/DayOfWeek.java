@@ -16,6 +16,10 @@ public enum DayOfWeek {
 
     private final String description;
 
+    public String getDescription() {
+        return description;
+    }
+
     public static DayOfWeek fromString(String description) {
         return switch (description) {
             case "월요일" -> DayOfWeek.MONDAY;
