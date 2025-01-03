@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,15 +29,13 @@ public interface CategoryControllerSwagger {
     @PostMapping
     ResponseEntity<ResDTO<CategoryPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId, @Valid @RequestBody PostCategoryReqDTOV1 dto);
 
-    @Operation(summary = "카테고리 검색", description = "카테고리를 검색하는 API입니다.")
+    @Operation(summary = "카테고리 검색", description = "모든 카테고리를 검색하는 API입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "카테고리 검색 성공", content = @Content(schema = @Schema(implementation = ResDTO.class))),
             @ApiResponse(responseCode = "400", description = "카테고리 검색 실패", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
     @GetMapping
-    ResponseEntity<ResDTO<CategorySearchResDTOV1>> searchBy(Pageable pageable,
-                                                            @RequestParam(name = "name", required = false) String name,
-                                                            @RequestParam(name = "sort", required = false) String sort);
+    ResponseEntity<ResDTO<CategorySearchResDTOV1>> search();
 
 
     @Operation(summary = "카테고리 상세 조회", description = "카테고리 ID로 상세 조회를 수행하는 API입니다.")

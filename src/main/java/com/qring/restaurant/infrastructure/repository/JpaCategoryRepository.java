@@ -7,12 +7,12 @@ import java.util.Optional;
 
 public interface JpaCategoryRepository extends JpaRepository<CategoryEntity, Long> {
 
-    // 특정 ID를 가진 카테고리 조회 (삭제되지 않은 상태)
-    Optional<CategoryEntity> findByIdAndDeletedAtIsNull(Long id);
-
-    // 이름 검색 및 삭제되지 않은 상태 조건
+    // 특정 이름으로 삭제되지 않은 카테고리 존재 여부 확인
     boolean existsByNameAndDeletedAtIsNull(String name);
 
-    // 특정 ID를 가진 카테고리 존재 여부 확인
+    // 특정 ID로 삭제되지 않은 카테고리 존재 여부 확인
     boolean existsByIdAndDeletedAtIsNull(Long id);
+
+    // 특정 ID로 삭제되지 않은 카테고리 조회
+    Optional<CategoryEntity> findByIdAndDeletedAtIsNull(Long id);
 }

@@ -11,11 +11,6 @@ import com.qring.restaurant.presentation.v1.req.PostCategoryReqDTOV1;
 import com.qring.restaurant.presentation.v1.req.PutCategoryDTOV1;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/restaurants/category")
 @RequiredArgsConstructor
-public class CategoryControllerV1 {
+public class CategoryControllerV1 implements CategoryControllerSwagger{
 
     private final CategoryService categoryService;
 
