@@ -1,11 +1,9 @@
 package com.qring.restaurant.domain.model;
 
+import com.qring.restaurant.domain.model.constraint.OperationStatus;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,6 +15,7 @@ import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "p_restaurant")
 public class RestaurantEntity {
@@ -43,11 +42,18 @@ public class RestaurantEntity {
     @Column(name = "address_details")
     private String addressDetails;
 
+    @Column(name = "rating_average")
+    private Double ratingAverage = 0.0;
+
+    @Column(name = "operation_status")
+    @Enumerated(EnumType.STRING)
+    private OperationStatus operationStatus;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
 
-    @OneToMany(mappedBy = "restaurantEntity", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "restaurantEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<OperatingHourEntity> operatingHourEntityList = new ArrayList<>();
 
     @CreationTimestamp
@@ -71,13 +77,16 @@ public class RestaurantEntity {
     private String deletedBy;
 
     @Builder
-    public RestaurantEntity(Long userId, String name, int capacity, String tel, String address, String addressDetails, CategoryEntity categoryEntity, String username) {
+    public RestaurantEntity(Long userId, String name, int capacity, String tel, String address, String addressDetails,
+                            Double ratingAverage, OperationStatus operationStatus, CategoryEntity categoryEntity, String username) {
         this.userId = userId;
         this.name = name;
         this.capacity = capacity;
         this.tel = tel;
         this.address = address;
         this.addressDetails = addressDetails;
+        this.ratingAverage = ratingAverage;
+        this.operationStatus = operationStatus;
         this.category = categoryEntity;
         this.createdBy = username;
         this.modifiedBy = username;
@@ -90,7 +99,8 @@ public class RestaurantEntity {
     }
 
     // == 생성 메서드 == //
-    public static RestaurantEntity createRestaurantEntity(Long userId, String name, int capacity, String tel, String address, String addressDetails,
+    public static RestaurantEntity createRestaurantEntity(Long userId, String name, int capacity, String tel,
+                                                          String address, String addressDetails, OperationStatus operationStatus,
                                                           CategoryEntity categoryEntity, List<OperatingHourEntity> operatingHourEntityList, String username) {
 
         RestaurantEntity restaurantEntityForSave = RestaurantEntity.builder()
@@ -100,6 +110,7 @@ public class RestaurantEntity {
                 .tel(tel)
                 .address(address)
                 .addressDetails(addressDetails)
+                .operationStatus(operationStatus)
                 .categoryEntity(categoryEntity)
                 .username(username)
                 .build();
@@ -107,6 +118,41 @@ public class RestaurantEntity {
         restaurantEntityForSave.addOperatingHour(operatingHourEntityList);
 
         return restaurantEntityForSave;
+    }
+
+    // == 반환 메서드 == //
+    public static RestaurantEntity responseRestaurantEntity(Long userId, String name, int capacity, String tel,
+                                                          String address, String addressDetails, Double ratingAverage, OperationStatus operationStatus,
+                                                          CategoryEntity categoryEntity, List<OperatingHourEntity> operatingHourEntityList, String username) {
+
+        RestaurantEntity restaurantEntityForSave = RestaurantEntity.builder()
+                .userId(userId)
+                .name(name)
+                .capacity(capacity)
+                .tel(tel)
+                .address(address)
+                .addressDetails(addressDetails)
+                .ratingAverage(ratingAverage)
+                .operationStatus(operationStatus)
+                .categoryEntity(categoryEntity)
+                .username(username)
+                .build();
+
+        restaurantEntityForSave.addOperatingHour(operatingHourEntityList);
+
+        return restaurantEntityForSave;
+    }
+
+    // == 식당 정보 업데이트 메서드 == //
+    public void updateRestaurantEntity(String name, int capacity, String tel, String address,
+                                       String addressDetails, OperationStatus operationStatus, CategoryEntity category) {
+        this.name = name;
+        this.capacity = capacity;
+        this.tel = tel;
+        this.address = address;
+        this.addressDetails = addressDetails;
+        this.operationStatus = operationStatus;
+        this.category = category;
     }
 
 }

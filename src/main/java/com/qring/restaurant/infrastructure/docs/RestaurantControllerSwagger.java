@@ -21,7 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-@Tag(name = "Review", description = "생성, 조회, 검색, 수정, 삭제 관련 리뷰 API")
+@Tag(name = "Restaurant", description = "생성, 조회, 검색, 수정, 삭제 관련 식당 API")
 @RequestMapping("/v1/restaurants")
 public interface RestaurantControllerSwagger {
 
@@ -43,7 +43,9 @@ public interface RestaurantControllerSwagger {
     ResponseEntity<ResDTO<RestaurantSearchResDTOV1>> searchBy(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                                               @RequestParam(name = "userId", required = false) Long userId,
                                                               @RequestParam(name = "name", required = false) String name,
-                                                              @RequestParam(name = "sort", required = false) String sort);
+                                                              @RequestParam(name = "sort", required = false) String sort,
+                                                              @RequestParam(name = "address", required = false) String address,
+                                                              @RequestParam(name = "category", required = false) String category);
 
 
     @Operation(summary = "식당 상세 조회", description = "식당을 상세 조회하는 API 입니다.")

@@ -1,6 +1,7 @@
 package com.qring.restaurant.application.v1.res;
 
 import com.qring.restaurant.domain.model.RestaurantEntity;
+import com.qring.restaurant.domain.model.constraint.OperationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,6 +52,8 @@ public class RestaurantSearchResDTOV1 {
             private String tel;
             private String address;
             private String addressDetails;
+            private Double ratingAverage;
+            private OperationStatus operationStatus;
 
             public static List<Restaurant> from(List<RestaurantEntity> restaurantEntityList) {
                 return restaurantEntityList.stream()
@@ -66,6 +69,8 @@ public class RestaurantSearchResDTOV1 {
                         .tel(restaurantEntity.getTel())
                         .address(restaurantEntity.getAddress())
                         .addressDetails(restaurantEntity.getAddressDetails())
+                        .ratingAverage(restaurantEntity.getRatingAverage())
+                        .operationStatus(restaurantEntity.getOperationStatus())
                         .build();
             }
         }
