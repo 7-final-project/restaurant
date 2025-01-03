@@ -113,6 +113,10 @@ public class RestaurantService {
     public void deleteRestaurant(Long userId, Long id) {
         RestaurantEntity restaurant = restaurantRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
+        // 연관된 운영시간 논리 삭제
+        restaurant.getOperatingHourEntityList().forEach(hour -> hour.deleteOperatingHourEntity(String.valueOf(userId)));
+
+        // 식당 논리 삭제
         restaurant.setDeletedAt(LocalDateTime.now());
         restaurant.setDeletedBy(String.valueOf(userId));
         restaurantRepository.updateRestaurant(restaurant);
