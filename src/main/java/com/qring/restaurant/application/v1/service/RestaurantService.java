@@ -49,7 +49,7 @@ public class RestaurantService {
 
         OperationStatus operationStatus = determineOperationStatus(operatingHours);
 
-        RestaurantEntity restaurant = RestaurantEntity.createRestaurantEntity(
+        RestaurantEntity restaurantForSave = RestaurantEntity.createRestaurantEntity(
                 userId,
                 dto.getRestaurant().getName(),
                 dto.getRestaurant().getCapacity(),
@@ -61,15 +61,15 @@ public class RestaurantService {
                 operatingHours,
                 String.valueOf(userId)
         );
-        restaurant = restaurantRepository.save(restaurant);
-        return RestaurantPostResDTOV1.of(restaurant); // DTO로 변환
+        restaurantForSave = restaurantRepository.save(restaurantForSave);
+        return RestaurantPostResDTOV1.of(restaurantForSave);
     }
 
     // 조건에 따른 식당 검색
     @Transactional(readOnly = true)
     public RestaurantSearchResDTOV1 searchRestaurants(Long userId, String name, String sort, String address, String category, Pageable pageable) {
         Page<RestaurantEntity> restaurantEntities = restaurantRepository.findAllByConditions(userId, name, sort, address, category, pageable);
-        return RestaurantSearchResDTOV1.of(restaurantEntities); // DTO로 변환
+        return RestaurantSearchResDTOV1.of(restaurantEntities);
     }
 
     // 식당 상세 조회
@@ -77,7 +77,7 @@ public class RestaurantService {
     public RestaurantGetByIdResDTOV1 getRestaurantById(Long id) {
         RestaurantEntity restaurant = restaurantRepository.findByIdWithOperatingHours(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
-        return RestaurantGetByIdResDTOV1.of(restaurant); // DTO로 변환
+        return RestaurantGetByIdResDTOV1.of(restaurant);
     }
 
     // 식당 수정
