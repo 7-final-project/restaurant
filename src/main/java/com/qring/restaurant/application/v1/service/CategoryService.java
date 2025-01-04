@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,6 +21,7 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    @Transactional
     public CategoryEntity createCategory(Long userId, PostCategoryReqDTOV1 dto) {
         // 카테고리 이름 중복 검증
         if (categoryRepository.existsByNameAndDeletedAtIsNull(dto.getCategory().getName())) {
@@ -34,15 +36,18 @@ public class CategoryService {
     }
 
     // 모든 카테고리 가져오기
+    @Transactional(readOnly = true)
     public List<CategoryEntity> findAllCategoryListByDeletedAtIsNull() {
         return categoryRepository.findAllByDeletedAtIsNull();
     }
 
+    @Transactional(readOnly = true)
     public CategoryEntity getCategoryById(Long id) {
         return categoryRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RestaurantException(ErrorCode.NOT_FOUND_ERROR, "카테고리를 찾을 수 없습니다."));
     }
 
+    @Transactional
     public void updateCategory(Long userId, Long id, PutCategoryDTOV1 dto) {
         CategoryEntity existingCategory = categoryRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RestaurantException(ErrorCode.NOT_FOUND_ERROR, "카테고리를 찾을 수 없습니다."));
@@ -58,6 +63,7 @@ public class CategoryService {
         categoryRepository.save(existingCategory);
     }
 
+    @Transactional
     public void deleteCategory(Long userId, Long id) {
         CategoryEntity category = categoryRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RestaurantException(ErrorCode.NOT_FOUND_ERROR, "카테고리를 찾을 수 없습니다."));

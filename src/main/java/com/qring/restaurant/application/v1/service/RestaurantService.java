@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -33,6 +34,7 @@ public class RestaurantService {
     private final CategoryRepository categoryRepository;
 
     // 새로운 식당 생성
+    @Transactional
     public RestaurantPostResDTOV1 createRestaurant(Long userId, PostRestaurantReqDTOV1 dto) {
         CategoryEntity category = categoryRepository.findByIdAndDeletedAtIsNull(dto.getRestaurant().getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
@@ -64,12 +66,14 @@ public class RestaurantService {
     }
 
     // 조건에 따른 식당 검색
+    @Transactional(readOnly = true)
     public RestaurantSearchResDTOV1 searchRestaurants(Long userId, String name, String sort, String address, String category, Pageable pageable) {
         Page<RestaurantEntity> restaurantEntities = restaurantRepository.findAllByConditions(userId, name, sort, address, category, pageable);
         return RestaurantSearchResDTOV1.of(restaurantEntities); // DTO로 변환
     }
 
     // 식당 상세 조회
+    @Transactional(readOnly = true)
     public RestaurantGetByIdResDTOV1 getRestaurantById(Long id) {
         RestaurantEntity restaurant = restaurantRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
@@ -77,6 +81,7 @@ public class RestaurantService {
     }
 
     // 식당 수정
+    @Transactional
     public void updateRestaurant(Long userId, Long id, PutRestaurantReqDTOV1 dto) {
         RestaurantEntity existingRestaurant = restaurantRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
@@ -110,6 +115,7 @@ public class RestaurantService {
     }
 
     // 식당 삭제
+    @Transactional
     public void deleteRestaurant(Long userId, Long id) {
         RestaurantEntity restaurant = restaurantRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
