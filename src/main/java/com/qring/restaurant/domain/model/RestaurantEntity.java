@@ -15,7 +15,6 @@ import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "p_restaurant")
 public class RestaurantEntity {
@@ -53,7 +52,7 @@ public class RestaurantEntity {
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
 
-    @OneToMany(mappedBy = "restaurantEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "restaurantEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OperatingHourEntity> operatingHourEntityList = new ArrayList<>();
 
     @CreationTimestamp
@@ -155,4 +154,9 @@ public class RestaurantEntity {
         this.category = category;
     }
 
+    // 논리 삭제 메서드
+    public void deleteRestaurantEntity(String username) {
+        this.deletedAt = LocalDateTime.now();
+        this.deletedBy = username;
+    }
 }

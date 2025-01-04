@@ -29,6 +29,11 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     }
 
     @Override
+    public Optional<RestaurantEntity> findByIdWithOperatingHours(Long id) {
+        return jpaRestaurantRepository.findByIdWithOperatingHours(id);
+    }
+
+    @Override
     public Page<RestaurantEntity> findAllByConditions(Long userId, String name, String sort, String address, String category, Pageable pageable) {
         return restaurantQueryRepository.findAllByConditions(userId, name, sort, address, category, pageable);
     }
@@ -46,7 +51,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     @Override
     public void deleteById(Long id) {
         jpaRestaurantRepository.findByIdAndDeletedAtIsNull(id).ifPresent(restaurant -> {
-            restaurant.setDeletedAt(LocalDateTime.now());
+            restaurant.deleteRestaurantEntity(id.toString());
             jpaRestaurantRepository.save(restaurant);
         });
     }

@@ -75,7 +75,7 @@ public class RestaurantService {
     // 식당 상세 조회
     @Transactional(readOnly = true)
     public RestaurantGetByIdResDTOV1 getRestaurantById(Long id) {
-        RestaurantEntity restaurant = restaurantRepository.findByIdAndDeletedAtIsNull(id)
+        RestaurantEntity restaurant = restaurantRepository.findByIdWithOperatingHours(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
         return RestaurantGetByIdResDTOV1.of(restaurant); // DTO로 변환
     }
@@ -123,8 +123,7 @@ public class RestaurantService {
         restaurant.getOperatingHourEntityList().forEach(hour -> hour.deleteOperatingHourEntity(String.valueOf(userId)));
 
         // 식당 논리 삭제
-        restaurant.setDeletedAt(LocalDateTime.now());
-        restaurant.setDeletedBy(String.valueOf(userId));
+        restaurant.deleteRestaurantEntity(userId.toString());
         restaurantRepository.updateRestaurant(restaurant);
     }
 
