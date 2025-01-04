@@ -42,8 +42,8 @@ public class RestaurantEntity {
     @Column(name = "address_details")
     private String addressDetails;
 
-    @Column(name = "rating_average")
-    private Double ratingAverage = 0.0;
+    @Column(name = "rating_average", nullable = false)
+    private double ratingAverage = 0.0;
 
     @Column(name = "operation_status")
     @Enumerated(EnumType.STRING)
