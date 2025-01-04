@@ -111,7 +111,6 @@ public class RestaurantService {
                 category
         );
 
-        restaurantRepository.updateRestaurant(existingRestaurant);
     }
 
     // 식당 삭제
@@ -124,7 +123,6 @@ public class RestaurantService {
 
         // 식당 논리 삭제
         restaurant.deleteRestaurantEntity(userId.toString());
-        restaurantRepository.updateRestaurant(restaurant);
     }
 
     // 운영 상태 결정

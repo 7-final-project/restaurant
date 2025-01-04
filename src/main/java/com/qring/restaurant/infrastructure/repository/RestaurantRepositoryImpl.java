@@ -47,17 +47,4 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     public RestaurantEntity save(RestaurantEntity restaurantEntity) {
         return jpaRestaurantRepository.save(restaurantEntity);
     }
-
-    @Override
-    public void deleteById(Long id) {
-        jpaRestaurantRepository.findByIdAndDeletedAtIsNull(id).ifPresent(restaurant -> {
-            restaurant.deleteRestaurantEntity(id.toString());
-            jpaRestaurantRepository.save(restaurant);
-        });
-    }
-
-    @Override
-    public void updateRestaurant(RestaurantEntity restaurantEntity) {
-        jpaRestaurantRepository.save(restaurantEntity);
-    }
 }

@@ -27,9 +27,4 @@ public interface RestaurantRepository {
     // 식당 저장
     RestaurantEntity save(RestaurantEntity restaurantEntity);
 
-    // 식당 삭제
-    void deleteById(Long id);
-
-    // 식당 정보 업데이트
-    void updateRestaurant(RestaurantEntity restaurantEntity);
 }
