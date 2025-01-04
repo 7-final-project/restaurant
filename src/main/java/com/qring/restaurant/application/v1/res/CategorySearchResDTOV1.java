@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CategorySearchResDTOV1 {
 
-    private List<Category> categories;
+    private List<Category> categoryList;
 
     public static CategorySearchResDTOV1 of(List<CategoryEntity> categoryEntityList) {
         return CategorySearchResDTOV1.builder()
-                .categories(Category.from(categoryEntityList))
+                .categoryList(Category.from(categoryEntityList))
                 .build();
     }
 

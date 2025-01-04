@@ -34,7 +34,7 @@ public class CategoryService {
     }
 
     // 모든 카테고리 가져오기
-    public List<CategoryEntity> findAllCategoriesByDeletedAtIsNull() {
+    public List<CategoryEntity> findAllCategoryListByDeletedAtIsNull() {
         return categoryRepository.findAllByDeletedAtIsNull();
     }
 

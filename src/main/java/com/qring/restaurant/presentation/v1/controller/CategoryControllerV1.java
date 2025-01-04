@@ -42,14 +42,14 @@ public class CategoryControllerV1 implements CategoryControllerSwagger{
     @GetMapping
     public ResponseEntity<ResDTO<CategorySearchResDTOV1>> search() {
         // 모든 카테고리 조회
-        List<CategoryEntity> categories = categoryService.findAllCategoriesByDeletedAtIsNull();
+        List<CategoryEntity> categoryList = categoryService.findAllCategoryListByDeletedAtIsNull();
 
         // 결과를 DTO로 변환하여 응답 반환
         return new ResponseEntity<>(
                 ResDTO.<CategorySearchResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("카테고리 검색에 성공했습니다.")
-                        .data(CategorySearchResDTOV1.of(categories))
+                        .data(CategorySearchResDTOV1.of(categoryList))
                         .build(),
                 HttpStatus.OK
         );
