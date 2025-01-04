@@ -35,7 +35,7 @@ public class CategorySearchResDTOV1 {
         public static List<Category> from(List<CategoryEntity> categoryEntityList) {
             return categoryEntityList.stream()
                     .map(Category::from)
-                    .collect(Collectors.toList());
+                    .toList();
         }
 
         public static Category from(CategoryEntity categoryEntity) {
