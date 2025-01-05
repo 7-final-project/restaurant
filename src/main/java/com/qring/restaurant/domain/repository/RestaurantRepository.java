@@ -19,7 +19,7 @@ public interface RestaurantRepository {
     Optional<RestaurantEntity> findByIdAndDeletedAtIsNull(Long id);
 
     // 조건에 따른 식당 검색
-    Page<RestaurantEntity> findAllByConditions(Long userId, String name, String sort, String address, String category, Pageable pageable);
+    Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(Long userId, String name, String sort, String address, String category, Pageable pageable);
 
     // 삭제되지 않은 모든 식당 조회
     List<RestaurantEntity> findAllByDeletedAtIsNull();

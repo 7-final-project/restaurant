@@ -34,8 +34,8 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     }
 
     @Override
-    public Page<RestaurantEntity> findAllByConditions(Long userId, String name, String sort, String address, String category, Pageable pageable) {
-        return restaurantQueryRepository.findAllByConditions(userId, name, sort, address, category, pageable);
+    public Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(Long userId, String name, String sort, String address, String category, Pageable pageable) {
+        return restaurantQueryRepository.findRestaurantPageByDeletedAtIsNullWithConditions(userId, name, sort, address, category, pageable);
     }
 
     @Override

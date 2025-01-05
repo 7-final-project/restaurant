@@ -68,7 +68,7 @@ public class RestaurantService {
     // 조건에 따른 식당 검색
     @Transactional(readOnly = true)
     public RestaurantSearchResDTOV1 searchRestaurants(Long userId, String name, String sort, String address, String category, Pageable pageable) {
-        Page<RestaurantEntity> restaurantEntities = restaurantRepository.findAllByConditions(userId, name, sort, address, category, pageable);
+        Page<RestaurantEntity> restaurantEntities = restaurantRepository.findRestaurantPageByDeletedAtIsNullWithConditions(userId, name, sort, address, category, pageable);
         return RestaurantSearchResDTOV1.of(restaurantEntities);
     }
 

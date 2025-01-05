@@ -21,7 +21,7 @@ public class RestaurantQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     // 조건에 따른 식당 검색
-    public Page<RestaurantEntity> findAllByConditions(Long userId, String name, String sort, String address, String category, Pageable pageable) {
+    public Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(Long userId, String name, String sort, String address, String category, Pageable pageable) {
         var results = queryFactory
                 .selectFrom(restaurantEntity)
                 .where(
