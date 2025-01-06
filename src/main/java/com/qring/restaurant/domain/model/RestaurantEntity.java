@@ -3,7 +3,10 @@ package com.qring.restaurant.domain.model;
 import com.qring.restaurant.domain.model.constraint.OperationStatus;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -19,7 +22,8 @@ import static jakarta.persistence.FetchType.LAZY;
 @Table(name = "p_restaurant")
 public class RestaurantEntity {
 
-    @Id @Tsid
+    @Id
+    @Tsid
     @Column(name = "restaurant_id")
     private Long id;
 
@@ -121,8 +125,8 @@ public class RestaurantEntity {
 
     // == 반환 메서드 == //
     public static RestaurantEntity responseRestaurantEntity(Long userId, String name, int capacity, String tel,
-                                                          String address, String addressDetails, double ratingAverage, OperationStatus operationStatus,
-                                                          CategoryEntity categoryEntity, List<OperatingHourEntity> operatingHourEntityList, String username) {
+                                                            String address, String addressDetails, double ratingAverage, OperationStatus operationStatus,
+                                                            CategoryEntity categoryEntity, List<OperatingHourEntity> operatingHourEntityList, String username) {
 
         RestaurantEntity restaurantEntityForSave = RestaurantEntity.builder()
                 .userId(userId)

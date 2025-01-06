@@ -7,7 +7,6 @@ import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
@@ -74,7 +73,6 @@ public class RestaurantQueryRepository {
     private BooleanExpression addressLike(String address) {
         return address != null ? restaurantEntity.address.containsIgnoreCase(address) : null;
     }
-
 
 
     private OrderSpecifier<?> getOrderSpecifier(String sort) {

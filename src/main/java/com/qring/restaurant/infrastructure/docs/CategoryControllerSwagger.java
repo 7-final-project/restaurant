@@ -12,10 +12,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
 
 @Tag(name = "Category", description = "생성, 조회, 검색, 수정, 삭제 관련 카테고리 API")
 @RequestMapping("/v1/restaurants/category")
@@ -66,7 +65,6 @@ public interface CategoryControllerSwagger {
     })
     @DeleteMapping("/{id}")
     ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId, @PathVariable Long id);
-
 
 
 }

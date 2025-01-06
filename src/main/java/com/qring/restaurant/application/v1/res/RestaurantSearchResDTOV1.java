@@ -1,7 +1,6 @@
 package com.qring.restaurant.application.v1.res;
 
 import com.qring.restaurant.domain.model.RestaurantEntity;
-import com.qring.restaurant.domain.model.constraint.OperationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

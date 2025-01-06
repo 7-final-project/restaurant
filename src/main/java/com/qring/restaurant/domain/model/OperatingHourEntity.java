@@ -20,7 +20,8 @@ import static jakarta.persistence.FetchType.LAZY;
 @Table(name = "p_operating_hour")
 public class OperatingHourEntity {
 
-    @Id @Tsid
+    @Id
+    @Tsid
     @Column(name = "operating_hour_id")
     private Long id;
 
@@ -42,7 +43,7 @@ public class OperatingHourEntity {
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "modified_at" , nullable = false)
+    @Column(name = "modified_at", nullable = false)
     private LocalDateTime modifiedAt;
 
     @Column(name = "deleted_at")

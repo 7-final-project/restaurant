@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/restaurants/category")
 @RequiredArgsConstructor
-public class CategoryControllerV1 implements CategoryControllerSwagger{
+public class CategoryControllerV1 implements CategoryControllerSwagger {
 
     private final CategoryService categoryService;
 
