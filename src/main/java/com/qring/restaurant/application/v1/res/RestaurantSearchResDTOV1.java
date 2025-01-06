@@ -52,7 +52,7 @@ public class RestaurantSearchResDTOV1 {
             private String tel;
             private String address;
             private String addressDetails;
-            private Double ratingAverage;
+            private double ratingAverage;
             private OperationStatus operationStatus;
 
             public static List<Restaurant> from(List<RestaurantEntity> restaurantEntityList) {

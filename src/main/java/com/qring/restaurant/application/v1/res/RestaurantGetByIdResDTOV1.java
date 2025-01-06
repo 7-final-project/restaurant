@@ -37,7 +37,7 @@ public class RestaurantGetByIdResDTOV1 {
         private String tel;
         private String address;
         private String addressDetails;
-        private Double ratingAverage;
+        private double ratingAverage;
         private OperationStatus operationStatus;
         private List<OperatingHour> operatingHourList;
 

@@ -77,7 +77,7 @@ public class RestaurantEntity {
 
     @Builder
     public RestaurantEntity(Long userId, String name, int capacity, String tel, String address, String addressDetails,
-                            Double ratingAverage, OperationStatus operationStatus, CategoryEntity categoryEntity, String username) {
+                            double ratingAverage, OperationStatus operationStatus, CategoryEntity categoryEntity, String username) {
         this.userId = userId;
         this.name = name;
         this.capacity = capacity;
@@ -121,7 +121,7 @@ public class RestaurantEntity {
 
     // == 반환 메서드 == //
     public static RestaurantEntity responseRestaurantEntity(Long userId, String name, int capacity, String tel,
-                                                          String address, String addressDetails, Double ratingAverage, OperationStatus operationStatus,
+                                                          String address, String addressDetails, double ratingAverage, OperationStatus operationStatus,
                                                           CategoryEntity categoryEntity, List<OperatingHourEntity> operatingHourEntityList, String username) {
 
         RestaurantEntity restaurantEntityForSave = RestaurantEntity.builder()

@@ -39,7 +39,7 @@ public class RestaurantPostResDTOV1 {
         private int capacity;
         private String address;
         private String addressDetails;
-        private Double ratingAverage;
+        private double ratingAverage;
         private OperationStatus operationStatus;
         private List<OperatingHour> operatingHourList;
 
