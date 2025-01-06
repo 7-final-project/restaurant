@@ -10,8 +10,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 import static com.qring.restaurant.domain.model.QRestaurantEntity.restaurantEntity;
 
 @Repository
@@ -37,14 +35,6 @@ public class RestaurantQueryRepository {
                 .fetchResults();
 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
-    }
-
-    // 삭제되지 않은 모든 식당 조회
-    public List<RestaurantEntity> findAllByDeletedAtIsNull() {
-        return queryFactory
-                .selectFrom(restaurantEntity)
-                .where(restaurantEntity.deletedAt.isNull())
-                .fetch();
     }
 
     // 조건 메서드들

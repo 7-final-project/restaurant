@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -35,11 +34,6 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     @Override
     public Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(Long userId, String name, String sort, String address, String category, Pageable pageable) {
         return restaurantQueryRepository.findRestaurantPageByDeletedAtIsNullWithConditions(userId, name, sort, address, category, pageable);
-    }
-
-    @Override
-    public List<RestaurantEntity> findAllByDeletedAtIsNull() {
-        return restaurantQueryRepository.findAllByDeletedAtIsNull();
     }
 
     @Override
