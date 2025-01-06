@@ -38,7 +38,7 @@ public class RestaurantGetByIdResDTOV1 {
         private String address;
         private String addressDetails;
         private double ratingAverage;
-        private OperationStatus operationStatus;
+        private String operationStatus;
         private List<OperatingHour> operatingHourList;
 
         public static Restaurant from(RestaurantEntity restaurantEntity) {
@@ -50,7 +50,7 @@ public class RestaurantGetByIdResDTOV1 {
                     .address(restaurantEntity.getAddress())
                     .addressDetails(restaurantEntity.getAddressDetails())
                     .ratingAverage(restaurantEntity.getRatingAverage())
-                    .operationStatus(restaurantEntity.getOperationStatus())
+                    .operationStatus(restaurantEntity.getOperationStatus().getDescription())
                     .operatingHourList(OperatingHour.from(restaurantEntity.getOperatingHourEntityList()))
                     .build();
         }

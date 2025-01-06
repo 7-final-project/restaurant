@@ -53,7 +53,7 @@ public class RestaurantSearchResDTOV1 {
             private String address;
             private String addressDetails;
             private double ratingAverage;
-            private OperationStatus operationStatus;
+            private String operationStatus;
 
             public static List<Restaurant> from(List<RestaurantEntity> restaurantEntityList) {
                 return restaurantEntityList.stream()
@@ -70,7 +70,7 @@ public class RestaurantSearchResDTOV1 {
                         .address(restaurantEntity.getAddress())
                         .addressDetails(restaurantEntity.getAddressDetails())
                         .ratingAverage(restaurantEntity.getRatingAverage())
-                        .operationStatus(restaurantEntity.getOperationStatus())
+                        .operationStatus(restaurantEntity.getOperationStatus().getDescription())
                         .build();
             }
         }
