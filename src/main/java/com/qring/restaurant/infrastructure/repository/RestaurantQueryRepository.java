@@ -26,9 +26,9 @@ public class RestaurantQueryRepository {
                 .selectFrom(restaurantEntity)
                 .where(
                         userIdEq(userId),
-                        nameContains(name),
-                        addressContains(address),
-                        categoryContains(category),
+                        categoryIdEq(category),
+                        nameLike(name),
+                        addressLike(address),
                         restaurantEntity.deletedAt.isNull()
                 )
                 .orderBy(getOrderSpecifier(sort))
@@ -52,17 +52,19 @@ public class RestaurantQueryRepository {
         return userId != null ? restaurantEntity.userId.eq(userId) : null;
     }
 
-    private BooleanExpression nameContains(String name) {
+    private BooleanExpression categoryIdEq(String category) {
+        return category != null ? restaurantEntity.category.name.eq(category) : null;
+    }
+
+    private BooleanExpression nameLike(String name) {
         return name != null ? restaurantEntity.name.containsIgnoreCase(name) : null;
     }
 
-    private BooleanExpression addressContains(String address) {
+    private BooleanExpression addressLike(String address) {
         return address != null ? restaurantEntity.address.containsIgnoreCase(address) : null;
     }
 
-    private BooleanExpression categoryContains(String category) {
-        return category != null ? restaurantEntity.category.name.containsIgnoreCase(category) : null;
-    }
+
 
     private OrderSpecifier<?> getOrderSpecifier(String sort) {
         switch (sort.toLowerCase()) {
