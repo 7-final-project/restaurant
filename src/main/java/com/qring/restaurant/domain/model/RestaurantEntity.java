@@ -56,7 +56,7 @@ public class RestaurantEntity {
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
 
-    @OneToMany(mappedBy = "restaurantEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "restaurantEntity", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<OperatingHourEntity> operatingHourEntityList = new ArrayList<>();
 
     @CreationTimestamp
