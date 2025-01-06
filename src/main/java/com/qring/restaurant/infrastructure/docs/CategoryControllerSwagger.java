@@ -3,7 +3,7 @@ package com.qring.restaurant.infrastructure.docs;
 import com.qring.restaurant.application.global.dto.ResDTO;
 import com.qring.restaurant.application.v1.res.CategoryGetByIdResDTOV1;
 import com.qring.restaurant.application.v1.res.CategoryPostResDTOV1;
-import com.qring.restaurant.application.v1.res.CategorySearchResDTOV1;
+import com.qring.restaurant.application.v1.res.CategoryTableGetResDTOV1;
 import com.qring.restaurant.presentation.v1.req.PostCategoryReqDTOV1;
 import com.qring.restaurant.presentation.v1.req.PutCategoryDTOV1;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +36,7 @@ public interface CategoryControllerSwagger {
             @ApiResponse(responseCode = "400", description = "카테고리 검색 실패", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
     @GetMapping
-    ResponseEntity<ResDTO<CategorySearchResDTOV1>> search();
+    ResponseEntity<ResDTO<CategoryTableGetResDTOV1>> search();
 
 
     @Operation(summary = "카테고리 상세 조회", description = "카테고리 ID로 상세 조회를 수행하는 API입니다.")

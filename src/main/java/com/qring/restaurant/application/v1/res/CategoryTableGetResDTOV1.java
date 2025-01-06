@@ -7,18 +7,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategorySearchResDTOV1 {
+public class CategoryTableGetResDTOV1 {
 
     private List<Category> categoryList;
 
-    public static CategorySearchResDTOV1 of(List<CategoryEntity> categoryEntityList) {
-        return CategorySearchResDTOV1.builder()
+    public static CategoryTableGetResDTOV1 of(List<CategoryEntity> categoryEntityList) {
+        return CategoryTableGetResDTOV1.builder()
                 .categoryList(Category.from(categoryEntityList))
                 .build();
     }

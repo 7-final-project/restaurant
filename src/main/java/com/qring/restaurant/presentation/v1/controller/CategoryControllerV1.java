@@ -3,9 +3,8 @@ package com.qring.restaurant.presentation.v1.controller;
 import com.qring.restaurant.application.global.dto.ResDTO;
 import com.qring.restaurant.application.v1.res.CategoryGetByIdResDTOV1;
 import com.qring.restaurant.application.v1.res.CategoryPostResDTOV1;
-import com.qring.restaurant.application.v1.res.CategorySearchResDTOV1;
+import com.qring.restaurant.application.v1.res.CategoryTableGetResDTOV1;
 import com.qring.restaurant.application.v1.service.CategoryService;
-import com.qring.restaurant.domain.model.CategoryEntity;
 import com.qring.restaurant.infrastructure.docs.CategoryControllerSwagger;
 import com.qring.restaurant.presentation.v1.req.PostCategoryReqDTOV1;
 import com.qring.restaurant.presentation.v1.req.PutCategoryDTOV1;
@@ -14,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/restaurants/category")
@@ -38,12 +35,12 @@ public class CategoryControllerV1 implements CategoryControllerSwagger{
     }
 
     @GetMapping
-    public ResponseEntity<ResDTO<CategorySearchResDTOV1>> search() {
+    public ResponseEntity<ResDTO<CategoryTableGetResDTOV1>> search() {
         return new ResponseEntity<>(
-                ResDTO.<CategorySearchResDTOV1>builder()
+                ResDTO.<CategoryTableGetResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("카테고리 검색에 성공했습니다.")
-                        .data(CategorySearchResDTOV1.of(categoryService.search()))
+                        .data(CategoryTableGetResDTOV1.of(categoryService.search()))
                         .build(),
                 HttpStatus.OK
         );
