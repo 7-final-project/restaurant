@@ -3,12 +3,16 @@ package com.qring.restaurant.infrastructure.repository;
 import com.qring.restaurant.domain.model.RestaurantEntity;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 import static com.qring.restaurant.domain.model.QRestaurantEntity.restaurantEntity;
 
@@ -19,23 +23,40 @@ public class RestaurantQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     // 조건에 따른 식당 검색
-    public Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(Long userId, String name, String sort, String address, String category, Pageable pageable) {
-        var results = queryFactory
+    public Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(
+            Long userId, String name, String sort, String address, String category, Pageable pageable) {
+
+        // 조건에 맞는 결과 조회
+        List<RestaurantEntity> results = queryFactory
                 .selectFrom(restaurantEntity)
                 .where(
+                        restaurantEntity.deletedAt.isNull(),
                         userIdEq(userId),
                         categoryIdEq(category),
                         nameLike(name),
-                        addressLike(address),
-                        restaurantEntity.deletedAt.isNull()
+                        addressLike(address)
                 )
                 .orderBy(getOrderSpecifier(sort))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetchResults();
+                .fetch();
 
-        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+        // 총 개수 조회
+        JPQLQuery<Long> countQuery = queryFactory
+                .select(restaurantEntity.count())
+                .from(restaurantEntity)
+                .where(
+                        restaurantEntity.deletedAt.isNull(),
+                        userIdEq(userId),
+                        categoryIdEq(category),
+                        nameLike(name),
+                        addressLike(address)
+                );
+
+        // Page 반환
+        return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
     }
+
 
     // 조건 메서드들
     private BooleanExpression userIdEq(Long userId) {
