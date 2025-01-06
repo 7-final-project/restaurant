@@ -26,13 +26,11 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
     @PostMapping
     public ResponseEntity<ResDTO<RestaurantPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId,
                                                                  @Valid @RequestBody PostRestaurantReqDTOV1 dto) {
-        // Service에서 RestaurantPostResDTOV1 반환
-        RestaurantPostResDTOV1 response = restaurantService.postBy(userId, dto);
         return new ResponseEntity<>(
                 ResDTO.<RestaurantPostResDTOV1>builder()
                         .code(HttpStatus.CREATED.value())
                         .message("식당 생성에 성공하였습니다.")
-                        .data(response)
+                        .data(restaurantService.postBy(userId, dto))
                         .build(),
                 HttpStatus.CREATED
         );
@@ -46,13 +44,11 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
                                                                      @RequestParam(name = "sort", required = false) String sort,
                                                                      @RequestParam(name = "address", required = false) String address,
                                                                      @RequestParam(name = "category", required = false) String category) {
-        // Service에서 RestaurantSearchResDTOV1 반환
-        RestaurantSearchResDTOV1 response = restaurantService.searchBy(userId, name, sort, address, category, pageable);
         return new ResponseEntity<>(
                 ResDTO.<RestaurantSearchResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("식당 검색에 성공하였습니다.")
-                        .data(response)
+                        .data(restaurantService.searchBy(userId, name, sort, address, category, pageable))
                         .build(),
                 HttpStatus.OK
         );
@@ -61,13 +57,11 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
     // 식당 상세 조회
     @GetMapping("/{id}")
     public ResponseEntity<ResDTO<RestaurantGetByIdResDTOV1>> getBy(@PathVariable(name = "id") Long id) {
-        // Service에서 RestaurantGetByIdResDTOV1 반환
-        RestaurantGetByIdResDTOV1 response = restaurantService.getBy(id);
         return new ResponseEntity<>(
                 ResDTO.<RestaurantGetByIdResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("식당 상세 조회에 성공하였습니다.")
-                        .data(response)
+                        .data(restaurantService.getBy(id))
                         .build(),
                 HttpStatus.OK
         );

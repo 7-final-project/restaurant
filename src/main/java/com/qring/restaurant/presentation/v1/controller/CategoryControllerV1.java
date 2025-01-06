@@ -27,13 +27,11 @@ public class CategoryControllerV1 implements CategoryControllerSwagger{
     @PostMapping
     public ResponseEntity<ResDTO<CategoryPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId,
                                                                @Valid @RequestBody PostCategoryReqDTOV1 dto) {
-        CategoryEntity category = categoryService.postBy(userId, dto);
-
         return new ResponseEntity<>(
                 ResDTO.<CategoryPostResDTOV1>builder()
                         .code(HttpStatus.CREATED.value())
                         .message("카테고리 생성에 성공했습니다.")
-                        .data(CategoryPostResDTOV1.of(category))
+                        .data(CategoryPostResDTOV1.of(categoryService.postBy(userId, dto)))
                         .build(),
                 HttpStatus.CREATED
         );
@@ -41,15 +39,11 @@ public class CategoryControllerV1 implements CategoryControllerSwagger{
 
     @GetMapping
     public ResponseEntity<ResDTO<CategorySearchResDTOV1>> search() {
-        // 모든 카테고리 조회
-        List<CategoryEntity> categoryList = categoryService.search();
-
-        // 결과를 DTO로 변환하여 응답 반환
         return new ResponseEntity<>(
                 ResDTO.<CategorySearchResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("카테고리 검색에 성공했습니다.")
-                        .data(CategorySearchResDTOV1.of(categoryList))
+                        .data(CategorySearchResDTOV1.of(categoryService.search()))
                         .build(),
                 HttpStatus.OK
         );
@@ -58,13 +52,11 @@ public class CategoryControllerV1 implements CategoryControllerSwagger{
 
     @GetMapping("/{id}")
     public ResponseEntity<ResDTO<CategoryGetByIdResDTOV1>> getBy(@PathVariable Long id) {
-        CategoryEntity category = categoryService.getBy(id);
-
         return new ResponseEntity<>(
                 ResDTO.<CategoryGetByIdResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("카테고리 상세 조회에 성공했습니다.")
-                        .data(CategoryGetByIdResDTOV1.of(category))
+                        .data(CategoryGetByIdResDTOV1.of(categoryService.getBy(id)))
                         .build(),
                 HttpStatus.OK
         );
