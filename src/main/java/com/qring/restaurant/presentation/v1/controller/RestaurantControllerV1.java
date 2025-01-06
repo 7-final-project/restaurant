@@ -2,29 +2,18 @@ package com.qring.restaurant.presentation.v1.controller;
 
 import com.qring.restaurant.application.global.dto.ResDTO;
 import com.qring.restaurant.application.v1.res.RestaurantGetByIdResDTOV1;
+import com.qring.restaurant.application.v1.res.RestaurantPostResDTOV1;
+import com.qring.restaurant.application.v1.res.RestaurantSearchResDTOV1;
 import com.qring.restaurant.application.v1.service.RestaurantService;
-import com.qring.restaurant.domain.model.constraint.OperationStatus;
 import com.qring.restaurant.infrastructure.docs.RestaurantControllerSwagger;
 import com.qring.restaurant.presentation.v1.req.PostRestaurantReqDTOV1;
-import com.qring.restaurant.application.v1.res.RestaurantSearchResDTOV1;
-import com.qring.restaurant.domain.model.CategoryEntity;
-import com.qring.restaurant.domain.model.OperatingHourEntity;
-import com.qring.restaurant.domain.model.RestaurantEntity;
 import com.qring.restaurant.presentation.v1.req.PutRestaurantReqDTOV1;
-import com.qring.restaurant.application.v1.res.RestaurantPostResDTOV1;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalTime;
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/restaurants")
