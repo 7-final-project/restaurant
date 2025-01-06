@@ -20,7 +20,4 @@ public interface JpaRestaurantRepository extends JpaRepository<RestaurantEntity,
     // 특정 ID로 삭제되지 않은 식당 조회
     Optional<RestaurantEntity> findByIdAndDeletedAtIsNull(Long id);
 
-
-    // 삭제되지 않은 모든 식당 조회
-    List<RestaurantEntity> findAllByDeletedAtIsNull();
 }
