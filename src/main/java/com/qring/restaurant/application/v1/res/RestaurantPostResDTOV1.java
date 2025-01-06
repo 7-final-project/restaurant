@@ -38,6 +38,8 @@ public class RestaurantPostResDTOV1 {
         private int capacity;
         private String address;
         private String addressDetails;
+        private double ratingAverage;
+        private String operationStatus;
         private List<OperatingHour> operatingHourList;
 
         public static Restaurant from(RestaurantEntity restaurantEntity) {
@@ -50,6 +52,7 @@ public class RestaurantPostResDTOV1 {
                     .capacity(restaurantEntity.getCapacity())
                     .address(restaurantEntity.getAddress())
                     .addressDetails(restaurantEntity.getAddressDetails())
+                    .operationStatus(restaurantEntity.getOperationStatus().getDescription())
                     .operatingHourList(OperatingHour.from(restaurantEntity.getOperatingHourEntityList()))
                     .build();
         }

@@ -20,7 +20,8 @@ import static jakarta.persistence.FetchType.LAZY;
 @Table(name = "p_operating_hour")
 public class OperatingHourEntity {
 
-    @Id @Tsid
+    @Id
+    @Tsid
     @Column(name = "operating_hour_id")
     private Long id;
 
@@ -42,7 +43,7 @@ public class OperatingHourEntity {
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "modified_at" , nullable = false)
+    @Column(name = "modified_at", nullable = false)
     private LocalDateTime modifiedAt;
 
     @Column(name = "deleted_at")
@@ -60,6 +61,18 @@ public class OperatingHourEntity {
     // == 연관관계 메서드 == //
     public void updateRestaurant(RestaurantEntity restaurantEntity) {
         this.restaurantEntity = restaurantEntity;
+    }
+
+    // == 운영 시간 업데이트 메서드 == //
+    public void updateOperatingHourEntity(String dayOfWeek, LocalTime openAt, LocalTime closedAt) {
+        this.dayOfWeek = dayOfWeek;
+        this.openAt = openAt;
+        this.closedAt = closedAt;
+    }
+
+    public void deleteOperatingHourEntity(String deletedBy) {
+        this.deletedAt = LocalDateTime.now();
+        this.deletedBy = deletedBy;
     }
 
     @Builder
