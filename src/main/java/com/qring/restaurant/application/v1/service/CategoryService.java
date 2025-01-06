@@ -20,7 +20,7 @@ public class CategoryService {
 
     // 새로운 카테고리 생성
     @Transactional
-    public CategoryEntity createCategory(Long userId, PostCategoryReqDTOV1 dto) {
+    public CategoryEntity postBy(Long userId, PostCategoryReqDTOV1 dto) {
         // 중복 검증
         if (categoryRepository.existsByNameAndDeletedAtIsNull(dto.getCategory().getName())) {
             throw new RestaurantException(ErrorCode.DUPLICATE_ERROR, "이미 존재하는 카테고리 이름입니다.");
@@ -37,20 +37,20 @@ public class CategoryService {
 
     // 모든 카테고리 조회
     @Transactional(readOnly = true)
-    public List<CategoryEntity> findAllCategoryListByDeletedAtIsNull() {
+    public List<CategoryEntity> search() {
         return categoryRepository.findAllByDeletedAtIsNull();
     }
 
     // 특정 카테고리 조회
     @Transactional(readOnly = true)
-    public CategoryEntity getCategoryById(Long id) {
+    public CategoryEntity getBy(Long id) {
         return categoryRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RestaurantException(ErrorCode.NOT_FOUND_ERROR, "카테고리를 찾을 수 없습니다."));
     }
 
     // 카테고리 수정
     @Transactional
-    public void updateCategory(Long userId, Long id, PutCategoryDTOV1 dto) {
+    public void putBy(Long userId, Long id, PutCategoryDTOV1 dto) {
         // 엔티티 조회
         CategoryEntity existingCategory = categoryRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RestaurantException(ErrorCode.NOT_FOUND_ERROR, "카테고리를 찾을 수 없습니다."));
@@ -67,7 +67,7 @@ public class CategoryService {
 
     // 카테고리 삭제
     @Transactional
-    public void deleteCategory(Long userId, Long id) {
+    public void deleteBy(Long userId, Long id) {
         // 엔티티 조회
         CategoryEntity categoryEntity = categoryRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RestaurantException(ErrorCode.NOT_FOUND_ERROR, "카테고리를 찾을 수 없습니다."));

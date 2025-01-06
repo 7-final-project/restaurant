@@ -27,7 +27,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger{
     @PostMapping
     public ResponseEntity<ResDTO<CategoryPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId,
                                                                @Valid @RequestBody PostCategoryReqDTOV1 dto) {
-        CategoryEntity category = categoryService.createCategory(userId, dto);
+        CategoryEntity category = categoryService.postBy(userId, dto);
 
         return new ResponseEntity<>(
                 ResDTO.<CategoryPostResDTOV1>builder()
@@ -42,7 +42,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger{
     @GetMapping
     public ResponseEntity<ResDTO<CategorySearchResDTOV1>> search() {
         // 모든 카테고리 조회
-        List<CategoryEntity> categoryList = categoryService.findAllCategoryListByDeletedAtIsNull();
+        List<CategoryEntity> categoryList = categoryService.search();
 
         // 결과를 DTO로 변환하여 응답 반환
         return new ResponseEntity<>(
@@ -58,7 +58,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger{
 
     @GetMapping("/{id}")
     public ResponseEntity<ResDTO<CategoryGetByIdResDTOV1>> getBy(@PathVariable Long id) {
-        CategoryEntity category = categoryService.getCategoryById(id);
+        CategoryEntity category = categoryService.getBy(id);
 
         return new ResponseEntity<>(
                 ResDTO.<CategoryGetByIdResDTOV1>builder()
@@ -74,7 +74,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger{
     public ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-User-Id") Long userId,
                                                 @PathVariable Long id,
                                                 @Valid @RequestBody PutCategoryDTOV1 dto) {
-        categoryService.updateCategory(userId, id, dto);
+        categoryService.putBy(userId, id, dto);
 
         return new ResponseEntity<>(
                 ResDTO.builder()
@@ -88,7 +88,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger{
     @DeleteMapping("/{id}")
     public ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId,
                                                    @PathVariable Long id) {
-        categoryService.deleteCategory(userId, id);
+        categoryService.deleteBy(userId, id);
 
         return new ResponseEntity<>(
                 ResDTO.builder()

@@ -27,7 +27,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
     public ResponseEntity<ResDTO<RestaurantPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId,
                                                                  @Valid @RequestBody PostRestaurantReqDTOV1 dto) {
         // Service에서 RestaurantPostResDTOV1 반환
-        RestaurantPostResDTOV1 response = restaurantService.createRestaurant(userId, dto);
+        RestaurantPostResDTOV1 response = restaurantService.postBy(userId, dto);
         return new ResponseEntity<>(
                 ResDTO.<RestaurantPostResDTOV1>builder()
                         .code(HttpStatus.CREATED.value())
@@ -47,7 +47,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
                                                                      @RequestParam(name = "address", required = false) String address,
                                                                      @RequestParam(name = "category", required = false) String category) {
         // Service에서 RestaurantSearchResDTOV1 반환
-        RestaurantSearchResDTOV1 response = restaurantService.searchRestaurants(userId, name, sort, address, category, pageable);
+        RestaurantSearchResDTOV1 response = restaurantService.searchBy(userId, name, sort, address, category, pageable);
         return new ResponseEntity<>(
                 ResDTO.<RestaurantSearchResDTOV1>builder()
                         .code(HttpStatus.OK.value())
@@ -62,7 +62,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
     @GetMapping("/{id}")
     public ResponseEntity<ResDTO<RestaurantGetByIdResDTOV1>> getBy(@PathVariable(name = "id") Long id) {
         // Service에서 RestaurantGetByIdResDTOV1 반환
-        RestaurantGetByIdResDTOV1 response = restaurantService.getRestaurantById(id);
+        RestaurantGetByIdResDTOV1 response = restaurantService.getBy(id);
         return new ResponseEntity<>(
                 ResDTO.<RestaurantGetByIdResDTOV1>builder()
                         .code(HttpStatus.OK.value())
@@ -78,7 +78,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
     public ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-User-Id") Long userId,
                                                 @PathVariable(name = "id") Long id,
                                                 @Valid @RequestBody PutRestaurantReqDTOV1 dto) {
-        restaurantService.updateRestaurant(userId, id, dto);
+        restaurantService.putBy(userId, id, dto);
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(HttpStatus.OK.value())
@@ -92,7 +92,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
     @DeleteMapping("/{id}")
     public ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId,
                                                    @PathVariable(name = "id") Long id) {
-        restaurantService.deleteRestaurant(userId, id);
+        restaurantService.deleteBy(userId, id);
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(HttpStatus.OK.value())
