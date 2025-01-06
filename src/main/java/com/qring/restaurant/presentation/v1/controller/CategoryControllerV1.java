@@ -28,7 +28,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger{
                 ResDTO.<CategoryPostResDTOV1>builder()
                         .code(HttpStatus.CREATED.value())
                         .message("카테고리 생성에 성공했습니다.")
-                        .data(CategoryPostResDTOV1.of(categoryService.postBy(userId, dto)))
+                        .data(categoryService.postBy(userId, dto))
                         .build(),
                 HttpStatus.CREATED
         );
@@ -40,7 +40,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger{
                 ResDTO.<CategoryTableGetResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("카테고리 검색에 성공했습니다.")
-                        .data(CategoryTableGetResDTOV1.of(categoryService.search()))
+                        .data(categoryService.search())
                         .build(),
                 HttpStatus.OK
         );
@@ -53,7 +53,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger{
                 ResDTO.<CategoryGetByIdResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("카테고리 상세 조회에 성공했습니다.")
-                        .data(CategoryGetByIdResDTOV1.of(categoryService.getBy(id)))
+                        .data(categoryService.getBy(id))
                         .build(),
                 HttpStatus.OK
         );

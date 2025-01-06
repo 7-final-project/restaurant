@@ -66,16 +66,15 @@ public class RestaurantService {
     // 조건에 따른 식당 검색
     @Transactional(readOnly = true)
     public RestaurantSearchResDTOV1 searchBy(Long userId, String name, String sort, String address, String category, Pageable pageable) {
-        Page<RestaurantEntity> restaurantEntities = restaurantRepository.findRestaurantPageByDeletedAtIsNullWithConditions(userId, name, sort, address, category, pageable);
-        return RestaurantSearchResDTOV1.of(restaurantEntities);
+        return RestaurantSearchResDTOV1.of(restaurantRepository.findRestaurantPageByDeletedAtIsNullWithConditions(userId, name, sort, address, category, pageable));
     }
 
     // 식당 상세 조회
     @Transactional(readOnly = true)
     public RestaurantGetByIdResDTOV1 getBy(Long id) {
-        RestaurantEntity restaurant = restaurantRepository.findByIdWithOperatingHours(id)
+        RestaurantEntity RestaurantEntityForMapping = restaurantRepository.findByIdWithOperatingHours(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
-        return RestaurantGetByIdResDTOV1.of(restaurant);
+        return RestaurantGetByIdResDTOV1.of(RestaurantEntityForMapping);
     }
 
     // 식당 수정

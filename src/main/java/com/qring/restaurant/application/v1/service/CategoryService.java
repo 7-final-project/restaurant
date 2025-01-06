@@ -2,6 +2,9 @@ package com.qring.restaurant.application.v1.service;
 
 import com.qring.restaurant.application.global.exception.ErrorCode;
 import com.qring.restaurant.application.global.exception.RestaurantException;
+import com.qring.restaurant.application.v1.res.CategoryGetByIdResDTOV1;
+import com.qring.restaurant.application.v1.res.CategoryPostResDTOV1;
+import com.qring.restaurant.application.v1.res.CategoryTableGetResDTOV1;
 import com.qring.restaurant.domain.model.CategoryEntity;
 import com.qring.restaurant.domain.repository.CategoryRepository;
 import com.qring.restaurant.presentation.v1.req.PostCategoryReqDTOV1;
@@ -20,32 +23,33 @@ public class CategoryService {
 
     // 새로운 카테고리 생성
     @Transactional
-    public CategoryEntity postBy(Long userId, PostCategoryReqDTOV1 dto) {
+    public CategoryPostResDTOV1 postBy(Long userId, PostCategoryReqDTOV1 dto) {
         // 중복 검증
         if (categoryRepository.existsByNameAndDeletedAtIsNull(dto.getCategory().getName())) {
             throw new RestaurantException(ErrorCode.DUPLICATE_ERROR, "이미 존재하는 카테고리 이름입니다.");
         }
 
-        // 엔티티 생성
-        return categoryRepository.save(
-                CategoryEntity.createCategoryEntity(
-                        dto.getCategory().getName(),
-                        String.valueOf(userId)
-                )
+        CategoryEntity categoryEntityForSave = CategoryEntity.createCategoryEntity(
+                dto.getCategory().getName(),
+                String.valueOf(userId)
         );
+
+        return CategoryPostResDTOV1.of(categoryEntityForSave);
+
     }
 
     // 모든 카테고리 조회
     @Transactional(readOnly = true)
-    public List<CategoryEntity> search() {
-        return categoryRepository.findAllByDeletedAtIsNull();
+    public CategoryTableGetResDTOV1 search() {
+        return CategoryTableGetResDTOV1.of(categoryRepository.findAllByDeletedAtIsNull());
     }
 
     // 특정 카테고리 조회
     @Transactional(readOnly = true)
-    public CategoryEntity getBy(Long id) {
-        return categoryRepository.findByIdAndDeletedAtIsNull(id)
+    public CategoryGetByIdResDTOV1 getBy(Long id) {
+        CategoryEntity categoryEntityForMapping = categoryRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RestaurantException(ErrorCode.NOT_FOUND_ERROR, "카테고리를 찾을 수 없습니다."));
+        return CategoryGetByIdResDTOV1.of(categoryEntityForMapping);
     }
 
     // 카테고리 수정
