@@ -181,4 +181,9 @@ public class RestaurantService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public boolean existsBy(Long id) {
+        return restaurantRepository.existsByIdAndDeletedAtIsNull(id);
+    }
+
 }

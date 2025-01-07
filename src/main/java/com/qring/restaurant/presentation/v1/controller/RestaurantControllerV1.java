@@ -95,4 +95,9 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
                 HttpStatus.OK
         );
     }
+
+    @GetMapping("{id}/exists")
+    public boolean existsBy(@PathVariable("id") Long id) {
+        return restaurantService.existsBy(id);
+    }
 }

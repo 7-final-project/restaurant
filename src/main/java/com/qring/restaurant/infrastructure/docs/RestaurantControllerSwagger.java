@@ -73,4 +73,12 @@ public interface RestaurantControllerSwagger {
     })
     @DeleteMapping("/{id}")
     ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-Passport-Token") String passport, @PathVariable(name = "id") Long id);
+
+    @Operation(summary = "식당 존재 여부 확인", description = "식당이 존재하는지 확인하는 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "식당 조회 성공", content = @Content(schema = @Schema(implementation = ResDTO.class))),
+            @ApiResponse(responseCode = "400", description = "식당 조회 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
+    })
+    @GetMapping("/{id}/exists")
+    boolean existsBy(@PathVariable(name = "id") Long id);
 }
