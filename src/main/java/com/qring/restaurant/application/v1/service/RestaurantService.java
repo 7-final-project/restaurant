@@ -104,7 +104,8 @@ public class RestaurantService {
                 dto.getRestaurant().getAddress(),
                 dto.getRestaurant().getAddressDetails(),
                 updatedOperationStatus,
-                category
+                category,
+                String.valueOf(userId)
         );
 
     }
