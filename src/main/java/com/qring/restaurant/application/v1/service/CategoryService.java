@@ -7,6 +7,7 @@ import com.qring.restaurant.application.v1.res.CategoryPostResDTOV1;
 import com.qring.restaurant.application.v1.res.CategoryTableGetResDTOV1;
 import com.qring.restaurant.domain.model.CategoryEntity;
 import com.qring.restaurant.domain.repository.CategoryRepository;
+import com.qring.restaurant.infrastructure.util.PassportUtil;
 import com.qring.restaurant.presentation.v1.req.PostCategoryReqDTOV1;
 import com.qring.restaurant.presentation.v1.req.PutCategoryDTOV1;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class CategoryService {
 
     // 새로운 카테고리 생성
     @Transactional
-    public CategoryPostResDTOV1 postBy(Long userId, PostCategoryReqDTOV1 dto) {
+    public CategoryPostResDTOV1 postBy(String passport, PostCategoryReqDTOV1 dto) {
         // 중복 검증
         if (categoryRepository.existsByNameAndDeletedAtIsNull(dto.getCategory().getName())) {
             throw new RestaurantException(ErrorCode.DUPLICATE_ERROR, "이미 존재하는 카테고리 이름입니다.");
@@ -29,7 +30,7 @@ public class CategoryService {
 
         CategoryEntity categoryEntityForSave = CategoryEntity.createCategoryEntity(
                 dto.getCategory().getName(),
-                String.valueOf(userId)
+                PassportUtil.getUsername(passport)
         );
 
         return CategoryPostResDTOV1.of(categoryEntityForSave);
@@ -52,7 +53,7 @@ public class CategoryService {
 
     // 카테고리 수정
     @Transactional
-    public void putBy(Long userId, Long id, PutCategoryDTOV1 dto) {
+    public void putBy(String passport, Long id, PutCategoryDTOV1 dto) {
         // 엔티티 조회
         CategoryEntity existingCategory = categoryRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RestaurantException(ErrorCode.NOT_FOUND_ERROR, "카테고리를 찾을 수 없습니다."));
@@ -64,17 +65,17 @@ public class CategoryService {
         }
 
         // 수정
-        existingCategory.modifyCategoryEntity(dto.getCategory().getName(), String.valueOf(userId));
+        existingCategory.modifyCategoryEntity(dto.getCategory().getName(), PassportUtil.getUsername(passport));
     }
 
     // 카테고리 삭제
     @Transactional
-    public void deleteBy(Long userId, Long id) {
+    public void deleteBy(String passport, Long id) {
         // 엔티티 조회
         CategoryEntity categoryEntity = categoryRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RestaurantException(ErrorCode.NOT_FOUND_ERROR, "카테고리를 찾을 수 없습니다."));
 
         // 삭제
-        categoryEntity.deleteCategoryEntity(String.valueOf(userId));
+        categoryEntity.deleteCategoryEntity(PassportUtil.getUsername(passport));
     }
 }

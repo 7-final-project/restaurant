@@ -22,13 +22,13 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<ResDTO<CategoryPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId,
+    public ResponseEntity<ResDTO<CategoryPostResDTOV1>> postBy(@RequestHeader("X-Passport-Token") String passport,
                                                                @Valid @RequestBody PostCategoryReqDTOV1 dto) {
         return new ResponseEntity<>(
                 ResDTO.<CategoryPostResDTOV1>builder()
                         .code(HttpStatus.CREATED.value())
                         .message("카테고리 생성에 성공했습니다.")
-                        .data(categoryService.postBy(userId, dto))
+                        .data(categoryService.postBy(passport, dto))
                         .build(),
                 HttpStatus.CREATED
         );
@@ -60,10 +60,10 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-User-Id") Long userId,
+    public ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-Passport-Token") String passport,
                                                 @PathVariable Long id,
                                                 @Valid @RequestBody PutCategoryDTOV1 dto) {
-        categoryService.putBy(userId, id, dto);
+        categoryService.putBy(passport, id, dto);
 
         return new ResponseEntity<>(
                 ResDTO.builder()
@@ -75,9 +75,9 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId,
+    public ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-Passport-Token") String passport,
                                                    @PathVariable Long id) {
-        categoryService.deleteBy(userId, id);
+        categoryService.deleteBy(passport, id);
 
         return new ResponseEntity<>(
                 ResDTO.builder()
