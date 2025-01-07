@@ -85,16 +85,13 @@ public class RestaurantService {
     @Transactional
     public void putBy(String passport, Long id, PutRestaurantReqDTOV1 dto) {
 
-        String userRole = PassportUtil.getRole(passport);
-        Long userId = PassportUtil.getUserId(passport);
-
         validateUserRole(PassportUtil.getRole(passport), "관리자", "점주");
 
         RestaurantEntity existingRestaurant = restaurantRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
 
         // 점주일 경우 본인의 식당인지 확인
-        if (userRole.equals("점주") && !existingRestaurant.getUserId().equals(userId)) {
+        if (PassportUtil.getRole(passport).equals("점주") && !existingRestaurant.getUserId().equals(PassportUtil.getUserId(passport))) {
             throw new UnauthorizedAccessException("본인의 식당만 수정할 수 있습니다.");
         }
 
@@ -130,16 +127,13 @@ public class RestaurantService {
     @Transactional
     public void deleteBy(String passport, Long id) {
 
-        String userRole = PassportUtil.getRole(passport);
-        Long userId = PassportUtil.getUserId(passport);
-
         validateUserRole(PassportUtil.getRole(passport), "관리자", "점주");
 
         RestaurantEntity restaurant = restaurantRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
 
         // 점주일 경우 본인의 식당인지 확인
-        if (userRole.equals("점주") && !restaurant.getUserId().equals(userId)) {
+        if (PassportUtil.getRole(passport).equals("점주") && !restaurant.getUserId().equals(PassportUtil.getUserId(passport))) {
             throw new UnauthorizedAccessException("본인의 식당만 삭제할 수 있습니다.");
         }
 
