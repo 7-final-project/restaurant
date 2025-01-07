@@ -24,13 +24,13 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
 
     // 식당 생성
     @PostMapping
-    public ResponseEntity<ResDTO<RestaurantPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId,
+    public ResponseEntity<ResDTO<RestaurantPostResDTOV1>> postBy(@RequestHeader("X-Passport-Token") String passport,
                                                                  @Valid @RequestBody PostRestaurantReqDTOV1 dto) {
         return new ResponseEntity<>(
                 ResDTO.<RestaurantPostResDTOV1>builder()
                         .code(HttpStatus.CREATED.value())
                         .message("식당 생성에 성공하였습니다.")
-                        .data(restaurantService.postBy(userId, dto))
+                        .data(restaurantService.postBy(passport, dto))
                         .build(),
                 HttpStatus.CREATED
         );
@@ -69,10 +69,10 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
 
     // 식당 수정
     @PutMapping("/{id}")
-    public ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-User-Id") Long userId,
+    public ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-Passport-Token") String passport,
                                                 @PathVariable(name = "id") Long id,
                                                 @Valid @RequestBody PutRestaurantReqDTOV1 dto) {
-        restaurantService.putBy(userId, id, dto);
+        restaurantService.putBy(passport, id, dto);
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(HttpStatus.OK.value())
@@ -84,9 +84,9 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
 
     // 식당 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId,
+    public ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-Passport-Token") String passport,
                                                    @PathVariable(name = "id") Long id) {
-        restaurantService.deleteBy(userId, id);
+        restaurantService.deleteBy(passport, id);
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(HttpStatus.OK.value())

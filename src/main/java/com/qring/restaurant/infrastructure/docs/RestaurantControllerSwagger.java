@@ -31,7 +31,7 @@ public interface RestaurantControllerSwagger {
             @ApiResponse(responseCode = "400", description = "식상 생성 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
     @PostMapping
-    ResponseEntity<ResDTO<RestaurantPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId, @Valid @RequestBody PostRestaurantReqDTOV1 dto);
+    ResponseEntity<ResDTO<RestaurantPostResDTOV1>> postBy(@RequestHeader("X-Passport-Token") String passport, @Valid @RequestBody PostRestaurantReqDTOV1 dto);
 
 
     @Operation(summary = "식당 검색", description = "식당을 검색하는 API 입니다.")
@@ -63,7 +63,7 @@ public interface RestaurantControllerSwagger {
             @ApiResponse(responseCode = "400", description = "식당 수정 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
     @PutMapping("/{id}")
-    ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-User-Id") Long userId, @PathVariable(name = "id") Long id, @Valid @RequestBody PutRestaurantReqDTOV1 dto);
+    ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-Passport-Token") String passport, @PathVariable(name = "id") Long id, @Valid @RequestBody PutRestaurantReqDTOV1 dto);
 
 
     @Operation(summary = "식당 삭제", description = "식당을 삭제하는 API 입니다.")
@@ -72,5 +72,5 @@ public interface RestaurantControllerSwagger {
             @ApiResponse(responseCode = "400", description = "식당 삭제 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
     @DeleteMapping("/{id}")
-    ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId, @PathVariable(name = "id") Long id);
+    ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-Passport-Token") String passport, @PathVariable(name = "id") Long id);
 }

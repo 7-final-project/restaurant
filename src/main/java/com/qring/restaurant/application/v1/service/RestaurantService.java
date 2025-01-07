@@ -10,6 +10,7 @@ import com.qring.restaurant.domain.model.RestaurantEntity;
 import com.qring.restaurant.domain.model.constraint.OperationStatus;
 import com.qring.restaurant.domain.repository.CategoryRepository;
 import com.qring.restaurant.domain.repository.RestaurantRepository;
+import com.qring.restaurant.infrastructure.util.PassportUtil;
 import com.qring.restaurant.presentation.v1.req.PostRestaurantReqDTOV1;
 import com.qring.restaurant.presentation.v1.req.PutRestaurantReqDTOV1;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class RestaurantService {
 
     // 새로운 식당 생성
     @Transactional
-    public RestaurantPostResDTOV1 postBy(Long userId, PostRestaurantReqDTOV1 dto) {
+    public RestaurantPostResDTOV1 postBy(String passport, PostRestaurantReqDTOV1 dto) {
         CategoryEntity category = categoryRepository.findByIdAndDeletedAtIsNull(dto.getRestaurant().getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
 
@@ -47,7 +48,7 @@ public class RestaurantService {
         OperationStatus operationStatus = determineOperationStatus(operatingHours);
 
         RestaurantEntity restaurantForSave = RestaurantEntity.createRestaurantEntity(
-                userId,
+                PassportUtil.getUserId(passport),
                 dto.getRestaurant().getName(),
                 dto.getRestaurant().getCapacity(),
                 dto.getRestaurant().getTel(),
@@ -56,7 +57,7 @@ public class RestaurantService {
                 operationStatus,
                 category,
                 operatingHours,
-                String.valueOf(userId)
+                PassportUtil.getUsername(passport)
         );
         restaurantForSave = restaurantRepository.save(restaurantForSave);
         return RestaurantPostResDTOV1.of(restaurantForSave);
@@ -78,7 +79,7 @@ public class RestaurantService {
 
     // 식당 수정
     @Transactional
-    public void putBy(Long userId, Long id, PutRestaurantReqDTOV1 dto) {
+    public void putBy(String passport, Long id, PutRestaurantReqDTOV1 dto) {
         RestaurantEntity existingRestaurant = restaurantRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
 
@@ -105,21 +106,21 @@ public class RestaurantService {
                 dto.getRestaurant().getAddressDetails(),
                 updatedOperationStatus,
                 category,
-                String.valueOf(userId)
+                PassportUtil.getUsername(passport)
         );
 
     }
 
     // 식당 삭제
     @Transactional
-    public void deleteBy(Long userId, Long id) {
+    public void deleteBy(String passport, Long id) {
         RestaurantEntity restaurant = restaurantRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
         // 연관된 운영시간 논리 삭제
-        restaurant.getOperatingHourEntityList().forEach(hour -> hour.deleteOperatingHourEntity(String.valueOf(userId)));
+        restaurant.getOperatingHourEntityList().forEach(hour -> hour.deleteOperatingHourEntity(PassportUtil.getUsername(passport)));
 
         // 식당 논리 삭제
-        restaurant.deleteRestaurantEntity(userId.toString());
+        restaurant.deleteRestaurantEntity(PassportUtil.getUsername(passport));
     }
 
     // 운영 상태 결정
