@@ -1,6 +1,7 @@
 package com.qring.restaurant.application.v1.service;
 
 import com.qring.restaurant.application.global.exception.EntityNotFoundException;
+import com.qring.restaurant.application.global.exception.UnauthorizedAccessException;
 import com.qring.restaurant.application.v1.res.RestaurantGetByIdResDTOV1;
 import com.qring.restaurant.application.v1.res.RestaurantPostResDTOV1;
 import com.qring.restaurant.application.v1.res.RestaurantSearchResDTOV1;
@@ -34,6 +35,9 @@ public class RestaurantService {
     // 새로운 식당 생성
     @Transactional
     public RestaurantPostResDTOV1 postBy(String passport, PostRestaurantReqDTOV1 dto) {
+
+        validateUserRole(PassportUtil.getRole(passport), "관리자", "점주");
+
         CategoryEntity category = categoryRepository.findByIdAndDeletedAtIsNull(dto.getRestaurant().getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
 
@@ -80,6 +84,9 @@ public class RestaurantService {
     // 식당 수정
     @Transactional
     public void putBy(String passport, Long id, PutRestaurantReqDTOV1 dto) {
+
+        validateUserRole(PassportUtil.getRole(passport), "관리자", "점주");
+
         RestaurantEntity existingRestaurant = restaurantRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
 
@@ -114,6 +121,9 @@ public class RestaurantService {
     // 식당 삭제
     @Transactional
     public void deleteBy(String passport, Long id) {
+
+        validateUserRole(PassportUtil.getRole(passport), "관리자", "점주");
+
         RestaurantEntity restaurant = restaurantRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
         // 연관된 운영시간 논리 삭제
@@ -151,6 +161,13 @@ public class RestaurantService {
 
         System.out.println("OperationStatus: CLOSED");
         return OperationStatus.CLOSED; // 운영 시간이 없거나 현재 시간이 범위 밖이면 CLOSED 반환
+    }
+
+
+    private void validateUserRole(String role, String requiredRole1, String requiredRole2) {
+        if (!role.equals(requiredRole1) && !role.equals(requiredRole2)) {
+            throw new UnauthorizedAccessException("접근 권한이 없습니다.");
+        }
     }
 
 }
