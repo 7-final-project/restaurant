@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryService {
+public class CategoryServiceV1 {
 
     private final CategoryRepository categoryRepository;
 

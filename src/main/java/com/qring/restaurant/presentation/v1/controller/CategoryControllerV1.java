@@ -4,7 +4,7 @@ import com.qring.restaurant.application.global.dto.ResDTO;
 import com.qring.restaurant.application.v1.res.CategoryGetByIdResDTOV1;
 import com.qring.restaurant.application.v1.res.CategoryPostResDTOV1;
 import com.qring.restaurant.application.v1.res.CategoryTableGetResDTOV1;
-import com.qring.restaurant.application.v1.service.CategoryService;
+import com.qring.restaurant.application.v1.service.CategoryServiceV1;
 import com.qring.restaurant.infrastructure.docs.CategoryControllerSwagger;
 import com.qring.restaurant.presentation.v1.req.PostCategoryReqDTOV1;
 import com.qring.restaurant.presentation.v1.req.PutCategoryDTOV1;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CategoryControllerV1 implements CategoryControllerSwagger {
 
-    private final CategoryService categoryService;
+    private final CategoryServiceV1 CategoryServiceV1;
 
     @PostMapping
     public ResponseEntity<ResDTO<CategoryPostResDTOV1>> postBy(@RequestHeader("X-Passport-Token") String passport,
@@ -28,7 +28,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
                 ResDTO.<CategoryPostResDTOV1>builder()
                         .code(HttpStatus.CREATED.value())
                         .message("카테고리 생성에 성공했습니다.")
-                        .data(categoryService.postBy(passport, dto))
+                        .data(CategoryServiceV1.postBy(passport, dto))
                         .build(),
                 HttpStatus.CREATED
         );
@@ -40,7 +40,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
                 ResDTO.<CategoryTableGetResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("카테고리 검색에 성공했습니다.")
-                        .data(categoryService.search())
+                        .data(CategoryServiceV1.search())
                         .build(),
                 HttpStatus.OK
         );
@@ -53,7 +53,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
                 ResDTO.<CategoryGetByIdResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("카테고리 상세 조회에 성공했습니다.")
-                        .data(categoryService.getBy(id))
+                        .data(CategoryServiceV1.getBy(id))
                         .build(),
                 HttpStatus.OK
         );
@@ -63,7 +63,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
     public ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-Passport-Token") String passport,
                                                 @PathVariable Long id,
                                                 @Valid @RequestBody PutCategoryDTOV1 dto) {
-        categoryService.putBy(passport, id, dto);
+        CategoryServiceV1.putBy(passport, id, dto);
 
         return new ResponseEntity<>(
                 ResDTO.builder()
@@ -77,7 +77,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
     @DeleteMapping("/{id}")
     public ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-Passport-Token") String passport,
                                                    @PathVariable Long id) {
-        categoryService.deleteBy(passport, id);
+        CategoryServiceV1.deleteBy(passport, id);
 
         return new ResponseEntity<>(
                 ResDTO.builder()
