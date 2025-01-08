@@ -105,12 +105,12 @@ public class RestaurantServiceV1 {
                 .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
 
         // 5. 기존 운영 시간 엔티티를 Map으로 변환 (ID를 기준으로 빠른 조회를 위해 사용)
-        Map<Long, OperatingHourEntity> operatingHourMap = existingRestaurant.getOperatingHourEntityList().stream()
+        Map<Long, OperatingHourEntity> operatingHourEntityMap = existingRestaurant.getOperatingHourEntityList().stream()
                 .collect(Collectors.toMap(OperatingHourEntity::getId, hour -> hour));
 
         // 6. DTO에서 전달받은 운영 시간을 기존 엔티티에 업데이트
         dto.getOperatingHourList().forEach(hour -> {
-            OperatingHourEntity operatingHour = operatingHourMap.get(hour.getId());
+            OperatingHourEntity operatingHour = operatingHourEntityMap.get(hour.getId());
             if (operatingHour != null) {
                 operatingHour.updateOperatingHourEntity(hour.getDayOfWeek(), hour.getOpenAt(), hour.getClosedAt());
             }
