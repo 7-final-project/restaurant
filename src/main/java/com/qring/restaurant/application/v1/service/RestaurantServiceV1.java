@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +37,7 @@ public class RestaurantServiceV1 {
     @Transactional
     public RestaurantPostResDTOV1 postBy(String passport, PostRestaurantReqDTOV1 dto) {
         // 1. 유저 권한 검증 (관리자 또는 점주만 생성 가능)
-        validateUserRole(PassportUtil.getRole(passport), "관리자", "점주");
+        validateUserRole(PassportUtil.getRole(passport), Set.of("관리자", "점주"));
         // 2. 카테고리 엔티티 조회 (존재하지 않거나 삭제된 카테고리는 예외 처리)
         CategoryEntity category = categoryRepository.findByIdAndDeletedAtIsNull(dto.getRestaurant().getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
@@ -90,7 +91,7 @@ public class RestaurantServiceV1 {
     public void putBy(String passport, Long id, PutRestaurantReqDTOV1 dto) {
 
         // 1. 유저 권한 검증 (관리자 또는 점주만 수정 가능)
-        validateUserRole(PassportUtil.getRole(passport), "관리자", "점주");
+        validateUserRole(PassportUtil.getRole(passport), Set.of("관리자", "점주"));
 
         // 2. 수정 대상 식당 조회 (존재하지 않거나 삭제된 경우 예외 처리)
         RestaurantEntity existingRestaurant = restaurantRepository.findByIdAndDeletedAtIsNull(id)
@@ -141,7 +142,7 @@ public class RestaurantServiceV1 {
     @Transactional
     public void deleteBy(String passport, Long id) {
 
-        validateUserRole(PassportUtil.getRole(passport), "관리자", "점주");
+        validateUserRole(PassportUtil.getRole(passport), Set.of("관리자", "점주"));
 
         RestaurantEntity restaurant = restaurantRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
@@ -189,9 +190,9 @@ public class RestaurantServiceV1 {
     }
 
 
-    private void validateUserRole(String role, String requiredRole1, String requiredRole2) {
-        if (!role.equals(requiredRole1) && !role.equals(requiredRole2)) {
-            throw new UnauthorizedAccessException("접근 권한이 없습니다.");
+    private void validateUserRole(String currentRole, Set<String> requiredRoleSet) {
+        if (!requiredRoleSet.contains(currentRole)) {
+            throw new UnauthorizedAccessException("접근 권한이 없습니다");
         }
     }
 
