@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CategoryControllerV1 implements CategoryControllerSwagger {
 
-    private final CategoryServiceV1 CategoryServiceV1;
+    private final CategoryServiceV1 categoryServiceV1;
 
     @PostMapping
     public ResponseEntity<ResDTO<CategoryPostResDTOV1>> postBy(@RequestHeader("X-Passport-Token") String passport,
@@ -28,7 +28,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
                 ResDTO.<CategoryPostResDTOV1>builder()
                         .code(HttpStatus.CREATED.value())
                         .message("카테고리 생성에 성공했습니다.")
-                        .data(CategoryServiceV1.postBy(passport, dto))
+                        .data(categoryServiceV1.postBy(passport, dto))
                         .build(),
                 HttpStatus.CREATED
         );
@@ -40,7 +40,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
                 ResDTO.<CategoryTableGetResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("카테고리 검색에 성공했습니다.")
-                        .data(CategoryServiceV1.search())
+                        .data(categoryServiceV1.search())
                         .build(),
                 HttpStatus.OK
         );
@@ -53,7 +53,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
                 ResDTO.<CategoryGetByIdResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("카테고리 상세 조회에 성공했습니다.")
-                        .data(CategoryServiceV1.getBy(id))
+                        .data(categoryServiceV1.getBy(id))
                         .build(),
                 HttpStatus.OK
         );
@@ -63,7 +63,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
     public ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-Passport-Token") String passport,
                                                 @PathVariable Long id,
                                                 @Valid @RequestBody PutCategoryDTOV1 dto) {
-        CategoryServiceV1.putBy(passport, id, dto);
+        categoryServiceV1.putBy(passport, id, dto);
 
         return new ResponseEntity<>(
                 ResDTO.builder()
@@ -77,7 +77,7 @@ public class CategoryControllerV1 implements CategoryControllerSwagger {
     @DeleteMapping("/{id}")
     public ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-Passport-Token") String passport,
                                                    @PathVariable Long id) {
-        CategoryServiceV1.deleteBy(passport, id);
+        categoryServiceV1.deleteBy(passport, id);
 
         return new ResponseEntity<>(
                 ResDTO.builder()

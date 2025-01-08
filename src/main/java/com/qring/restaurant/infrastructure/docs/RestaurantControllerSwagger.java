@@ -2,9 +2,7 @@ package com.qring.restaurant.infrastructure.docs;
 
 
 import com.qring.restaurant.application.global.dto.ResDTO;
-import com.qring.restaurant.application.v1.res.RestaurantGetByIdResDTOV1;
-import com.qring.restaurant.application.v1.res.RestaurantPostResDTOV1;
-import com.qring.restaurant.application.v1.res.RestaurantSearchResDTOV1;
+import com.qring.restaurant.application.v1.res.*;
 import com.qring.restaurant.presentation.v1.req.PostRestaurantReqDTOV1;
 import com.qring.restaurant.presentation.v1.req.PutRestaurantReqDTOV1;
 import io.swagger.v3.oas.annotations.Operation;
@@ -80,5 +78,14 @@ public interface RestaurantControllerSwagger {
             @ApiResponse(responseCode = "400", description = "식당 조회 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
     @GetMapping("/{id}/exists")
-    boolean existsBy(@PathVariable(name = "id") Long id);
+    ResponseEntity<ResDTO<RestaurantExistsByIdResDTOV1>> existsBy(@PathVariable(name = "id") Long id);
+
+    @Operation(summary = "사용자의 식당 리스트 조회", description = "특정 사용자 ID로 식당 ID 리스트를 조회하는 API입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "식당 리스트 조회 성공", content = @Content(schema = @Schema(implementation = ResDTO.class))),
+            @ApiResponse(responseCode = "400", description = "식당 리스트 조회 실패", content = @Content(schema = @Schema(implementation = ResDTO.class)))
+    })
+    @GetMapping("/user/{userId}/table")
+    ResponseEntity<ResDTO<RestaurantIdTableResDTOV1>> getRestaurantTableByUserId(@PathVariable(name = "userId") Long userId);
+
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -39,5 +40,10 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     @Override
     public RestaurantEntity save(RestaurantEntity restaurantEntity) {
         return jpaRestaurantRepository.save(restaurantEntity);
+    }
+
+    @Override
+    public List<Long> findRestaurantIdsByUserId(Long id) {
+        return jpaRestaurantRepository.findRestaurantIdsByUserId(id);
     }
 }

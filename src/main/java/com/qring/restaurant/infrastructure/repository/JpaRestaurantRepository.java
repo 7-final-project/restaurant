@@ -5,6 +5,7 @@ import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface JpaRestaurantRepository extends JpaRepository<RestaurantEntity, Long> {
@@ -19,4 +20,6 @@ public interface JpaRestaurantRepository extends JpaRepository<RestaurantEntity,
     // 특정 ID로 삭제되지 않은 식당 조회
     Optional<RestaurantEntity> findByIdAndDeletedAtIsNull(Long id);
 
+    @Query("SELECT r.id FROM RestaurantEntity r WHERE r.userId = :userId AND r.deletedAt IS NULL")
+    List<Long> findRestaurantIdsByUserId(Long userId);
 }
