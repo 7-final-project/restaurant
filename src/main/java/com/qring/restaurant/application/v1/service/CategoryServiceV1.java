@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceV1 {
@@ -89,8 +91,8 @@ public class CategoryServiceV1 {
         categoryEntity.deleteCategoryEntity(PassportUtil.getUsername(passport));
     }
 
-    private void validateUserRole(String role, String requiredRole) {
-        if (!role.equals(requiredRole)) {
+    private void validateUserRole(String currentRole, String requiredRole) {
+        if (!Objects.equals(currentRole, requiredRole)) {
             throw new UnauthorizedAccessException("접근 권한이 없습니다.");
         }
     }
