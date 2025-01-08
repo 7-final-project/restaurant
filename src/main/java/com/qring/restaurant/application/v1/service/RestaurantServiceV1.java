@@ -51,7 +51,7 @@ public class RestaurantServiceV1 {
         // 4. 초기 운영 상태 결정 (현재 시간 기준으로 OPEN 또는 CLOSED 설정)
         OperationStatus operationStatus = determineOperationStatus(OperatingHourEntityList);
         // 5. 새 식당 엔티티 생성
-        RestaurantEntity restaurantForSave = RestaurantEntity.createRestaurantEntity(
+        RestaurantEntity restaurantEntityForSave = RestaurantEntity.createRestaurantEntity(
                 PassportUtil.getUserId(passport),
                 dto.getRestaurant().getName(),
                 dto.getRestaurant().getCapacity(),
@@ -64,11 +64,11 @@ public class RestaurantServiceV1 {
                 PassportUtil.getUsername(passport)
         );
         // 6. 식당 엔티티 저장
-        restaurantForSave = restaurantRepository.save(restaurantForSave);
+        restaurantEntityForSave = restaurantRepository.save(restaurantEntityForSave);
         // 7. 스케줄러에 상태 변경 작업 등록
-        operationStatusScheduler.scheduleOperationStatusChange(restaurantForSave);
+        operationStatusScheduler.scheduleOperationStatusChange(restaurantEntityForSave);
         // 8. 생성된 식당 데이터를 DTO로 반환
-        return RestaurantPostResDTOV1.of(restaurantForSave);
+        return RestaurantPostResDTOV1.of(restaurantEntityForSave);
     }
 
     // 조건에 따른 식당 검색
