@@ -98,9 +98,7 @@ public class RestaurantServiceV1 {
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
 
         // 3. 점주인 경우 본인의 식당인지 확인 (다른 점주의 식당을 수정하려 할 경우 예외 처리)
-        if (PassportUtil.getRole(passport).equals("점주") && !existingRestaurant.getUserId().equals(PassportUtil.getUserId(passport))) {
-            throw new UnauthorizedAccessException("본인의 식당만 수정할 수 있습니다.");
-        }
+        validateOwnerRestaurantAccess(passport, existingRestaurant);
 
         // 4. 카테고리 엔티티 조회 (존재하지 않거나 삭제된 카테고리는 예외 처리)
         CategoryEntity category = categoryRepository.findByIdAndDeletedAtIsNull(dto.getRestaurant().getCategoryId())
@@ -148,9 +146,7 @@ public class RestaurantServiceV1 {
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
 
         // 점주일 경우 본인의 식당인지 확인
-        if (PassportUtil.getRole(passport).equals("점주") && !restaurant.getUserId().equals(PassportUtil.getUserId(passport))) {
-            throw new UnauthorizedAccessException("본인의 식당만 삭제할 수 있습니다.");
-        }
+        validateOwnerRestaurantAccess(passport, restaurant);
 
         // 연관된 운영시간 논리 삭제
         restaurant.getOperatingHourEntityList().forEach(hour -> hour.deleteOperatingHourEntity(PassportUtil.getUsername(passport)));
@@ -193,6 +189,14 @@ public class RestaurantServiceV1 {
     private void validateUserRole(String currentRole, Set<String> requiredRoleSet) {
         if (!requiredRoleSet.contains(currentRole)) {
             throw new UnauthorizedAccessException("접근 권한이 없습니다");
+        }
+    }
+
+    private void validateOwnerRestaurantAccess(String passport, RestaurantEntity restaurant) {
+        // 현재 사용자의 역할 확인
+        if (PassportUtil.getRole(passport).equals("점주") &&
+                !restaurant.getUserId().equals(PassportUtil.getUserId(passport))) {
+            throw new UnauthorizedAccessException("본인의 식당에만 접근할 수 있습니다.");
         }
     }
 
