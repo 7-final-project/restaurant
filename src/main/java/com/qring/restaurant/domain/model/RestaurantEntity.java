@@ -164,4 +164,9 @@ public class RestaurantEntity {
         this.deletedAt = LocalDateTime.now();
         this.deletedBy = username;
     }
+
+    // operationStatus 필드 업데이트
+    public void updateOperationStatus(OperationStatus newStatus) {
+        this.operationStatus = newStatus;
+    }
 }

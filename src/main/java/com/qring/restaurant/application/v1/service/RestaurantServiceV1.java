@@ -2,9 +2,8 @@ package com.qring.restaurant.application.v1.service;
 
 import com.qring.restaurant.application.global.exception.EntityNotFoundException;
 import com.qring.restaurant.application.global.exception.UnauthorizedAccessException;
-import com.qring.restaurant.application.v1.res.RestaurantGetByIdResDTOV1;
-import com.qring.restaurant.application.v1.res.RestaurantPostResDTOV1;
-import com.qring.restaurant.application.v1.res.RestaurantSearchResDTOV1;
+import com.qring.restaurant.application.v1.res.*;
+import com.qring.restaurant.application.v1.scheduler.OperationStatusScheduler;
 import com.qring.restaurant.domain.model.CategoryEntity;
 import com.qring.restaurant.domain.model.OperatingHourEntity;
 import com.qring.restaurant.domain.model.RestaurantEntity;
@@ -31,16 +30,17 @@ public class RestaurantServiceV1 {
 
     private final RestaurantRepository restaurantRepository;
     private final CategoryRepository categoryRepository;
+    private final OperationStatusScheduler operationStatusScheduler;
 
     // 새로운 식당 생성
     @Transactional
     public RestaurantPostResDTOV1 postBy(String passport, PostRestaurantReqDTOV1 dto) {
-
+        // 1. 유저 권한 검증 (관리자 또는 점주만 생성 가능)
         validateUserRole(PassportUtil.getRole(passport), "관리자", "점주");
-
+        // 2. 카테고리 엔티티 조회 (존재하지 않거나 삭제된 카테고리는 예외 처리)
         CategoryEntity category = categoryRepository.findByIdAndDeletedAtIsNull(dto.getRestaurant().getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
-
+        // 3. 운영 시간 목록 생성 (DTO에서 전달받은 운영 시간을 기반으로 엔티티 생성)
         List<OperatingHourEntity> operatingHours = dto.getOperatingHourList().stream()
                 .map(hour -> OperatingHourEntity.builder()
                         .dayOfWeek(hour.getDayOfWeek())
@@ -48,9 +48,9 @@ public class RestaurantServiceV1 {
                         .closedAt(hour.getClosedAt())
                         .build())
                 .toList();
-
+        // 4. 초기 운영 상태 결정 (현재 시간 기준으로 OPEN 또는 CLOSED 설정)
         OperationStatus operationStatus = determineOperationStatus(operatingHours);
-
+        // 5. 새 식당 엔티티 생성
         RestaurantEntity restaurantForSave = RestaurantEntity.createRestaurantEntity(
                 PassportUtil.getUserId(passport),
                 dto.getRestaurant().getName(),
@@ -63,7 +63,11 @@ public class RestaurantServiceV1 {
                 operatingHours,
                 PassportUtil.getUsername(passport)
         );
+        // 6. 식당 엔티티 저장
         restaurantForSave = restaurantRepository.save(restaurantForSave);
+        // 7. 스케줄러에 상태 변경 작업 등록
+        operationStatusScheduler.scheduleOperationStatusChange(restaurantForSave);
+        // 8. 생성된 식당 데이터를 DTO로 반환
         return RestaurantPostResDTOV1.of(restaurantForSave);
     }
 
@@ -85,22 +89,27 @@ public class RestaurantServiceV1 {
     @Transactional
     public void putBy(String passport, Long id, PutRestaurantReqDTOV1 dto) {
 
+        // 1. 유저 권한 검증 (관리자 또는 점주만 수정 가능)
         validateUserRole(PassportUtil.getRole(passport), "관리자", "점주");
 
+        // 2. 수정 대상 식당 조회 (존재하지 않거나 삭제된 경우 예외 처리)
         RestaurantEntity existingRestaurant = restaurantRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
 
-        // 점주일 경우 본인의 식당인지 확인
+        // 3. 점주인 경우 본인의 식당인지 확인 (다른 점주의 식당을 수정하려 할 경우 예외 처리)
         if (PassportUtil.getRole(passport).equals("점주") && !existingRestaurant.getUserId().equals(PassportUtil.getUserId(passport))) {
             throw new UnauthorizedAccessException("본인의 식당만 수정할 수 있습니다.");
         }
 
+        // 4. 카테고리 엔티티 조회 (존재하지 않거나 삭제된 카테고리는 예외 처리)
         CategoryEntity category = categoryRepository.findByIdAndDeletedAtIsNull(dto.getRestaurant().getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
 
+        // 5. 기존 운영 시간 엔티티를 Map으로 변환 (ID를 기준으로 빠른 조회를 위해 사용)
         Map<Long, OperatingHourEntity> operatingHourMap = existingRestaurant.getOperatingHourEntityList().stream()
                 .collect(Collectors.toMap(OperatingHourEntity::getId, hour -> hour));
 
+        // 6. DTO에서 전달받은 운영 시간을 기존 엔티티에 업데이트
         dto.getOperatingHourList().forEach(hour -> {
             OperatingHourEntity operatingHour = operatingHourMap.get(hour.getId());
             if (operatingHour != null) {
@@ -108,8 +117,10 @@ public class RestaurantServiceV1 {
             }
         });
 
+        // 7. 운영 상태 재계산 (수정된 운영 시간을 기준으로 OPEN 또는 CLOSED 결정)
         OperationStatus updatedOperationStatus = determineOperationStatus(existingRestaurant.getOperatingHourEntityList());
 
+        // 8. 식당 엔티티 업데이트
         existingRestaurant.updateRestaurantEntity(
                 dto.getRestaurant().getName(),
                 dto.getRestaurant().getCapacity(),
@@ -121,7 +132,11 @@ public class RestaurantServiceV1 {
                 PassportUtil.getUsername(passport)
         );
 
+        // 9. 스케줄러에 상태 변경 작업 재등록 (변경된 운영 시간 반영)
+        operationStatusScheduler.scheduleOperationStatusChange(existingRestaurant);
     }
+
+
 
     // 식당 삭제
     @Transactional
@@ -182,8 +197,20 @@ public class RestaurantServiceV1 {
     }
 
     @Transactional(readOnly = true)
-    public boolean existsBy(Long id) {
-        return restaurantRepository.existsByIdAndDeletedAtIsNull(id);
+    public RestaurantExistsByIdResDTOV1 existsBy(Long id) {
+        boolean exists = restaurantRepository.existsByIdAndDeletedAtIsNull(id);
+
+        String status = exists ? "exists" : "nonexistence";
+
+        return RestaurantExistsByIdResDTOV1.builder()
+                .status(status)
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public RestaurantIdTableResDTOV1 getRestaurantTableByUserId(Long userId) {
+        List<Long> restaurantIds = restaurantRepository.findRestaurantIdsByUserId(userId);
+        return RestaurantIdTableResDTOV1.of(restaurantIds);
     }
 
 }
