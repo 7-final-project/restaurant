@@ -137,7 +137,6 @@ public class RestaurantServiceV1 {
     }
 
 
-
     // 식당 삭제
     @Transactional
     public void deleteBy(String passport, Long id) {
