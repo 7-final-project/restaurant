@@ -208,7 +208,7 @@ public class RestaurantServiceV1 {
 
     @Transactional(readOnly = true)
     public RestaurantIdTableResDTOV1 getBy(String passport) {
-        List<Long> restaurantIds = restaurantRepository.findIdByUserIdAndDeletedAtIsNull(PassportUtil.getUserId(passport));
+        List<Long> restaurantIds = restaurantRepository.findIdListByUserIdAndDeletedAtIsNull(PassportUtil.getUserId(passport));
         return RestaurantIdTableResDTOV1.of(restaurantIds);
     }
 
