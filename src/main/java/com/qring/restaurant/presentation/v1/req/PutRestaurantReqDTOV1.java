@@ -49,7 +49,6 @@ public class PutRestaurantReqDTOV1 {
     @Getter
     public static class OperatingHour {
 
-        @NotNull(message = "운영시간 ID 를 입력해주세요")
         private Long id;
 
         @NotNull(message = "요일을 입력해주세요")

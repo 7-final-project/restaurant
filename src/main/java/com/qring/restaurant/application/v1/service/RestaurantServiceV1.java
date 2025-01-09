@@ -90,37 +90,64 @@ public class RestaurantServiceV1 {
     // 식당 수정
     @Transactional
     public void putBy(String passport, Long id, PutRestaurantReqDTOV1 dto) {
-
-        // 1. 유저 권한 검증 (관리자 또는 점주만 수정 가능)
+        // 1. 유저 권한 검증
         validateUserRole(PassportUtil.getRole(passport), Set.of("관리자", "점주"));
 
-        // 2. 수정 대상 식당 조회 (존재하지 않거나 삭제된 경우 예외 처리)
+        // 2. 식당 조회
         RestaurantEntity existingRestaurant = restaurantRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
 
-        // 3. 점주인 경우 본인의 식당인지 확인 (다른 점주의 식당을 수정하려 할 경우 예외 처리)
+        // 3. 본인 식당 검증
         validateOwnerRestaurantAccess(passport, existingRestaurant);
 
-        // 4. 카테고리 엔티티 조회 (존재하지 않거나 삭제된 카테고리는 예외 처리)
+        // 4. 카테고리 조회
         CategoryEntity category = categoryRepository.findByIdAndDeletedAtIsNull(dto.getRestaurant().getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
 
-        // 5. 기존 운영 시간 엔티티를 Map으로 변환 (ID를 기준으로 빠른 조회를 위해 사용)
-        Map<Long, OperatingHourEntity> operatingHourEntityMap = existingRestaurant.getOperatingHourEntityList().stream()
-                .collect(Collectors.toMap(OperatingHourEntity::getId, hour -> hour));
+        // 5. 기존 운영 시간 매핑
+        Map<String, OperatingHourEntity> existingHours = existingRestaurant.getOperatingHourEntityList().stream()
+                .collect(Collectors.toMap(OperatingHourEntity::getOperationDayOfWeek, hour -> hour));
 
-        // 6. DTO에서 전달받은 운영 시간을 기존 엔티티에 업데이트
-        dto.getOperatingHourList().forEach(hour -> {
-            OperatingHourEntity operatingHour = operatingHourEntityMap.get(hour.getId());
-            if (operatingHour != null) {
-                operatingHour.updateOperatingHourEntity(hour.getOperationDayOfWeek(), hour.getOpenAt(), hour.getClosedAt());
+        // 6. 새로운 운영 시간 처리
+        dto.getOperatingHourList().forEach(newHour -> {
+            OperatingHourEntity existingHour = existingHours.get(newHour.getOperationDayOfWeek());
+
+            if (existingHour != null) {
+                if (existingHour.isDeleted()) {
+                    // 기존 운영 시간 복원
+                    existingHour.restoreOperatingHourEntity(PassportUtil.getUsername(passport));
+                }
+                // 기존 운영 시간 업데이트
+                existingHour.updateOperatingHourEntity(
+                        newHour.getOperationDayOfWeek(),
+                        newHour.getOpenAt(),
+                        newHour.getClosedAt()
+                );
+            } else {
+                // 새로운 운영 시간 추가
+                OperatingHourEntity newOperatingHour = OperatingHourEntity.builder()
+                        .operationDayOfWeek(newHour.getOperationDayOfWeek())
+                        .openAt(newHour.getOpenAt())
+                        .closedAt(newHour.getClosedAt())
+                        .username(PassportUtil.getUsername(passport))
+                        .build();
+                existingRestaurant.addOperatingHour(List.of(newOperatingHour));
             }
         });
 
-        // 7. 운영 상태 재계산 (수정된 운영 시간을 기준으로 OPEN 또는 CLOSED 결정)
+        // 7. 삭제되지 않은 운영 시간을 확인
+        Set<String> updatedDays = dto.getOperatingHourList().stream()
+                .map(PutRestaurantReqDTOV1.OperatingHour::getOperationDayOfWeek)
+                .collect(Collectors.toSet());
+
+        existingRestaurant.getOperatingHourEntityList().stream()
+                .filter(hour -> !updatedDays.contains(hour.getOperationDayOfWeek()))
+                .forEach(hour -> hour.deleteOperatingHourEntity(PassportUtil.getUsername(passport)));
+
+        // 8. 운영 상태 재계산
         OperationStatus updatedOperationStatus = determineOperationStatus(existingRestaurant.getOperatingHourEntityList());
 
-        // 8. 식당 엔티티 업데이트
+        // 9. 식당 엔티티 업데이트
         existingRestaurant.updateRestaurantEntity(
                 dto.getRestaurant().getName(),
                 dto.getRestaurant().getCapacity(),
@@ -132,9 +159,10 @@ public class RestaurantServiceV1 {
                 PassportUtil.getUsername(passport)
         );
 
-        // 9. 스케줄러에 상태 변경 작업 재등록 (변경된 운영 시간 반영)
+        // 10. 스케줄러 재등록
         operationStatusScheduler.scheduleOperationStatusChange(existingRestaurant);
     }
+
 
 
     // 식당 삭제
