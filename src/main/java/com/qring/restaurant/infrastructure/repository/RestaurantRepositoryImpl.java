@@ -22,11 +22,6 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     private final RestaurantQueryRepository restaurantQueryRepository;
 
     @Override
-    public boolean existsByIdAndDeletedAtIsNull(Long id) {
-        return jpaRestaurantRepository.existsByIdAndDeletedAtIsNull(id);
-    }
-
-    @Override
     public Optional<RestaurantEntity> findByIdAndDeletedAtIsNull(Long id) {
         return jpaRestaurantRepository.findByIdAndDeletedAtIsNull(id);
     }
