@@ -77,10 +77,6 @@ public class OperatingHourEntity {
     }
 
 
-    public boolean isDeleted() {
-        return this.deletedAt != null;
-    }
-
     public void deleteOperatingHourEntity(String deletedBy) {
         this.deletedAt = LocalDateTime.now();
         this.deletedBy = deletedBy;

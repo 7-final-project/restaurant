@@ -113,7 +113,7 @@ public class RestaurantServiceV1 {
             OperatingHourEntity existingHour = existingHours.get(newHour.getOperationDayOfWeek());
 
             if (existingHour != null) {
-                if (existingHour.isDeleted()) {
+                if (existingHour.getDeletedAt() != null) {
                     // 기존 운영 시간 복원
                     existingHour.restoreOperatingHourEntity(PassportUtil.getUsername(passport));
                 }
@@ -242,7 +242,7 @@ public class RestaurantServiceV1 {
 
     @Transactional(readOnly = true)
     public RestaurantIdTableResDTOV1 getRestaurantTableByUserId(String passport) {
-        List<Long> restaurantIds = restaurantRepository.findRestaurantIdsByUserId(PassportUtil.getUserId(passport));
+        List<Long> restaurantIds = restaurantRepository.findIdByUserIdAndDeletedAtIsNull(PassportUtil.getUserId(passport));
         return RestaurantIdTableResDTOV1.of(restaurantIds);
     }
 

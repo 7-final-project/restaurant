@@ -43,7 +43,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     }
 
     @Override
-    public List<Long> findRestaurantIdsByUserId(Long id) {
-        return jpaRestaurantRepository.findRestaurantIdsByUserId(id);
+    public List<Long> findIdByUserIdAndDeletedAtIsNull(Long id) {
+        return jpaRestaurantRepository.findIdByUserIdAndDeletedAtIsNull(id);
     }
 }
