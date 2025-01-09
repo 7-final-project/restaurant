@@ -86,6 +86,6 @@ public interface RestaurantControllerSwagger {
             @ApiResponse(responseCode = "400", description = "식당 리스트 조회 실패", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
     @GetMapping("/user/{userId}/table")
-    ResponseEntity<ResDTO<RestaurantIdTableResDTOV1>> getRestaurantTableByUserId(@PathVariable(name = "userId") Long userId);
+    ResponseEntity<ResDTO<RestaurantIdTableResDTOV1>> getBy(@RequestHeader("X-Passport-Token") String passport);
 
 }

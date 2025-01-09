@@ -213,8 +213,8 @@ public class RestaurantServiceV1 {
     }
 
     @Transactional(readOnly = true)
-    public RestaurantIdTableResDTOV1 getRestaurantTableByUserId(Long userId) {
-        List<Long> restaurantIds = restaurantRepository.findRestaurantIdsByUserId(userId);
+    public RestaurantIdTableResDTOV1 getRestaurantTableByUserId(String passport) {
+        List<Long> restaurantIds = restaurantRepository.findRestaurantIdsByUserId(PassportUtil.getUserId(passport));
         return RestaurantIdTableResDTOV1.of(restaurantIds);
     }
 
