@@ -25,5 +25,5 @@ public interface RestaurantRepository {
     RestaurantEntity save(RestaurantEntity restaurantEntity);
 
     // 식당 리스트 조회
-    List<Long> findRestaurantIdsByUserId(Long userId);
+    List<Long> findIdListByUserIdAndDeletedAtIsNull(Long userId);
 }

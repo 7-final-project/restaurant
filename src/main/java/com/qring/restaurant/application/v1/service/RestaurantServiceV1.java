@@ -104,50 +104,26 @@ public class RestaurantServiceV1 {
         CategoryEntity category = categoryRepository.findByIdAndDeletedAtIsNull(dto.getRestaurant().getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
 
-        // 5. 기존 운영 시간 매핑
-        Map<String, OperatingHourEntity> existingHours = existingRestaurant.getOperatingHourEntityList().stream()
-                .collect(Collectors.toMap(OperatingHourEntity::getOperationDayOfWeek, hour -> hour));
+        // 5. 기존 운영 시간 삭제 처리
+        existingRestaurant.getOperatingHourEntityList()
+                .forEach(hour -> hour.deleteOperatingHourEntity(PassportUtil.getUsername(passport)));
 
-        // 6. 새로운 운영 시간 처리
-        dto.getOperatingHourList().forEach(newHour -> {
-            OperatingHourEntity existingHour = existingHours.get(newHour.getOperationDayOfWeek());
-
-            if (existingHour != null) {
-                if (existingHour.isDeleted()) {
-                    // 기존 운영 시간 복원
-                    existingHour.restoreOperatingHourEntity(PassportUtil.getUsername(passport));
-                }
-                // 기존 운영 시간 업데이트
-                existingHour.updateOperatingHourEntity(
-                        newHour.getOperationDayOfWeek(),
-                        newHour.getOpenAt(),
-                        newHour.getClosedAt()
-                );
-            } else {
-                // 새로운 운영 시간 추가
-                OperatingHourEntity newOperatingHour = OperatingHourEntity.builder()
+        // 6. 새로운 운영 시간 추가
+        List<OperatingHourEntity> newOperatingHours = dto.getOperatingHourList().stream()
+                .map(newHour -> OperatingHourEntity.builder()
                         .operationDayOfWeek(newHour.getOperationDayOfWeek())
                         .openAt(newHour.getOpenAt())
                         .closedAt(newHour.getClosedAt())
                         .username(PassportUtil.getUsername(passport))
-                        .build();
-                existingRestaurant.addOperatingHour(List.of(newOperatingHour));
-            }
-        });
+                        .build())
+                .toList();
 
-        // 7. 삭제되지 않은 운영 시간을 확인
-        Set<String> updatedDays = dto.getOperatingHourList().stream()
-                .map(PutRestaurantReqDTOV1.OperatingHour::getOperationDayOfWeek)
-                .collect(Collectors.toSet());
+        existingRestaurant.addOperatingHour(newOperatingHours);
 
-        existingRestaurant.getOperatingHourEntityList().stream()
-                .filter(hour -> !updatedDays.contains(hour.getOperationDayOfWeek()))
-                .forEach(hour -> hour.deleteOperatingHourEntity(PassportUtil.getUsername(passport)));
-
-        // 8. 운영 상태 재계산
+        // 7. 운영 상태 재계산
         OperationStatus updatedOperationStatus = determineOperationStatus(existingRestaurant.getOperatingHourEntityList());
 
-        // 9. 식당 엔티티 업데이트
+        // 8. 식당 엔티티 업데이트
         existingRestaurant.updateRestaurantEntity(
                 dto.getRestaurant().getName(),
                 dto.getRestaurant().getCapacity(),
@@ -159,9 +135,10 @@ public class RestaurantServiceV1 {
                 PassportUtil.getUsername(passport)
         );
 
-        // 10. 스케줄러 재등록
+        // 9. 스케줄러 재등록
         operationStatusScheduler.scheduleOperationStatusChange(existingRestaurant);
     }
+
 
 
 
@@ -230,19 +207,8 @@ public class RestaurantServiceV1 {
     }
 
     @Transactional(readOnly = true)
-    public RestaurantExistsByIdResDTOV1 existsBy(Long id) {
-        boolean exists = restaurantRepository.existsByIdAndDeletedAtIsNull(id);
-
-        String status = exists ? "exists" : "nonexistence";
-
-        return RestaurantExistsByIdResDTOV1.builder()
-                .status(status)
-                .build();
-    }
-
-    @Transactional(readOnly = true)
-    public RestaurantIdTableResDTOV1 getRestaurantTableByUserId(String passport) {
-        List<Long> restaurantIds = restaurantRepository.findRestaurantIdsByUserId(PassportUtil.getUserId(passport));
+    public RestaurantIdTableResDTOV1 getBy(String passport) {
+        List<Long> restaurantIds = restaurantRepository.findIdListByUserIdAndDeletedAtIsNull(PassportUtil.getUserId(passport));
         return RestaurantIdTableResDTOV1.of(restaurantIds);
     }
 
