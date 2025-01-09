@@ -112,7 +112,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
                 ResDTO.<RestaurantIdTableResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("사용자의 식당 아이디 리스트를 가져왔습니다.")
-                        .data(restaurantServiceV1.getRestaurantTableByUserId(passport))
+                        .data(restaurantServiceV1.getBy(passport))
                         .build(),
                 HttpStatus.OK
         );
