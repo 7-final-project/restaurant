@@ -148,7 +148,7 @@ public class RestaurantEntity {
 
     // == 식당 정보 업데이트 메서드 == //
     public void updateRestaurantEntity(String name, int capacity, String tel, String address,
-                                       String addressDetails, OperationStatus operationStatus, CategoryEntity category) {
+                                       String addressDetails, OperationStatus operationStatus, CategoryEntity category, String username) {
         this.name = name;
         this.capacity = capacity;
         this.tel = tel;
@@ -156,11 +156,17 @@ public class RestaurantEntity {
         this.addressDetails = addressDetails;
         this.operationStatus = operationStatus;
         this.category = category;
+        this.modifiedBy = username;
     }
 
     // 논리 삭제 메서드
     public void deleteRestaurantEntity(String username) {
         this.deletedAt = LocalDateTime.now();
         this.deletedBy = username;
+    }
+
+    // operationStatus 필드 업데이트
+    public void updateOperationStatus(OperationStatus newStatus) {
+        this.operationStatus = newStatus;
     }
 }

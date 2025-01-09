@@ -4,6 +4,7 @@ import com.qring.restaurant.domain.model.RestaurantEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface RestaurantRepository {
@@ -23,4 +24,6 @@ public interface RestaurantRepository {
     // 식당 저장
     RestaurantEntity save(RestaurantEntity restaurantEntity);
 
+    // 식당 리스트 조회
+    List<Long> findIdListByUserIdAndDeletedAtIsNull(Long userId);
 }

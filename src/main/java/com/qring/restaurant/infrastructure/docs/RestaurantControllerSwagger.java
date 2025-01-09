@@ -2,9 +2,7 @@ package com.qring.restaurant.infrastructure.docs;
 
 
 import com.qring.restaurant.application.global.dto.ResDTO;
-import com.qring.restaurant.application.v1.res.RestaurantGetByIdResDTOV1;
-import com.qring.restaurant.application.v1.res.RestaurantPostResDTOV1;
-import com.qring.restaurant.application.v1.res.RestaurantSearchResDTOV1;
+import com.qring.restaurant.application.v1.res.*;
 import com.qring.restaurant.presentation.v1.req.PostRestaurantReqDTOV1;
 import com.qring.restaurant.presentation.v1.req.PutRestaurantReqDTOV1;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +29,7 @@ public interface RestaurantControllerSwagger {
             @ApiResponse(responseCode = "400", description = "식상 생성 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
     @PostMapping
-    ResponseEntity<ResDTO<RestaurantPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId, @Valid @RequestBody PostRestaurantReqDTOV1 dto);
+    ResponseEntity<ResDTO<RestaurantPostResDTOV1>> postBy(@RequestHeader("X-Passport-Token") String passport, @Valid @RequestBody PostRestaurantReqDTOV1 dto);
 
 
     @Operation(summary = "식당 검색", description = "식당을 검색하는 API 입니다.")
@@ -63,7 +61,7 @@ public interface RestaurantControllerSwagger {
             @ApiResponse(responseCode = "400", description = "식당 수정 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
     @PutMapping("/{id}")
-    ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-User-Id") Long userId, @PathVariable(name = "id") Long id, @Valid @RequestBody PutRestaurantReqDTOV1 dto);
+    ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-Passport-Token") String passport, @PathVariable(name = "id") Long id, @Valid @RequestBody PutRestaurantReqDTOV1 dto);
 
 
     @Operation(summary = "식당 삭제", description = "식당을 삭제하는 API 입니다.")
@@ -72,5 +70,14 @@ public interface RestaurantControllerSwagger {
             @ApiResponse(responseCode = "400", description = "식당 삭제 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
     @DeleteMapping("/{id}")
-    ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId, @PathVariable(name = "id") Long id);
+    ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-Passport-Token") String passport, @PathVariable(name = "id") Long id);
+
+    @Operation(summary = "사용자의 식당 리스트 조회", description = "특정 사용자 ID로 식당 ID 리스트를 조회하는 API입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "식당 리스트 조회 성공", content = @Content(schema = @Schema(implementation = ResDTO.class))),
+            @ApiResponse(responseCode = "400", description = "식당 리스트 조회 실패", content = @Content(schema = @Schema(implementation = ResDTO.class)))
+    })
+    @GetMapping("/user/{userId}/table")
+    ResponseEntity<ResDTO<RestaurantIdTableResDTOV1>> getBy(@RequestHeader("X-Passport-Token") String passport);
+
 }

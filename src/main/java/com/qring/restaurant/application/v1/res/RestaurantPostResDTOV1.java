@@ -64,7 +64,7 @@ public class RestaurantPostResDTOV1 {
         @AllArgsConstructor
         public static class OperatingHour {
 
-            private String dayOfWeek;
+            private String operationDayOfWeek;
             private LocalTime openAt;
             private LocalTime closedAt;
 
@@ -76,7 +76,7 @@ public class RestaurantPostResDTOV1 {
 
             public static OperatingHour from(OperatingHourEntity operatingHourEntity) {
                 return OperatingHour.builder()
-                        .dayOfWeek(operatingHourEntity.getDayOfWeek())
+                        .operationDayOfWeek(operatingHourEntity.getOperationDayOfWeek())
                         .openAt(operatingHourEntity.getOpenAt())
                         .closedAt(operatingHourEntity.getClosedAt())
                         .build();
