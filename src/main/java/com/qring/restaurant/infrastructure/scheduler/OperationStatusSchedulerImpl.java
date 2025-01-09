@@ -2,6 +2,7 @@ package com.qring.restaurant.infrastructure.scheduler;
 
 import com.qring.restaurant.application.v1.scheduler.OperationStatusScheduler;
 import com.qring.restaurant.domain.model.RestaurantEntity;
+import com.qring.restaurant.domain.model.constraint.OperationDayOfWeek;
 import com.qring.restaurant.domain.model.constraint.OperationStatus;
 import com.qring.restaurant.domain.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,7 @@ public class OperationStatusSchedulerImpl implements OperationStatusScheduler {
         // 3. 레스토랑의 각 운영 시간에 대해 OPEN/CLOSED 작업 예약
         restaurant.getOperatingHourEntityList().forEach(hour -> {
             // OPEN 상태로 변경 작업 예약
-            LocalDateTime openTime = calculateNextExecutionTime(hour.getDayOfWeek(), hour.getOpenAt());
+            LocalDateTime openTime = calculateNextExecutionTime(hour.getOperationDayOfWeek(), hour.getOpenAt());
             ScheduledFuture<?> openTask = taskScheduler.schedule(() -> {
                 System.out.println("Executing OPEN task for restaurant ID: " + restaurant.getId() + " at " + LocalDateTime.now());
                 // 트랜잭션 내에서 상태 변경 작업 실행
@@ -49,7 +50,7 @@ public class OperationStatusSchedulerImpl implements OperationStatusScheduler {
             tasks.add(openTask);
 
             // CLOSED 상태로 변경 작업 예약
-            LocalDateTime closeTime = calculateNextExecutionTime(hour.getDayOfWeek(), hour.getClosedAt());
+            LocalDateTime closeTime = calculateNextExecutionTime(hour.getOperationDayOfWeek(), hour.getClosedAt());
             ScheduledFuture<?> closeTask = taskScheduler.schedule(() -> {
                 System.out.println("Executing CLOSED task for restaurant ID: " + restaurant.getId() + " at " + LocalDateTime.now());
                 // 트랜잭션 내에서 상태 변경 작업 실행
@@ -74,15 +75,15 @@ public class OperationStatusSchedulerImpl implements OperationStatusScheduler {
     }
 
     // 다음 실행 시간을 계산
-    private LocalDateTime calculateNextExecutionTime(String dayOfWeek, LocalTime targetTime) {
+    private LocalDateTime calculateNextExecutionTime(String operationDayOfWeek, LocalTime targetTime) {
         LocalDateTime now = LocalDateTime.now(); // 현재 시간
         java.time.DayOfWeek currentDay = now.getDayOfWeek(); // 현재 요일
 
-        // 1. 한글 요일을 커스텀 DayOfWeek Enum으로 매핑
-        com.qring.restaurant.domain.model.constraint.DayOfWeek customDay =
-                com.qring.restaurant.domain.model.constraint.DayOfWeek.fromString(dayOfWeek);
+        // 1. 한글 요일을 커스텀 OperationDayOfWeek Enum으로 매핑
+        OperationDayOfWeek customDay =
+                OperationDayOfWeek.fromString(operationDayOfWeek);
 
-        // 2. 커스텀 DayOfWeek를 Java의 DayOfWeek로 변환 (변환하는 이유는 커스텀 DayOfWeek Enum과 Java 표준 DayOfWeek Enum 간의 변환이 필요 )
+        // 2. 커스텀 DayOfWeek를 Java의 DayOfWeek로 변환 (변환하는 이유는 커스텀 OperationDayOfWeek Enum과 Java 표준 OperationDayOfWeek Enum 간의 변환이 필요 )
         java.time.DayOfWeek targetDay = java.time.DayOfWeek.valueOf(customDay.name());
 
         // 3. 현재 요일에서 목표 요일까지의 차이를 계산
@@ -97,7 +98,7 @@ public class OperationStatusSchedulerImpl implements OperationStatusScheduler {
                 .withMinute(targetTime.getMinute())
                 .withSecond(0);
 
-        System.out.println("Calculated next execution time for " + dayOfWeek + " at " + targetTime + ": " + nextExecutionTime);
+        System.out.println("Calculated next execution time for " + operationDayOfWeek + " at " + targetTime + ": " + nextExecutionTime);
         return nextExecutionTime;
     }
 

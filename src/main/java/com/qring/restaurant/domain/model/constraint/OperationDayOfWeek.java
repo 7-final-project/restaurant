@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum DayOfWeek {
+public enum OperationDayOfWeek {
     MONDAY("월요일"),
     TUESDAY("화요일"),
     WEDNESDAY("수요일"),
@@ -20,15 +20,15 @@ public enum DayOfWeek {
         return description;
     }
 
-    public static DayOfWeek fromString(String description) {
+    public static OperationDayOfWeek fromString(String description) {
         return switch (description) {
-            case "월요일" -> DayOfWeek.MONDAY;
-            case "화요일" -> DayOfWeek.TUESDAY;
-            case "수요일" -> DayOfWeek.WEDNESDAY;
-            case "목요일" -> DayOfWeek.THURSDAY;
-            case "금요일" -> DayOfWeek.FRIDAY;
-            case "토요일" -> DayOfWeek.SATURDAY;
-            case "일요일" -> DayOfWeek.SUNDAY;
+            case "월요일" -> OperationDayOfWeek.MONDAY;
+            case "화요일" -> OperationDayOfWeek.TUESDAY;
+            case "수요일" -> OperationDayOfWeek.WEDNESDAY;
+            case "목요일" -> OperationDayOfWeek.THURSDAY;
+            case "금요일" -> OperationDayOfWeek.FRIDAY;
+            case "토요일" -> OperationDayOfWeek.SATURDAY;
+            case "일요일" -> OperationDayOfWeek.SUNDAY;
             default -> throw new IllegalArgumentException("유효하지 않은 요일입니다: " + description);
         };
     }

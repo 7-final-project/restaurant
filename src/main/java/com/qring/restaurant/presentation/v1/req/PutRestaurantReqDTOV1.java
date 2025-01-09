@@ -53,7 +53,7 @@ public class PutRestaurantReqDTOV1 {
         private Long id;
 
         @NotNull(message = "요일을 입력해주세요")
-        private String dayOfWeek;
+        private String operationDayOfWeek;
 
         @NotNull(message = "오픈 시간을 입력해주세요")
         private LocalTime openAt;

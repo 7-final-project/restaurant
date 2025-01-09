@@ -7,6 +7,7 @@ import com.qring.restaurant.application.v1.scheduler.OperationStatusScheduler;
 import com.qring.restaurant.domain.model.CategoryEntity;
 import com.qring.restaurant.domain.model.OperatingHourEntity;
 import com.qring.restaurant.domain.model.RestaurantEntity;
+import com.qring.restaurant.domain.model.constraint.OperationDayOfWeek;
 import com.qring.restaurant.domain.model.constraint.OperationStatus;
 import com.qring.restaurant.domain.repository.CategoryRepository;
 import com.qring.restaurant.domain.repository.RestaurantRepository;
@@ -44,7 +45,7 @@ public class RestaurantServiceV1 {
         // 3. 운영 시간 목록 생성 (DTO에서 전달받은 운영 시간을 기반으로 엔티티 생성)
         List<OperatingHourEntity> OperatingHourEntityList = dto.getOperatingHourList().stream()
                 .map(hour -> OperatingHourEntity.builder()
-                        .dayOfWeek(hour.getDayOfWeek())
+                        .operationDayOfWeek(hour.getOperationDayOfWeek())
                         .openAt(hour.getOpenAt())
                         .closedAt(hour.getClosedAt())
                         .build())
@@ -112,7 +113,7 @@ public class RestaurantServiceV1 {
         dto.getOperatingHourList().forEach(hour -> {
             OperatingHourEntity operatingHour = operatingHourEntityMap.get(hour.getId());
             if (operatingHour != null) {
-                operatingHour.updateOperatingHourEntity(hour.getDayOfWeek(), hour.getOpenAt(), hour.getClosedAt());
+                operatingHour.updateOperatingHourEntity(hour.getOperationDayOfWeek(), hour.getOpenAt(), hour.getClosedAt());
             }
         });
 
@@ -158,22 +159,22 @@ public class RestaurantServiceV1 {
     // 운영 상태 결정
     private OperationStatus determineOperationStatus(List<OperatingHourEntity> OperatingHourEntityList) {
         LocalDateTime now = LocalDateTime.now();
-        java.time.DayOfWeek currentDay = now.getDayOfWeek(); // Java 표준 DayOfWeek
+        java.time.DayOfWeek currentDay = now.getDayOfWeek(); // Java 표준 OperationDayOfWeek
         LocalTime currentTime = now.toLocalTime();
 
         System.out.println("Current Day: " + currentDay);
         System.out.println("Current Time: " + currentTime);
 
         // 오늘 요일을 우리의 커스텀 DayOfWeek로 변환
-        com.qring.restaurant.domain.model.constraint.DayOfWeek currentDayInCustomEnum =
-                com.qring.restaurant.domain.model.constraint.DayOfWeek.valueOf(currentDay.name()); // 커스텀 DayOfWeek로 매핑
+        OperationDayOfWeek currentDayInCustomEnum =
+                OperationDayOfWeek.valueOf(currentDay.name()); // 커스텀 DayOfWeek로 매핑
 
         // 오늘 요일의 운영 시간을 순회하며 현재 시간이 범위 내에 있는지 확인
         for (OperatingHourEntity hour : OperatingHourEntityList) {
-            System.out.println("Checking day: " + hour.getDayOfWeek() + ", Open: " + hour.getOpenAt() + ", Closed: " + hour.getClosedAt());
+            System.out.println("Checking day: " + hour.getOperationDayOfWeek() + ", Open: " + hour.getOpenAt() + ", Closed: " + hour.getClosedAt());
 
             // 현재 요일과 운영 시간 비교
-            if (hour.getDayOfWeek().equals(currentDayInCustomEnum.getDescription())) { // description과 비교
+            if (hour.getOperationDayOfWeek().equals(currentDayInCustomEnum.getDescription())) { // description과 비교
                 if (!currentTime.isBefore(hour.getOpenAt()) && !currentTime.isAfter(hour.getClosedAt())) {
                     System.out.println("OperationStatus: OPEN");
                     return OperationStatus.OPEN; // 현재 시간이 운영 시간 범위 내에 있으면 OPEN 반환

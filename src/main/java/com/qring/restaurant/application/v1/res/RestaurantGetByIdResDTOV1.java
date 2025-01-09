@@ -61,7 +61,7 @@ public class RestaurantGetByIdResDTOV1 {
         public static class OperatingHour {
 
             private Long id;
-            private String dayOfWeek;
+            private String operationDayOfWeek;
             private LocalTime openAt;
             private LocalTime closedAt;
 
@@ -74,7 +74,7 @@ public class RestaurantGetByIdResDTOV1 {
             public static OperatingHour from(OperatingHourEntity operatingHourEntity) {
                 return OperatingHour.builder()
                         .id(operatingHourEntity.getId())
-                        .dayOfWeek(operatingHourEntity.getDayOfWeek())
+                        .operationDayOfWeek(operatingHourEntity.getOperationDayOfWeek())
                         .openAt(operatingHourEntity.getOpenAt())
                         .closedAt(operatingHourEntity.getClosedAt())
                         .build();
