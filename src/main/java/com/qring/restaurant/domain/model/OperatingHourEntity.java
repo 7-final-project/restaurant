@@ -25,8 +25,8 @@ public class OperatingHourEntity {
     @Column(name = "operating_hour_id")
     private Long id;
 
-    @Column(name = "day_of_week")
-    private String dayOfWeek;
+    @Column(name = "operation_day_of_week")
+    private String operationDayOfWeek;
 
     @Column(name = "open_at")
     private LocalTime openAt;
@@ -64,8 +64,8 @@ public class OperatingHourEntity {
     }
 
     // == 운영 시간 업데이트 메서드 == //
-    public void updateOperatingHourEntity(String dayOfWeek, LocalTime openAt, LocalTime closedAt) {
-        this.dayOfWeek = dayOfWeek;
+    public void updateOperatingHourEntity(String operationDayOfWeek, LocalTime openAt, LocalTime closedAt) {
+        this.operationDayOfWeek = operationDayOfWeek;
         this.openAt = openAt;
         this.closedAt = closedAt;
     }
@@ -76,8 +76,8 @@ public class OperatingHourEntity {
     }
 
     @Builder
-    public OperatingHourEntity(String dayOfWeek, LocalTime openAt, LocalTime closedAt, String username) {
-        this.dayOfWeek = dayOfWeek;
+    public OperatingHourEntity(String operationDayOfWeek, LocalTime openAt, LocalTime closedAt, String username) {
+        this.operationDayOfWeek = operationDayOfWeek;
         this.openAt = openAt;
         this.closedAt = closedAt;
         this.createdBy = username;

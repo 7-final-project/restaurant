@@ -26,7 +26,7 @@ public interface CategoryControllerSwagger {
             @ApiResponse(responseCode = "400", description = "카테고리 생성 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
     @PostMapping
-    ResponseEntity<ResDTO<CategoryPostResDTOV1>> postBy(@RequestHeader("X-User-Id") Long userId, @Valid @RequestBody PostCategoryReqDTOV1 dto);
+    ResponseEntity<ResDTO<CategoryPostResDTOV1>> postBy(@RequestHeader("X-Passport-Token") String passport, @Valid @RequestBody PostCategoryReqDTOV1 dto);
 
 
     @Operation(summary = "카테고리 검색", description = "모든 카테고리를 검색하는 API입니다.")
@@ -53,7 +53,7 @@ public interface CategoryControllerSwagger {
             @ApiResponse(responseCode = "400", description = "카테고리 수정 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
     @PutMapping("/{id}")
-    ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-User-Id") Long userId,
+    ResponseEntity<ResDTO<Object>> putBy(@RequestHeader("X-Passport-Token") String passport,
                                          @PathVariable Long id,
                                          @Valid @RequestBody PutCategoryDTOV1 dto);
 
@@ -64,7 +64,7 @@ public interface CategoryControllerSwagger {
             @ApiResponse(responseCode = "400", description = "카테고리 삭제 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
     @DeleteMapping("/{id}")
-    ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-User-Id") Long userId, @PathVariable Long id);
+    ResponseEntity<ResDTO<Object>> deleteBy(@RequestHeader("X-Passport-Token") String passport, @PathVariable Long id);
 
 
 }
