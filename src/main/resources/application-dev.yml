@@ -19,7 +19,7 @@ spring:
     import: classpath:application-key.yml
 
     kafka:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: ${KAFKA-BOOTSTRAP-SERVERS}
       consumer:
         group-id: ${spring.application.name}-group
         auto-offset-reset: earliest
