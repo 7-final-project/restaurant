@@ -7,8 +7,6 @@ eureka:
       defaultZone: http://localhost:19000/eureka/
 
 spring:
-  cache:
-    type: redis
   data:
     redis:
       host: ${REDIS_DEV_HOST}
@@ -45,9 +43,6 @@ spring:
     topic:
       queue-alarm-event: queue-alarm-event-topic
 
-  config:
-    import: classpath:application-key.yml
-
-  service:
-    jwt:
-      secret-key: ${JWT_SECRET_KEY}
+service:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}
