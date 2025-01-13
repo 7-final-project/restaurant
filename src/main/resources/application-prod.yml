@@ -7,6 +7,8 @@ eureka:
       defaultZone: http://q-ring:19000/eureka/
 
 spring:
+  cache:
+    type: redis
   data:
     redis:
       host: ${REDIS_PROD_HOST}
@@ -27,6 +29,21 @@ spring:
         show_sql: true
         format_sql: true
     open-in-view: false
+
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: ${spring.application.name}-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    topic:
+      queue-alarm-event: queue-alarm-event-topic
 
 service:
   jwt:
