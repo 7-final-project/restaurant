@@ -45,9 +45,6 @@ spring:
     topic:
       queue-alarm-event: queue-alarm-event-topic
 
-  config:
-    import: classpath:application-key.yml
-
-  service:
-    jwt:
-      secret-key: ${JWT_SECRET_KEY}
+service:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}
