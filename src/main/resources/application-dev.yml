@@ -1,8 +1,23 @@
+server:
+  port: 19050
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19000/eureka/
+
 spring:
+  cache:
+    type: redis
+  data:
+    redis:
+      host: ${REDIS_DEV_HOST}
+      port: ${REDIS_DEV_PORT}
+
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: ${DB_DEV_URL}
+    username: ${DB_DEV_USER}
+    password: ${DB_DEV_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -15,27 +30,24 @@ spring:
         format_sql: true
     open-in-view: false
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: ${spring.application.name}-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    topic:
+      queue-alarm-event: queue-alarm-event-topic
+
   config:
     import: classpath:application-key.yml
 
-    kafka:
-      bootstrap-servers: ${KAFKA-BOOTSTRAP-SERVERS}
-      consumer:
-        group-id: ${spring.application.name}-group
-        auto-offset-reset: earliest
-        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-        value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-        properties:
-          spring.json.trusted.packages: '*'
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:19000/eureka/
-
-service:
-  jwt:
-    secret-key: ${JWT_SECRET_KEY}
-
-server:
-  port: 19050
+  service:
+    jwt:
+      secret-key: ${JWT_SECRET_KEY}
