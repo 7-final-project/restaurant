@@ -169,4 +169,15 @@ public class RestaurantEntity {
     public void updateOperationStatus(OperationStatus newStatus) {
         this.operationStatus = newStatus;
     }
+
+    // 식당의 평점 관련 필드 업데이트 메서드
+    public void updateRatingAverage(double newRatingAverage) {
+        this.ratingAverage = newRatingAverage;
+    }
+
+    // modifiedBy 필드 업데이트 메서드
+    public void updateModifiedBy(String username) {
+        this.modifiedBy = username;
+    }
+
 }
