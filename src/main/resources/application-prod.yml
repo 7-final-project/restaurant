@@ -41,7 +41,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     topic:
-      queue-alarm-event: queue-alarm-event-topic
+
 
 service:
   jwt:
