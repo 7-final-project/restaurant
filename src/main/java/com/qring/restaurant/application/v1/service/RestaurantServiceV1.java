@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -104,20 +105,29 @@ public class RestaurantServiceV1 {
         CategoryEntity category = categoryRepository.findByIdAndDeletedAtIsNull(dto.getRestaurant().getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
 
-        // 5. 기존 운영 시간 삭제 처리
-        existingRestaurant.getOperatingHourEntityList()
+        // 5. 수정할 요일에 해당하는 기존 운영 시간만 삭제 처리
+        Set<String> newOperationDays = dto.getOperatingHourList().stream()
+                .map(PutRestaurantReqDTOV1.OperatingHour::getOperationDayOfWeek) // DTO 내부 클래스 활용
+                .collect(Collectors.toSet());
+
+        existingRestaurant.getOperatingHourEntityList().stream()
+                .filter(hour -> newOperationDays.contains(hour.getOperationDayOfWeek()))
                 .forEach(hour -> hour.deleteOperatingHourEntity(PassportUtil.getUsername(passport)));
 
         // 6. 새로운 운영 시간 추가
-        List<OperatingHourEntity> newOperatingHours = dto.getOperatingHourList().stream()
-                .map(newHour -> OperatingHourEntity.builder()
-                        .operationDayOfWeek(newHour.getOperationDayOfWeek())
-                        .openAt(newHour.getOpenAt())
-                        .closedAt(newHour.getClosedAt())
-                        .username(PassportUtil.getUsername(passport))
-                        .build())
-                .toList();
+        Map<String, OperatingHourEntity> newOperatingHoursMap = dto.getOperatingHourList().stream()
+                .collect(Collectors.toMap(
+                        PutRestaurantReqDTOV1.OperatingHour::getOperationDayOfWeek,
+                        newHour -> OperatingHourEntity.builder()
+                                .operationDayOfWeek(newHour.getOperationDayOfWeek())
+                                .openAt(newHour.getOpenAt())
+                                .closedAt(newHour.getClosedAt())
+                                .username(PassportUtil.getUsername(passport))
+                                .build(),
+                        (existing, replacement) -> replacement // 중복 처리 시 최신 값 유지
+                ));
 
+        List<OperatingHourEntity> newOperatingHours = new ArrayList<>(newOperatingHoursMap.values());
         existingRestaurant.addOperatingHour(newOperatingHours);
 
         // 7. 운영 상태 재계산
@@ -207,19 +217,8 @@ public class RestaurantServiceV1 {
     }
 
     @Transactional(readOnly = true)
-    public RestaurantExistsByIdResDTOV1 existsBy(Long id) {
-        boolean exists = restaurantRepository.existsByIdAndDeletedAtIsNull(id);
-
-        String status = exists ? "exists" : "nonexistence";
-
-        return RestaurantExistsByIdResDTOV1.builder()
-                .status(status)
-                .build();
-    }
-
-    @Transactional(readOnly = true)
-    public RestaurantIdTableResDTOV1 getRestaurantTableByUserId(String passport) {
-        List<Long> restaurantIds = restaurantRepository.findIdByUserIdAndDeletedAtIsNull(PassportUtil.getUserId(passport));
+    public RestaurantIdTableResDTOV1 getBy(String passport) {
+        List<Long> restaurantIds = restaurantRepository.findIdListByUserIdAndDeletedAtIsNull(PassportUtil.getUserId(passport));
         return RestaurantIdTableResDTOV1.of(restaurantIds);
     }
 

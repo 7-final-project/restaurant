@@ -76,6 +76,9 @@ public class RestaurantQueryRepository {
 
 
     private OrderSpecifier<?> getOrderSpecifier(String sort) {
+        if(sort == null || sort.isBlank()){
+            return restaurantEntity.createdAt.desc(); // 기본값
+        }
         switch (sort.toLowerCase()) {
             case "high":
                 return restaurantEntity.ratingAverage.desc();

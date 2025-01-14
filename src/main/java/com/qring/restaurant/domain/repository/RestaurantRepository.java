@@ -9,8 +9,6 @@ import java.util.Optional;
 
 public interface RestaurantRepository {
 
-    // 특정 ID로 삭제되지 않은 식당 존재 여부 확인
-    boolean existsByIdAndDeletedAtIsNull(Long id);
 
     // 특정 ID로 삭제되지 않은 식당과 운영시간 조회
     Optional<RestaurantEntity> findByIdWithOperatingHours(Long id);
@@ -25,5 +23,5 @@ public interface RestaurantRepository {
     RestaurantEntity save(RestaurantEntity restaurantEntity);
 
     // 식당 리스트 조회
-    List<Long> findIdByUserIdAndDeletedAtIsNull(Long userId);
+    List<Long> findIdListByUserIdAndDeletedAtIsNull(Long userId);
 }

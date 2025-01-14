@@ -94,25 +94,13 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
         );
     }
 
-    @GetMapping("{id}/exists")
-    public ResponseEntity<ResDTO<RestaurantExistsByIdResDTOV1>> existsBy(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(
-                ResDTO.<RestaurantExistsByIdResDTOV1>builder()
-                        .code(HttpStatus.OK.value())
-                        .message("식당 존재 여부 조회에 성공하였습니다.")
-                        .data(restaurantServiceV1.existsBy(id))
-                        .build(),
-                HttpStatus.OK
-        );
-    }
-
     @GetMapping("/my")
     public ResponseEntity<ResDTO<RestaurantIdTableResDTOV1>> getBy(@RequestHeader("X-Passport-Token") String passport) {
         return new ResponseEntity<>(
                 ResDTO.<RestaurantIdTableResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("사용자의 식당 아이디 리스트를 가져왔습니다.")
-                        .data(restaurantServiceV1.getRestaurantTableByUserId(passport))
+                        .data(restaurantServiceV1.getBy(passport))
                         .build(),
                 HttpStatus.OK
         );

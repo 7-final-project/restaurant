@@ -68,9 +68,14 @@ public class RestaurantSearchResDTOV1 {
                         .tel(restaurantEntity.getTel())
                         .address(restaurantEntity.getAddress())
                         .addressDetails(restaurantEntity.getAddressDetails())
-                        .ratingAverage(restaurantEntity.getRatingAverage())
+                        .ratingAverage(roundToOneDecimalPlace(restaurantEntity.getRatingAverage()))
                         .operationStatus(restaurantEntity.getOperationStatus().getDescription())
                         .build();
+            }
+
+            // 소수점 한 자리까지 반올림 처리
+            private static double roundToOneDecimalPlace(double value) {
+                return Math.round(value * 10) / 10.0;
             }
         }
 

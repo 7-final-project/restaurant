@@ -2,6 +2,8 @@ package com.qring.restaurant.infrastructure.repository;
 
 import com.qring.restaurant.domain.model.RestaurantEntity;
 import com.qring.restaurant.domain.repository.RestaurantRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,13 +16,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RestaurantRepositoryImpl implements RestaurantRepository {
 
+    @PersistenceContext
+    private EntityManager entityManager;
     private final JpaRestaurantRepository jpaRestaurantRepository;
     private final RestaurantQueryRepository restaurantQueryRepository;
-
-    @Override
-    public boolean existsByIdAndDeletedAtIsNull(Long id) {
-        return jpaRestaurantRepository.existsByIdAndDeletedAtIsNull(id);
-    }
 
     @Override
     public Optional<RestaurantEntity> findByIdAndDeletedAtIsNull(Long id) {
@@ -43,7 +42,10 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     }
 
     @Override
-    public List<Long> findIdByUserIdAndDeletedAtIsNull(Long id) {
-        return jpaRestaurantRepository.findIdByUserIdAndDeletedAtIsNull(id);
+    public List<Long> findIdListByUserIdAndDeletedAtIsNull(Long userId) {
+        String jpql = "SELECT o.id FROM RestaurantEntity o WHERE o.userId = :userId AND o.deletedAt IS NULL";
+        return entityManager.createQuery(jpql, Long.class)
+                .setParameter("userId", userId)
+                .getResultList();
     }
 }
