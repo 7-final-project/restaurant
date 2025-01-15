@@ -30,12 +30,6 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9092
-    consumer:
-      group-id: ${spring.application.name}-group
-      auto-offset-reset: earliest
-      properties:
-        spring.json.trusted.packages: '*'
-    topic:
 
 service:
   jwt:

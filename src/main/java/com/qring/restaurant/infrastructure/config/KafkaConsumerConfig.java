@@ -20,6 +20,9 @@ public class KafkaConsumerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String kafkaServer;
 
+    @Value("${spring.application.name}-group")
+    private String groupId;
+
     @Bean
     public ConsumerFactory<String, Object> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
@@ -28,7 +31,9 @@ public class KafkaConsumerConfig {
         // 직렬화/역직렬화 설정
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-
+        configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"); // YML 파일의 offset-reset 설정 대체
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId); // YML 파일의 group-id 설정 대체
+        configProps.put("spring.json.trusted.packages", "*"); // YML 파일의 trusted.packages 설정 대체
         return new DefaultKafkaConsumerFactory<>(configProps);
     }
 
