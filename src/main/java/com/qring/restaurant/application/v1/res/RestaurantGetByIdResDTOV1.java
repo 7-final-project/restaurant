@@ -34,6 +34,7 @@ public class RestaurantGetByIdResDTOV1 {
         private Long categoryId;
         private String name;
         private String tel;
+        private String area;
         private String address;
         private String addressDetails;
         private double ratingAverage;
@@ -46,6 +47,7 @@ public class RestaurantGetByIdResDTOV1 {
                     .categoryId(restaurantEntity.getCategory().getId())
                     .name(restaurantEntity.getName())
                     .tel(restaurantEntity.getTel())
+                    .area(restaurantEntity.getArea())
                     .address(restaurantEntity.getAddress())
                     .addressDetails(restaurantEntity.getAddressDetails())
                     .ratingAverage(roundToOneDecimalPlace(restaurantEntity.getRatingAverage()))
