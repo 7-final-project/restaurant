@@ -39,6 +39,9 @@ public class PutRestaurantReqDTOV1 {
         @Positive(message = "수용 테이블 수를 입력해주세요")
         private int capacity;
 
+        @NotBlank(message = "지역을 입력해주세요")
+        private String area;
+
         @NotBlank(message = "주소를 입력해주세요")
         private String address;
 
