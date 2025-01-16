@@ -6,6 +6,7 @@ import com.qring.restaurant.application.v1.res.*;
 import com.qring.restaurant.application.v1.scheduler.OperationStatusScheduler;
 import com.qring.restaurant.domain.model.CategoryEntity;
 import com.qring.restaurant.domain.model.OperatingHourEntity;
+import com.qring.restaurant.domain.model.RegionEntity;
 import com.qring.restaurant.domain.model.RestaurantEntity;
 import com.qring.restaurant.domain.model.constraint.OperationDayOfWeek;
 import com.qring.restaurant.domain.model.constraint.OperationStatus;

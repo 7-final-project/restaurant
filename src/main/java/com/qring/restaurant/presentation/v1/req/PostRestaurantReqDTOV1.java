@@ -37,8 +37,9 @@ public class PostRestaurantReqDTOV1 {
         @Positive(message = "수용 테이블 수를 입력해주세요")
         private int capacity;
 
-        @NotBlank(message = "지역을 입력해주세요")
-        private String area;
+        @Valid
+        @NotNull(message = "지역 정보를 입력해주세요")
+        private Region region;
 
         @NotBlank(message = "주소를 입력해주세요")
         private String address;
@@ -58,6 +59,17 @@ public class PostRestaurantReqDTOV1 {
 
         @NotNull(message = "마감 시간을 입력해주세요")
         private LocalTime closedAt;
+
+    }
+
+    @Getter
+    public static class Region {
+
+        @NotBlank(message = "지역 코드를 입력해주세요")
+        private String code;
+
+        @NotBlank(message = "지역 이름을 입력해주세요")
+        private String name;
 
     }
 }
