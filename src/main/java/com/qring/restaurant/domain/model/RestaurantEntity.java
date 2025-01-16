@@ -154,12 +154,11 @@ public class RestaurantEntity {
     }
 
     // == 식당 정보 업데이트 메서드 == //
-    public void updateRestaurantEntity(String name, int capacity, String tel, String address, RegionEntity region,
+    public void updateRestaurantEntity(String name, int capacity, String tel, String address,
                                        String addressDetails, OperationStatus operationStatus, CategoryEntity category, String username) {
         this.name = name;
         this.capacity = capacity;
         this.tel = tel;
-        this.region = region;
         this.address = address;
         this.addressDetails = addressDetails;
         this.operationStatus = operationStatus;

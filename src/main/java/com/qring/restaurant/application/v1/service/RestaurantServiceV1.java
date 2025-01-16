@@ -140,7 +140,6 @@ public class RestaurantServiceV1 {
                 dto.getRestaurant().getName(),
                 dto.getRestaurant().getCapacity(),
                 dto.getRestaurant().getTel(),
-                dto.getRestaurant().getArea(),
                 dto.getRestaurant().getAddress(),
                 dto.getRestaurant().getAddressDetails(),
                 updatedOperationStatus,
