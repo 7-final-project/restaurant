@@ -52,7 +52,7 @@ public class RestaurantSearchResDTOV1 {
             private String area;
             private String address;
             private String addressDetails;
-            private double ratingAverage;
+            private double averageRating;
             private String operationStatus;
 
             public static List<Restaurant> from(List<RestaurantEntity> restaurantEntityList) {
@@ -70,17 +70,16 @@ public class RestaurantSearchResDTOV1 {
                         .area(restaurantEntity.getArea())
                         .address(restaurantEntity.getAddress())
                         .addressDetails(restaurantEntity.getAddressDetails())
-                        .ratingAverage(roundToOneDecimalPlace(restaurantEntity.getRatingAverage()))
+                        .averageRating(calculateAverageRating(restaurantEntity)) // 평균 평점 계산
                         .operationStatus(restaurantEntity.getOperationStatus().getDescription())
                         .build();
             }
 
-            // 소수점 한 자리까지 반올림 처리
-            private static double roundToOneDecimalPlace(double value) {
-                return Math.round(value * 10) / 10.0;
+            private static double calculateAverageRating(RestaurantEntity restaurantEntity) {
+                if (restaurantEntity.getReviewCount() == 0) return 0.0;
+                return Math.round((double) restaurantEntity.getTotalRating() / restaurantEntity.getReviewCount() * 10) / 10.0;
             }
         }
-
 
         @Getter
         @Builder
