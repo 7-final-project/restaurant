@@ -2,10 +2,7 @@ package com.qring.restaurant.domain.model;
 
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -65,6 +62,10 @@ public class RegionEntity {
     @Column(name = "deleted_by")
     private String deletedBy;
 
+    public void setParent(RegionEntity parent) {
+        this.parent = parent;
+    }
+
     // 최상위 지역 생성자
     @Builder
     public RegionEntity(String code, String name, String createdBy) {
@@ -81,7 +82,8 @@ public class RegionEntity {
         this.code = code;
         this.name = name;
         this.parent = parent;
-        this.depth = parent.getDepth() + 1; // 부모의 depth + 1
+        this.depth = 0;
+        //this.depth = parent.getDepth() + 1; // 부모의 depth + 1
         this.createdBy = createdBy;
         this.modifiedBy = createdBy;
     }

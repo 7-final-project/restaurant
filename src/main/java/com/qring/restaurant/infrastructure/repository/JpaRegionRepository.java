@@ -9,4 +9,10 @@ public interface JpaRegionRepository extends JpaRepository<RegionEntity, Long> {
 
     // 특정 ID로 삭제되지 않은 지역 조회
     Optional<RegionEntity> findByIdAndDeletedAtIsNull(Long id);
+
+    // 특정 ID로 삭제되지 않은 지역 조회
+    Optional<RegionEntity> findByNameAndDeletedAtIsNull(String name);
+
+    // 특정 이름으로 삭제되지 않은 지역 존재 여부 확인
+    boolean existsByNameAndDeletedAtIsNull(String name);
 }

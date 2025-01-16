@@ -19,6 +19,16 @@ public class RegionRepositoryImpl implements RegionRepository {
     }
 
     @Override
+    public Optional<RegionEntity> findByNameAndDeletedAtIsNull(String name) {
+        return jpaRegionRepository.findByNameAndDeletedAtIsNull(name);
+    }
+
+    @Override
+    public boolean existsByNameAndDeletedAtIsNull(String name) {
+        return jpaRegionRepository.existsByNameAndDeletedAtIsNull(name);
+    }
+
+    @Override
     public RegionEntity save(RegionEntity regionEntity) {
         return jpaRegionRepository.save(regionEntity);
     }
