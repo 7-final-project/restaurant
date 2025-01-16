@@ -48,8 +48,11 @@ public class RestaurantEntity {
     @Column(name = "address_details")
     private String addressDetails;
 
-    @Column(name = "rating_average", nullable = false)
-    private double ratingAverage = 0.0;
+    @Column(name = "review_count", nullable = false)
+    private int reviewCount = 0;
+
+    @Column(name = "total_rating", nullable = false)
+    private int totalRating = 0;
 
     @Column(name = "operation_status")
     @Enumerated(EnumType.STRING)
@@ -84,7 +87,7 @@ public class RestaurantEntity {
 
     @Builder
     public RestaurantEntity(Long userId, String name, int capacity, String tel, String area, String address, String addressDetails,
-                            double ratingAverage, OperationStatus operationStatus, CategoryEntity categoryEntity, String username) {
+                            int reviewCount, int totalRating, OperationStatus operationStatus, CategoryEntity categoryEntity, String username) {
         this.userId = userId;
         this.name = name;
         this.capacity = capacity;
@@ -92,7 +95,8 @@ public class RestaurantEntity {
         this.area = area;
         this.address = address;
         this.addressDetails = addressDetails;
-        this.ratingAverage = ratingAverage;
+        this.reviewCount = reviewCount;
+        this.totalRating = totalRating;
         this.operationStatus = operationStatus;
         this.category = categoryEntity;
         this.createdBy = username;
@@ -128,28 +132,37 @@ public class RestaurantEntity {
         return restaurantEntityForSave;
     }
 
-    // == 반환 메서드 == //
-    public static RestaurantEntity responseRestaurantEntity(Long userId, String name, int capacity, String tel, String area,
-                                                            String address, String addressDetails, double ratingAverage, OperationStatus operationStatus,
-                                                            CategoryEntity categoryEntity, List<OperatingHourEntity> operatingHourEntityList, String username) {
+    // == 리뷰 관련 메서드 == //
+    public void updateTotalRating(int newRating) {
+        // 필요하면 oldRating 값으로 계산 추가 가능
+        this.totalRating += newRating;
+    }
 
-        RestaurantEntity restaurantEntityForSave = RestaurantEntity.builder()
-                .userId(userId)
-                .name(name)
-                .capacity(capacity)
-                .tel(tel)
-                .area(area)
-                .address(address)
-                .addressDetails(addressDetails)
-                .ratingAverage(ratingAverage)
-                .operationStatus(operationStatus)
-                .categoryEntity(categoryEntity)
-                .username(username)
-                .build();
+    // 리뷰 수 증가
+    public void incrementReviewCount() {
+        this.reviewCount++;
+    }
 
-        restaurantEntityForSave.addOperatingHour(operatingHourEntityList);
+    // 리뷰 수 감소
+    public void decrementReviewCount() {
+        if (this.reviewCount > 0) {
+            this.reviewCount--;
+        }
+    }
 
-        return restaurantEntityForSave;
+    // 총 평점 증가
+    public void addTotalRating(int rating) {
+        this.totalRating += rating;
+    }
+
+    // 총 평점 감소
+    public void subtractTotalRating(int rating) {
+        this.totalRating -= rating;
+    }
+
+    // modifiedBy 필드 업데이트
+    public void updateModifiedBy(String username) {
+        this.modifiedBy = username;
     }
 
     // == 식당 정보 업데이트 메서드 == //
@@ -176,15 +189,4 @@ public class RestaurantEntity {
     public void updateOperationStatus(OperationStatus newStatus) {
         this.operationStatus = newStatus;
     }
-
-    // 식당의 평점 관련 필드 업데이트 메서드
-    public void updateRatingAverage(double newRatingAverage) {
-        this.ratingAverage = newRatingAverage;
-    }
-
-    // modifiedBy 필드 업데이트 메서드
-    public void updateModifiedBy(String username) {
-        this.modifiedBy = username;
-    }
-
 }
