@@ -20,7 +20,6 @@ public class KafkaMessageConsumerV1 {
     // JSON 문자열을 DTO로 변환하기 위한 Jackson ObjectMapper
     private final ObjectMapper objectMapper;
 
-
     @KafkaListener(topics = "review-event-topic", groupId = "restaurant-service")
     @Transactional
     public void consumeReviewEvent(String message) {
@@ -30,10 +29,13 @@ public class KafkaMessageConsumerV1 {
 
             log.info("리뷰 이벤트 수신 성공: {}", reviewEvent);
 
+            // 이벤트 타입에 따라 처리
             switch (reviewEvent.getEventType().toUpperCase()) {
                 case "CREATE":
+                    handleCreateEvent(reviewEvent);
+                    break;
                 case "UPDATE":
-                    updateRestaurantRating(reviewEvent);
+                    handleUpdateEvent(reviewEvent);
                     break;
                 case "DELETE":
                     handleDeleteEvent(reviewEvent);
@@ -46,33 +48,38 @@ public class KafkaMessageConsumerV1 {
         }
     }
 
-    private void updateRestaurantRating(ReviewEventDTOV1 reviewEvent) {
+    private void handleCreateEvent(ReviewEventDTOV1 reviewEvent) {
         RestaurantEntity restaurant = restaurantRepository.findByIdAndDeletedAtIsNull(reviewEvent.getRestaurantId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 레스토랑을 찾을 수 없습니다: " + reviewEvent.getRestaurantId()));
 
-        double newRatingAverage = (double) reviewEvent.getTotalRating() / reviewEvent.getReviewCount();
+        // 리뷰 통계 업데이트
+        restaurant.incrementReviewCount();
+        restaurant.addTotalRating(reviewEvent.getRating());
 
-        restaurant.updateRatingAverage(newRatingAverage);
+        log.info("CREATE 이벤트로 레스토랑 ID {}의 통계가 업데이트되었습니다: 총 리뷰 수 = {}, 총 평점 = {}",
+                restaurant.getId(), restaurant.getReviewCount(), restaurant.getTotalRating());
+    }
 
-        restaurant.updateModifiedBy("system");
+    private void handleUpdateEvent(ReviewEventDTOV1 reviewEvent) {
+        RestaurantEntity restaurant = restaurantRepository.findByIdAndDeletedAtIsNull(reviewEvent.getRestaurantId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 레스토랑을 찾을 수 없습니다: " + reviewEvent.getRestaurantId()));
 
-        log.info("레스토랑 ID {}의 평점이 업데이트되었습니다: {}", restaurant.getId(), newRatingAverage);
+        // 리뷰 통계 업데이트
+        restaurant.updateTotalRating(reviewEvent.getRating());
+
+        log.info("UPDATE 이벤트로 레스토랑 ID {}의 통계가 업데이트되었습니다: 총 평점 = {}",
+                restaurant.getId(), restaurant.getTotalRating());
     }
 
     private void handleDeleteEvent(ReviewEventDTOV1 reviewEvent) {
         RestaurantEntity restaurant = restaurantRepository.findByIdAndDeletedAtIsNull(reviewEvent.getRestaurantId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 레스토랑을 찾을 수 없습니다: " + reviewEvent.getRestaurantId()));
 
-        // 리뷰 개수가 0이면 평점을 0으로 설정
-        if (reviewEvent.getReviewCount() == 0) {
-            restaurant.updateRatingAverage(0.0);
-        } else {
-            // DELETE 이벤트라도 총 리뷰와 평점이 있을 경우 평균 계산 가능
-            double newRatingAverage = (double) reviewEvent.getTotalRating() / reviewEvent.getReviewCount();
-            restaurant.updateRatingAverage(newRatingAverage);
-        }
+        // 리뷰 통계 업데이트
+        restaurant.decrementReviewCount();
+        restaurant.subtractTotalRating(reviewEvent.getRating());
 
-        restaurant.updateModifiedBy("system");
-        log.info("레스토랑 ID {}의 평점이 업데이트되었습니다: {}", restaurant.getId(), restaurant.getRatingAverage());
+        log.info("DELETE 이벤트로 레스토랑 ID {}의 통계가 업데이트되었습니다: 총 리뷰 수 = {}, 총 평점 = {}",
+                restaurant.getId(), restaurant.getReviewCount(), restaurant.getTotalRating());
     }
 }

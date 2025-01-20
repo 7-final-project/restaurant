@@ -13,16 +13,12 @@ public class ReviewEventDTOV1 {
 
     private Long restaurantId;
     private int rating;
-    private int reviewCount;
-    private int totalRating;
     private String eventType; // "CREATE", "UPDATE", "DELETE" 등
 
-    public static ReviewEventDTOV1 from(Long restaurantId, int rating, int reviewCount, int totalRating, String eventType) {
+    public static ReviewEventDTOV1 from(Long restaurantId, int rating, String eventType) {
         return ReviewEventDTOV1.builder()
                 .restaurantId(restaurantId)
                 .rating(rating)
-                .reviewCount(reviewCount)
-                .totalRating(totalRating)
                 .eventType(eventType)
                 .build();
     }
