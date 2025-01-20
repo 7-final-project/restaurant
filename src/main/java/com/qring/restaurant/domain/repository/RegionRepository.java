@@ -6,8 +6,8 @@ import java.util.Optional;
 
 public interface RegionRepository {
 
-    // 특정 ID로 삭제되지 않은 지역 조회
-    Optional<RegionEntity> findByIdAndDeletedAtIsNull(Long id);
+    // 특정 코드로 삭제되지 않은 지역 조회
+    Optional<RegionEntity> findByCodeAndDeletedAtIsNull(String code);
 
     Optional<RegionEntity> findByNameAndDeletedAtIsNull(String name);
 

@@ -59,8 +59,8 @@ public class RestaurantServiceV1 {
                 .toList();
         // 4. 초기 운영 상태 결정 (현재 시간 기준으로 OPEN 또는 CLOSED 설정)
         OperationStatus operationStatus = determineOperationStatus(OperatingHourEntityList);
-        // 지역 추가
-        RegionEntity region = regionRepository.findByIdAndDeletedAtIsNull(dto.getRestaurant().getRegionId())
+        // 지역
+        RegionEntity region = regionRepository.findByCodeAndDeletedAtIsNull(dto.getRestaurant().getRegionCode())
                 .orElseThrow(() -> new EntityNotFoundException("지역을 찾을 수 없습니다."));
         // 5. 새 식당 엔티티 생성
         RestaurantEntity restaurantEntityForSave = RestaurantEntity.createRestaurantEntity(
@@ -143,12 +143,17 @@ public class RestaurantServiceV1 {
         // 7. 운영 상태 재계산
         OperationStatus updatedOperationStatus = determineOperationStatus(existingRestaurant.getOperatingHourEntityList());
 
+        // 지역 조회
+        RegionEntity region = regionRepository.findByCodeAndDeletedAtIsNull(dto.getRestaurant().getRegionCode())
+                .orElseThrow(() -> new EntityNotFoundException("지역을 찾을 수 없습니다."));
+
         // 8. 식당 엔티티 업데이트
         existingRestaurant.updateRestaurantEntity(
                 dto.getRestaurant().getName(),
                 dto.getRestaurant().getCapacity(),
                 dto.getRestaurant().getTel(),
                 dto.getRestaurant().getAddress(),
+                region,
                 dto.getRestaurant().getAddressDetails(),
                 updatedOperationStatus,
                 category,

@@ -14,8 +14,8 @@ public class RegionRepositoryImpl implements RegionRepository {
     private final JpaRegionRepository jpaRegionRepository;
 
     @Override
-    public Optional<RegionEntity> findByIdAndDeletedAtIsNull(Long id) {
-        return jpaRegionRepository.findByIdAndDeletedAtIsNull(id);
+    public Optional<RegionEntity> findByCodeAndDeletedAtIsNull(String code) {
+        return jpaRegionRepository.findByCodeAndDeletedAtIsNull(code);
     }
 
     @Override

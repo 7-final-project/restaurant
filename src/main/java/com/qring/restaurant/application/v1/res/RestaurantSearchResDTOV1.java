@@ -49,7 +49,7 @@ public class RestaurantSearchResDTOV1 {
             private Long categoryId;
             private String name;
             private String tel;
-            //private String area;
+            private String regionCode;
             private String address;
             private String addressDetails;
             private double averageRating;
@@ -67,7 +67,7 @@ public class RestaurantSearchResDTOV1 {
                         .categoryId(restaurantEntity.getCategory().getId())
                         .name(restaurantEntity.getName())
                         .tel(restaurantEntity.getTel())
-                        //.area(restaurantEntity.getArea())
+                        .regionCode(restaurantEntity.getRegion().getCode())
                         .address(restaurantEntity.getAddress())
                         .addressDetails(restaurantEntity.getAddressDetails())
                         .averageRating(calculateAverageRating(restaurantEntity)) // 평균 평점 계산
