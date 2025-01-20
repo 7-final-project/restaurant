@@ -3,6 +3,7 @@ package com.qring.restaurant.infrastructure.repository;
 import com.qring.restaurant.domain.model.RestaurantEntity;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -76,18 +77,33 @@ public class RestaurantQueryRepository {
 
 
     private OrderSpecifier<?> getOrderSpecifier(String sort) {
-        if(sort == null || sort.isBlank()){
-            return restaurantEntity.createdAt.desc(); // 기본값
+        if (sort == null || sort.isBlank()) {
+            return restaurantEntity.createdAt.desc(); // 기본값: 생성일 내림차순 정렬
         }
         switch (sort.toLowerCase()) {
             case "high":
-                return restaurantEntity.ratingAverage.desc();
+                // 리뷰 평균 점수 높은 순 정렬
+                return Expressions.numberTemplate(Double.class,
+                        // SQL CASE 구문과 유사: reviewCount > 0이면 totalRating / reviewCount, 아니면 0 반환
+                        "case when {0} > 0 then {1} / {0} else 0 end",
+                        restaurantEntity.reviewCount,
+                        restaurantEntity.totalRating
+                ).desc(); // 내림차순 정렬
             case "low":
-                return restaurantEntity.ratingAverage.asc();
+                // 리뷰 평균 점수 낮은 순 정렬
+                return Expressions.numberTemplate(Double.class,
+                        "case when {0} > 0 then {1} / {0} else 0 end",
+                        restaurantEntity.reviewCount,
+                        restaurantEntity.totalRating
+                ).asc(); // 오름차순 정렬
             case "oldest":
+                // 오래된 순(생성일 오름차순) 정렬
                 return restaurantEntity.createdAt.asc();
             default:
+                // 기본값: 최신 순(생성일 내림차순) 정렬
                 return restaurantEntity.createdAt.desc();
         }
     }
+
+
 }

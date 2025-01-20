@@ -2,7 +2,10 @@ package com.qring.restaurant.application.v1.service;
 
 import com.qring.restaurant.application.global.exception.EntityNotFoundException;
 import com.qring.restaurant.application.global.exception.UnauthorizedAccessException;
-import com.qring.restaurant.application.v1.res.*;
+import com.qring.restaurant.application.v1.res.RestaurantGetByIdResDTOV1;
+import com.qring.restaurant.application.v1.res.RestaurantIdTableResDTOV1;
+import com.qring.restaurant.application.v1.res.RestaurantPostResDTOV1;
+import com.qring.restaurant.application.v1.res.RestaurantSearchResDTOV1;
 import com.qring.restaurant.application.v1.scheduler.OperationStatusScheduler;
 import com.qring.restaurant.domain.model.CategoryEntity;
 import com.qring.restaurant.domain.model.OperatingHourEntity;
@@ -155,8 +158,6 @@ public class RestaurantServiceV1 {
         // 9. 스케줄러 재등록
         operationStatusScheduler.scheduleOperationStatusChange(existingRestaurant);
     }
-
-
 
 
     // 식당 삭제

@@ -37,7 +37,7 @@ public class RestaurantGetByIdResDTOV1 {
         private String regionCode;
         private String address;
         private String addressDetails;
-        private double ratingAverage;
+        private double averageRating;
         private String operationStatus;
         private List<OperatingHour> operatingHourList;
 
@@ -50,15 +50,15 @@ public class RestaurantGetByIdResDTOV1 {
                     .regionCode(restaurantEntity.getRegion().getCode())
                     .address(restaurantEntity.getAddress())
                     .addressDetails(restaurantEntity.getAddressDetails())
-                    .ratingAverage(roundToOneDecimalPlace(restaurantEntity.getRatingAverage()))
+                    .averageRating(calculateAverageRating(restaurantEntity)) // 평균 평점 계산
                     .operationStatus(restaurantEntity.getOperationStatus().getDescription())
                     .operatingHourList(OperatingHour.from(restaurantEntity.getOperatingHourEntityList()))
                     .build();
         }
 
-        // 소수점 한 자리까지 반올림 처리
-        private static double roundToOneDecimalPlace(double value) {
-            return Math.round(value * 10) / 10.0;
+        private static double calculateAverageRating(RestaurantEntity restaurantEntity) {
+            if (restaurantEntity.getReviewCount() == 0) return 0.0;
+            return Math.round((double) restaurantEntity.getTotalRating() / restaurantEntity.getReviewCount() * 10) / 10.0;
         }
 
         @Getter
