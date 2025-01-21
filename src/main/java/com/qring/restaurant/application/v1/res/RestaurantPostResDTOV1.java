@@ -36,6 +36,7 @@ public class RestaurantPostResDTOV1 {
         private String name;
         private String tel;
         private int capacity;
+        private String regionCode;
         private String address;
         private String addressDetails;
         private double ratingAverage;
@@ -50,6 +51,7 @@ public class RestaurantPostResDTOV1 {
                     .name(restaurantEntity.getName())
                     .tel(restaurantEntity.getTel())
                     .capacity(restaurantEntity.getCapacity())
+                    .regionCode(restaurantEntity.getRegion().getCode())
                     .address(restaurantEntity.getAddress())
                     .addressDetails(restaurantEntity.getAddressDetails())
                     .operationStatus(restaurantEntity.getOperationStatus().getDescription())
