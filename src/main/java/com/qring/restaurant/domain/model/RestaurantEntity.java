@@ -39,8 +39,9 @@ public class RestaurantEntity {
     @Column(name = "tel", nullable = false)
     private String tel;
 
-    @Column(name = "area", nullable = false)
-    private String area;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "region_id", nullable = false)
+    private RegionEntity region;
 
     @Column(name = "address", nullable = false)
     private String address;
@@ -86,13 +87,13 @@ public class RestaurantEntity {
     private String deletedBy;
 
     @Builder
-    public RestaurantEntity(Long userId, String name, int capacity, String tel, String area, String address, String addressDetails,
+    public RestaurantEntity(Long userId, String name, int capacity, String tel, RegionEntity regionEntity, String address, String addressDetails,
                             int reviewCount, int totalRating, OperationStatus operationStatus, CategoryEntity categoryEntity, String username) {
         this.userId = userId;
         this.name = name;
         this.capacity = capacity;
         this.tel = tel;
-        this.area = area;
+        this.region = regionEntity;
         this.address = address;
         this.addressDetails = addressDetails;
         this.reviewCount = reviewCount;
@@ -110,7 +111,7 @@ public class RestaurantEntity {
     }
 
     // == 생성 메서드 == //
-    public static RestaurantEntity createRestaurantEntity(Long userId, String name, int capacity, String tel, String area,
+    public static RestaurantEntity createRestaurantEntity(Long userId, String name, int capacity, String tel, RegionEntity regionEntity,
                                                           String address, String addressDetails, OperationStatus operationStatus,
                                                           CategoryEntity categoryEntity, List<OperatingHourEntity> operatingHourEntityList, String username) {
 
@@ -119,7 +120,7 @@ public class RestaurantEntity {
                 .name(name)
                 .capacity(capacity)
                 .tel(tel)
-                .area(area)
+                .regionEntity(regionEntity)
                 .address(address)
                 .addressDetails(addressDetails)
                 .operationStatus(operationStatus)
@@ -166,12 +167,12 @@ public class RestaurantEntity {
     }
 
     // == 식당 정보 업데이트 메서드 == //
-    public void updateRestaurantEntity(String name, int capacity, String tel, String address, String area,
+    public void updateRestaurantEntity(String name, int capacity, String tel, String address,RegionEntity region,
                                        String addressDetails, OperationStatus operationStatus, CategoryEntity category, String username) {
         this.name = name;
         this.capacity = capacity;
         this.tel = tel;
-        this.area = area;
+        this.region = region;
         this.address = address;
         this.addressDetails = addressDetails;
         this.operationStatus = operationStatus;
