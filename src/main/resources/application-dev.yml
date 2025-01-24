@@ -29,7 +29,7 @@ spring:
     open-in-view: false
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_DEV_URL}
 
 service:
   jwt:
