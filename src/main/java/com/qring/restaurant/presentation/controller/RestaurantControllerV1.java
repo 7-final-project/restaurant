@@ -5,7 +5,6 @@ import com.qring.restaurant.application.res.RestaurantGetByIdResDTOV1;
 import com.qring.restaurant.application.res.RestaurantIdTableResDTOV1;
 import com.qring.restaurant.application.res.RestaurantPostResDTOV1;
 import com.qring.restaurant.application.res.RestaurantSearchResDTOV1;
-import com.qring.restaurant.application.v1.res.*;
 import com.qring.restaurant.application.service.RestaurantServiceV1;
 import com.qring.restaurant.infrastructure.docs.RestaurantControllerSwagger;
 import com.qring.restaurant.presentation.req.PostRestaurantReqDTOV1;
