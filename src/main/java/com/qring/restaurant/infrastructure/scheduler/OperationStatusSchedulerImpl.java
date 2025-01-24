@@ -1,6 +1,6 @@
 package com.qring.restaurant.infrastructure.scheduler;
 
-import com.qring.restaurant.application.v1.scheduler.OperationStatusScheduler;
+import com.qring.restaurant.application.scheduler.OperationStatusScheduler;
 import com.qring.restaurant.domain.model.RestaurantEntity;
 import com.qring.restaurant.domain.model.constraint.OperationDayOfWeek;
 import com.qring.restaurant.domain.model.constraint.OperationStatus;

@@ -1,4 +1,4 @@
-package com.qring.restaurant.presentation.v1.req;
+package com.qring.restaurant.presentation.req;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PostCategoryReqDTOV1 {
+public class PutCategoryDTOV1 {
 
     @Valid
     @NotNull(message = "카테고리 정보를 입력해주세요.")
-    private Category category;
+    private PostCategoryReqDTOV1.Category category;
 
     @Getter
     public static class Category {

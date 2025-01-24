@@ -1,4 +1,4 @@
-package com.qring.restaurant.application.v1.scheduler;
+package com.qring.restaurant.application.scheduler;
 
 import com.qring.restaurant.domain.model.RestaurantEntity;
 

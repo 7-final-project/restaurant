@@ -1,4 +1,4 @@
-package com.qring.restaurant.application.v1.res;
+package com.qring.restaurant.application.res;
 
 import com.qring.restaurant.domain.model.CategoryEntity;
 import lombok.AllArgsConstructor;
