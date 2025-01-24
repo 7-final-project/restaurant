@@ -1,13 +1,13 @@
-package com.qring.restaurant.presentation.v1.controller;
+package com.qring.restaurant.presentation.controller;
 
 import com.qring.restaurant.application.global.dto.ResDTO;
-import com.qring.restaurant.application.v1.res.CategoryGetByIdResDTOV1;
-import com.qring.restaurant.application.v1.res.CategoryPostResDTOV1;
-import com.qring.restaurant.application.v1.res.CategoryTableGetResDTOV1;
-import com.qring.restaurant.application.v1.service.CategoryServiceV1;
+import com.qring.restaurant.application.res.CategoryGetByIdResDTOV1;
+import com.qring.restaurant.application.res.CategoryPostResDTOV1;
+import com.qring.restaurant.application.res.CategoryTableGetResDTOV1;
+import com.qring.restaurant.application.service.CategoryServiceV1;
 import com.qring.restaurant.infrastructure.docs.CategoryControllerSwagger;
-import com.qring.restaurant.presentation.v1.req.PostCategoryReqDTOV1;
-import com.qring.restaurant.presentation.v1.req.PutCategoryDTOV1;
+import com.qring.restaurant.presentation.req.PostCategoryReqDTOV1;
+import com.qring.restaurant.presentation.req.PutCategoryDTOV1;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

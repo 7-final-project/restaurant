@@ -1,16 +1,16 @@
-package com.qring.restaurant.application.v1.service;
+package com.qring.restaurant.application.service;
 
 import com.qring.restaurant.application.global.exception.ErrorCode;
 import com.qring.restaurant.application.global.exception.RestaurantException;
 import com.qring.restaurant.application.global.exception.UnauthorizedAccessException;
-import com.qring.restaurant.application.v1.res.CategoryGetByIdResDTOV1;
-import com.qring.restaurant.application.v1.res.CategoryPostResDTOV1;
-import com.qring.restaurant.application.v1.res.CategoryTableGetResDTOV1;
+import com.qring.restaurant.application.res.CategoryGetByIdResDTOV1;
+import com.qring.restaurant.application.res.CategoryPostResDTOV1;
+import com.qring.restaurant.application.res.CategoryTableGetResDTOV1;
 import com.qring.restaurant.domain.model.CategoryEntity;
 import com.qring.restaurant.domain.repository.CategoryRepository;
 import com.qring.restaurant.infrastructure.util.PassportUtil;
-import com.qring.restaurant.presentation.v1.req.PostCategoryReqDTOV1;
-import com.qring.restaurant.presentation.v1.req.PutCategoryDTOV1;
+import com.qring.restaurant.presentation.req.PostCategoryReqDTOV1;
+import com.qring.restaurant.presentation.req.PutCategoryDTOV1;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,11 +1,11 @@
 package com.qring.restaurant.infrastructure.docs;
 
 import com.qring.restaurant.application.global.dto.ResDTO;
-import com.qring.restaurant.application.v1.res.CategoryGetByIdResDTOV1;
-import com.qring.restaurant.application.v1.res.CategoryPostResDTOV1;
-import com.qring.restaurant.application.v1.res.CategoryTableGetResDTOV1;
-import com.qring.restaurant.presentation.v1.req.PostCategoryReqDTOV1;
-import com.qring.restaurant.presentation.v1.req.PutCategoryDTOV1;
+import com.qring.restaurant.application.res.CategoryGetByIdResDTOV1;
+import com.qring.restaurant.application.res.CategoryPostResDTOV1;
+import com.qring.restaurant.application.res.CategoryTableGetResDTOV1;
+import com.qring.restaurant.presentation.req.PostCategoryReqDTOV1;
+import com.qring.restaurant.presentation.req.PutCategoryDTOV1;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
