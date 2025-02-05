@@ -11,6 +11,7 @@ import com.qring.restaurant.domain.model.OperatingHourEntity;
 import com.qring.restaurant.domain.model.RegionEntity;
 import com.qring.restaurant.domain.model.RestaurantEntity;
 import com.qring.restaurant.domain.repository.CategoryRepository;
+import com.qring.restaurant.domain.repository.OperatingHourRepository;
 import com.qring.restaurant.domain.repository.RegionRepository;
 import com.qring.restaurant.domain.repository.RestaurantRepository;
 import com.qring.restaurant.infrastructure.util.PassportUtil;
@@ -21,17 +22,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class RestaurantServiceV1 {
 
     private final RestaurantRepository restaurantRepository;
+    private final OperatingHourRepository operatingHourRepository;
     private final CategoryRepository categoryRepository;
     private final RegionRepository regionRepository;
 
@@ -81,9 +80,14 @@ public class RestaurantServiceV1 {
     // 식당 상세 조회
     @Transactional(readOnly = true)
     public RestaurantGetByIdResDTOV1 getBy(Long id) {
-        RestaurantEntity RestaurantEntityForMapping = restaurantRepository.findByIdWithOperatingHours(id)
-                .orElseThrow(() -> new EntityNotFoundException("식당을 찾을 수 없습니다."));
-        return RestaurantGetByIdResDTOV1.of(RestaurantEntityForMapping);
+
+        RestaurantEntity restaurantEntityForMapping = getRestaurantById(id);
+
+        List<OperatingHourEntity> operatingHourEntityListForMapping = operatingHourRepository.findByIdInAndDeletedAtIsNull(
+                getOperatingHourEntityIdListFromRestaurantEntity(restaurantEntityForMapping)
+        );
+
+        return RestaurantGetByIdResDTOV1.of(restaurantEntityForMapping, operatingHourEntityListForMapping);
     }
 
     // 식당 수정
@@ -169,6 +173,12 @@ public class RestaurantServiceV1 {
     private RegionEntity getRegionByRegionCodeStr(String regionCode) {
         return regionRepository.findByCodeAndDeletedAtIsNull(regionCode)
                 .orElseThrow(() -> new EntityNotFoundException("지역을 찾을 수 없습니다."));
+    }
+
+    private static List<Long> getOperatingHourEntityIdListFromRestaurantEntity(RestaurantEntity restaurantEntityForMapping) {
+        return restaurantEntityForMapping.getOperatingHourEntityList().stream()
+                .map(OperatingHourEntity::getId)
+                .toList();
     }
 
     private static List<OperatingHourEntity> getOperatingHourEntityList(String passport, PostRestaurantReqDTOV1 dto) {
