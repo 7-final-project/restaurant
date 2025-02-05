@@ -1,4 +1,4 @@
-package com.qring.restaurant.infrastructure.repository;
+package com.qring.restaurant.infrastructure.repository.hour;
 
 import com.qring.restaurant.domain.model.OperatingHourEntity;
 import com.qring.restaurant.domain.repository.OperatingHourRepository;

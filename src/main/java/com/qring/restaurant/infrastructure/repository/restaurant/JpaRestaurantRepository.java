@@ -1,4 +1,4 @@
-package com.qring.restaurant.infrastructure.repository;
+package com.qring.restaurant.infrastructure.repository.restaurant;
 
 import com.qring.restaurant.domain.model.RestaurantEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

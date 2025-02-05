@@ -1,4 +1,4 @@
-package com.qring.restaurant.infrastructure.repository;
+package com.qring.restaurant.infrastructure.repository.region;
 
 import com.qring.restaurant.domain.model.RegionEntity;
 import com.qring.restaurant.domain.repository.RegionRepository;

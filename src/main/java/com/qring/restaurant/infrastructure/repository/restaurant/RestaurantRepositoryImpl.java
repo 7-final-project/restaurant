@@ -1,9 +1,7 @@
-package com.qring.restaurant.infrastructure.repository;
+package com.qring.restaurant.infrastructure.repository.restaurant;
 
 import com.qring.restaurant.domain.model.RestaurantEntity;
 import com.qring.restaurant.domain.repository.RestaurantRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,8 +14,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RestaurantRepositoryImpl implements RestaurantRepository {
 
-    @PersistenceContext
-    private EntityManager entityManager;
     private final JpaRestaurantRepository jpaRestaurantRepository;
     private final RestaurantQueryRepository restaurantQueryRepository;
 
