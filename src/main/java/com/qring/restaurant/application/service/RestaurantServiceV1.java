@@ -38,22 +38,18 @@ public class RestaurantServiceV1 {
     // 새로운 식당 생성
     @Transactional
     public RestaurantPostResDTOV1 postBy(String passport, PostRestaurantReqDTOV1 dto) {
-        // 1. 유저 권한 검증 (관리자 또는 점주만 생성 가능)
+
+        // 1. 유저 권한 검증
         validateUserRole(PassportUtil.getRole(passport), Set.of("관리자", "점주"));
-        // 2. 카테고리 엔티티 조회 (존재하지 않거나 삭제된 카테고리는 예외 처리)
-        CategoryEntity category = categoryRepository.findByIdAndDeletedAtIsNull(dto.getRestaurant().getCategoryId())
-                .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
-        // 3. 운영 시간 목록 생성 (DTO에서 전달받은 운영 시간을 기반으로 엔티티 생성)
-        List<OperatingHourEntity> OperatingHourEntityList = dto.getOperatingHourList()
-                .stream().map(hour -> OperatingHourEntity.builder()
-                        .operationDayOfWeek(hour.getOperationDayOfWeek())
-                        .openAt(hour.getOpenAt())
-                        .closedAt(hour.getClosedAt())
-                        .build())
-                .toList();
-        // 지역
-        RegionEntity region = regionRepository.findByCodeAndDeletedAtIsNull(dto.getRestaurant().getRegionCode())
-                .orElseThrow(() -> new EntityNotFoundException("지역을 찾을 수 없습니다."));
+
+        // 2. 카테고리 엔티티 조회
+        CategoryEntity categoryEntity = getCategoryById(dto.getRestaurant().getCategoryId());
+
+        // 3. 운영 시간 목록 생성
+        List<OperatingHourEntity> operatingHourEntityList = getOperatingHourEntityList(passport, dto);
+
+        // 4. 지역 조회
+        RegionEntity regionEntity = getRegionByRegionCodeStr(dto.getRestaurant().getRegionCode());
 
         // 5. 새 식당 엔티티 생성
         RestaurantEntity restaurantEntityForSave = RestaurantEntity.createRestaurantEntity(
@@ -61,16 +57,16 @@ public class RestaurantServiceV1 {
                 dto.getRestaurant().getName(),
                 dto.getRestaurant().getCapacity(),
                 dto.getRestaurant().getTel(),
-                region,
+                regionEntity,
                 dto.getRestaurant().getAddress(),
                 dto.getRestaurant().getAddressDetails(),
-                category,
-                OperatingHourEntityList,
+                categoryEntity,
+                operatingHourEntityList,
                 PassportUtil.getUsername(passport)
         );
 
         // 6. 식당 엔티티 저장
-        restaurantEntityForSave = restaurantRepository.save(restaurantEntityForSave);
+        restaurantRepository.save(restaurantEntityForSave);
 
         // 8. 생성된 식당 데이터를 DTO로 반환
         return RestaurantPostResDTOV1.of(restaurantEntityForSave);
@@ -104,8 +100,7 @@ public class RestaurantServiceV1 {
         validateOwnerRestaurantAccess(passport, existingRestaurant);
 
         // 4. 카테고리 조회
-        CategoryEntity category = categoryRepository.findByIdAndDeletedAtIsNull(dto.getRestaurant().getCategoryId())
-                .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
+        CategoryEntity category = getCategoryById(dto.getRestaurant().getCategoryId());
 
         // 5. 수정할 요일에 해당하는 기존 운영 시간만 삭제 처리
         Set<String> newOperationDays = dto.getOperatingHourList().stream()
@@ -133,8 +128,7 @@ public class RestaurantServiceV1 {
         existingRestaurant.addOperatingHour(newOperatingHours);
 
         // 지역 조회
-        RegionEntity region = regionRepository.findByCodeAndDeletedAtIsNull(dto.getRestaurant().getRegionCode())
-                .orElseThrow(() -> new EntityNotFoundException("지역을 찾을 수 없습니다."));
+        RegionEntity region = getRegionByRegionCodeStr(dto.getRestaurant().getRegionCode());
 
         // 8. 식당 엔티티 업데이트
         existingRestaurant.updateRestaurantEntity(
@@ -168,6 +162,12 @@ public class RestaurantServiceV1 {
         restaurant.deleteRestaurantEntity(PassportUtil.getUsername(passport));
     }
 
+    @Transactional(readOnly = true)
+    public RestaurantIdTableResDTOV1 getBy(String passport) {
+        List<Long> restaurantIds = restaurantRepository.findIdListByUserIdAndDeletedAtIsNull(PassportUtil.getUserId(passport));
+        return RestaurantIdTableResDTOV1.of(restaurantIds);
+    }
+
     private void validateUserRole(String currentRole, Set<String> requiredRoleSet) {
         if (!requiredRoleSet.contains(currentRole)) {
             throw new UnauthorizedAccessException("접근 권한이 없습니다");
@@ -182,10 +182,24 @@ public class RestaurantServiceV1 {
         }
     }
 
-    @Transactional(readOnly = true)
-    public RestaurantIdTableResDTOV1 getBy(String passport) {
-        List<Long> restaurantIds = restaurantRepository.findIdListByUserIdAndDeletedAtIsNull(PassportUtil.getUserId(passport));
-        return RestaurantIdTableResDTOV1.of(restaurantIds);
+    private CategoryEntity getCategoryById(Long categoryId) {
+        return categoryRepository.findByIdAndDeletedAtIsNull(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
     }
 
+    private RegionEntity getRegionByRegionCodeStr(String regionCode) {
+        return regionRepository.findByCodeAndDeletedAtIsNull(regionCode)
+                .orElseThrow(() -> new EntityNotFoundException("지역을 찾을 수 없습니다."));
+    }
+
+    private static List<OperatingHourEntity> getOperatingHourEntityList(String passport, PostRestaurantReqDTOV1 dto) {
+        return dto.getOperatingHourList()
+                .stream().map(hour -> OperatingHourEntity.createOperatingHourEntity(
+                        hour.getOperationDayOfWeek(),
+                        hour.getOpenAt(),
+                        hour.getClosedAt(),
+                        PassportUtil.getUsername(passport)
+                ))
+                .toList();
+    }
 }
