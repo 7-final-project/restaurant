@@ -38,9 +38,6 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
 
     @Override
     public List<Long> findIdListByUserIdAndDeletedAtIsNull(Long userId) {
-        String jpql = "SELECT o.id FROM RestaurantEntity o WHERE o.userId = :userId AND o.deletedAt IS NULL";
-        return entityManager.createQuery(jpql, Long.class)
-                .setParameter("userId", userId)
-                .getResultList();
+        return jpaRestaurantRepository.findIdsByUserIdAndDeletedAtIsNull(userId);
     }
 }
