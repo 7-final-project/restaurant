@@ -39,7 +39,6 @@ public class RestaurantGetByIdResDTOV1 {
         private String address;
         private String addressDetails;
         private double averageRating;
-        private String operationStatus;
         private List<OperatingHour> operatingHourList;
 
         public static Restaurant from(RestaurantEntity restaurantEntity) {
@@ -52,7 +51,6 @@ public class RestaurantGetByIdResDTOV1 {
                     .address(restaurantEntity.getAddress())
                     .addressDetails(restaurantEntity.getAddressDetails())
                     .averageRating(calculateAverageRating(restaurantEntity)) // 평균 평점 계산
-                    .operationStatus(restaurantEntity.getOperationStatus().getDescription())
                     .operatingHourList(OperatingHour.from(restaurantEntity.getOperatingHourEntityList()))
                     .build();
         }
