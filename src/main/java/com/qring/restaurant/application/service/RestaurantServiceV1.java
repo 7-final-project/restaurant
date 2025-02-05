@@ -3,16 +3,13 @@ package com.qring.restaurant.application.service;
 import com.qring.restaurant.application.global.exception.EntityNotFoundException;
 import com.qring.restaurant.application.global.exception.UnauthorizedAccessException;
 import com.qring.restaurant.application.res.RestaurantGetByIdResDTOV1;
-import com.qring.restaurant.application.res.RestaurantPostResDTOV1;
 import com.qring.restaurant.application.res.RestaurantIdTableResDTOV1;
+import com.qring.restaurant.application.res.RestaurantPostResDTOV1;
 import com.qring.restaurant.application.res.RestaurantSearchResDTOV1;
-import com.qring.restaurant.application.scheduler.OperationStatusScheduler;
 import com.qring.restaurant.domain.model.CategoryEntity;
 import com.qring.restaurant.domain.model.OperatingHourEntity;
 import com.qring.restaurant.domain.model.RegionEntity;
 import com.qring.restaurant.domain.model.RestaurantEntity;
-import com.qring.restaurant.domain.model.constraint.OperationDayOfWeek;
-import com.qring.restaurant.domain.model.constraint.OperationStatus;
 import com.qring.restaurant.domain.repository.CategoryRepository;
 import com.qring.restaurant.domain.repository.RegionRepository;
 import com.qring.restaurant.domain.repository.RestaurantRepository;
@@ -24,8 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +34,6 @@ public class RestaurantServiceV1 {
     private final RestaurantRepository restaurantRepository;
     private final CategoryRepository categoryRepository;
     private final RegionRepository regionRepository;
-    private final OperationStatusScheduler operationStatusScheduler;
 
     // 새로운 식당 생성
     @Transactional
@@ -50,18 +44,17 @@ public class RestaurantServiceV1 {
         CategoryEntity category = categoryRepository.findByIdAndDeletedAtIsNull(dto.getRestaurant().getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
         // 3. 운영 시간 목록 생성 (DTO에서 전달받은 운영 시간을 기반으로 엔티티 생성)
-        List<OperatingHourEntity> OperatingHourEntityList = dto.getOperatingHourList().stream()
-                .map(hour -> OperatingHourEntity.builder()
+        List<OperatingHourEntity> OperatingHourEntityList = dto.getOperatingHourList()
+                .stream().map(hour -> OperatingHourEntity.builder()
                         .operationDayOfWeek(hour.getOperationDayOfWeek())
                         .openAt(hour.getOpenAt())
                         .closedAt(hour.getClosedAt())
                         .build())
                 .toList();
-        // 4. 초기 운영 상태 결정 (현재 시간 기준으로 OPEN 또는 CLOSED 설정)
-        OperationStatus operationStatus = determineOperationStatus(OperatingHourEntityList);
         // 지역
         RegionEntity region = regionRepository.findByCodeAndDeletedAtIsNull(dto.getRestaurant().getRegionCode())
                 .orElseThrow(() -> new EntityNotFoundException("지역을 찾을 수 없습니다."));
+
         // 5. 새 식당 엔티티 생성
         RestaurantEntity restaurantEntityForSave = RestaurantEntity.createRestaurantEntity(
                 PassportUtil.getUserId(passport),
@@ -71,15 +64,14 @@ public class RestaurantServiceV1 {
                 region,
                 dto.getRestaurant().getAddress(),
                 dto.getRestaurant().getAddressDetails(),
-                operationStatus,
                 category,
                 OperatingHourEntityList,
                 PassportUtil.getUsername(passport)
         );
+
         // 6. 식당 엔티티 저장
         restaurantEntityForSave = restaurantRepository.save(restaurantEntityForSave);
-        // 7. 스케줄러에 상태 변경 작업 등록
-        operationStatusScheduler.scheduleOperationStatusChange(restaurantEntityForSave);
+
         // 8. 생성된 식당 데이터를 DTO로 반환
         return RestaurantPostResDTOV1.of(restaurantEntityForSave);
     }
@@ -140,9 +132,6 @@ public class RestaurantServiceV1 {
         List<OperatingHourEntity> newOperatingHours = new ArrayList<>(newOperatingHoursMap.values());
         existingRestaurant.addOperatingHour(newOperatingHours);
 
-        // 7. 운영 상태 재계산
-        OperationStatus updatedOperationStatus = determineOperationStatus(existingRestaurant.getOperatingHourEntityList());
-
         // 지역 조회
         RegionEntity region = regionRepository.findByCodeAndDeletedAtIsNull(dto.getRestaurant().getRegionCode())
                 .orElseThrow(() -> new EntityNotFoundException("지역을 찾을 수 없습니다."));
@@ -155,15 +144,10 @@ public class RestaurantServiceV1 {
                 dto.getRestaurant().getAddress(),
                 region,
                 dto.getRestaurant().getAddressDetails(),
-                updatedOperationStatus,
                 category,
                 PassportUtil.getUsername(passport)
         );
-
-        // 9. 스케줄러 재등록
-        operationStatusScheduler.scheduleOperationStatusChange(existingRestaurant);
     }
-
 
     // 식당 삭제
     @Transactional
@@ -183,37 +167,6 @@ public class RestaurantServiceV1 {
         // 식당 논리 삭제
         restaurant.deleteRestaurantEntity(PassportUtil.getUsername(passport));
     }
-
-    // 운영 상태 결정
-    private OperationStatus determineOperationStatus(List<OperatingHourEntity> OperatingHourEntityList) {
-        LocalDateTime now = LocalDateTime.now();
-        java.time.DayOfWeek currentDay = now.getDayOfWeek(); // Java 표준 OperationDayOfWeek
-        LocalTime currentTime = now.toLocalTime();
-
-        System.out.println("Current Day: " + currentDay);
-        System.out.println("Current Time: " + currentTime);
-
-        // 오늘 요일을 우리의 커스텀 DayOfWeek로 변환
-        OperationDayOfWeek currentDayInCustomEnum =
-                OperationDayOfWeek.valueOf(currentDay.name()); // 커스텀 DayOfWeek로 매핑
-
-        // 오늘 요일의 운영 시간을 순회하며 현재 시간이 범위 내에 있는지 확인
-        for (OperatingHourEntity hour : OperatingHourEntityList) {
-            System.out.println("Checking day: " + hour.getOperationDayOfWeek() + ", Open: " + hour.getOpenAt() + ", Closed: " + hour.getClosedAt());
-
-            // 현재 요일과 운영 시간 비교
-            if (hour.getOperationDayOfWeek().equals(currentDayInCustomEnum.getDescription())) { // description과 비교
-                if (!currentTime.isBefore(hour.getOpenAt()) && !currentTime.isAfter(hour.getClosedAt())) {
-                    System.out.println("OperationStatus: OPEN");
-                    return OperationStatus.OPEN; // 현재 시간이 운영 시간 범위 내에 있으면 OPEN 반환
-                }
-            }
-        }
-
-        System.out.println("OperationStatus: CLOSED");
-        return OperationStatus.CLOSED; // 운영 시간이 없거나 현재 시간이 범위 밖이면 CLOSED 반환
-    }
-
 
     private void validateUserRole(String currentRole, Set<String> requiredRoleSet) {
         if (!requiredRoleSet.contains(currentRole)) {
