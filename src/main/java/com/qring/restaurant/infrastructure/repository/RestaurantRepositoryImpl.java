@@ -27,11 +27,6 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     }
 
     @Override
-    public Optional<RestaurantEntity> findByIdWithOperatingHours(Long id) {
-        return jpaRestaurantRepository.findByIdWithOperatingHours(id);
-    }
-
-    @Override
     public Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(Long userId, String name, String sort, String address, String category, Pageable pageable) {
         return restaurantQueryRepository.findRestaurantPageByDeletedAtIsNullWithConditions(userId, name, sort, address, category, pageable);
     }
