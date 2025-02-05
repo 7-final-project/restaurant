@@ -58,9 +58,28 @@ public class OperatingHourEntity {
     @Column(name = "deleted_by")
     private String deletedBy;
 
+    @Builder
+    public OperatingHourEntity(String operationDayOfWeek, LocalTime openAt, LocalTime closedAt, String username) {
+        this.operationDayOfWeek = operationDayOfWeek;
+        this.openAt = openAt;
+        this.closedAt = closedAt;
+        this.createdBy = username;
+        this.modifiedBy = username;
+    }
+
     // == 연관관계 메서드 == //
     public void updateRestaurant(RestaurantEntity restaurantEntity) {
         this.restaurantEntity = restaurantEntity;
+    }
+
+    // == 생성 메서드 == //
+    public static OperatingHourEntity createOperatingHourEntity(String operationDayOfWeek, LocalTime openAt, LocalTime closedAt, String username) {
+        return OperatingHourEntity.builder()
+                .operationDayOfWeek(operationDayOfWeek)
+                .openAt(openAt)
+                .closedAt(closedAt)
+                .username(username)
+                .build();
     }
 
     // == 운영 시간 업데이트 메서드 == //
@@ -75,12 +94,4 @@ public class OperatingHourEntity {
         this.deletedBy = deletedBy;
     }
 
-    @Builder
-    public OperatingHourEntity(String operationDayOfWeek, LocalTime openAt, LocalTime closedAt, String username) {
-        this.operationDayOfWeek = operationDayOfWeek;
-        this.openAt = openAt;
-        this.closedAt = closedAt;
-        this.createdBy = username;
-        this.modifiedBy = username;
-    }
 }
