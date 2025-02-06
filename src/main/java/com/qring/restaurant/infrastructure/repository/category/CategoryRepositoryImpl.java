@@ -1,4 +1,4 @@
-package com.qring.restaurant.infrastructure.repository;
+package com.qring.restaurant.infrastructure.repository.category;
 
 import com.qring.restaurant.domain.model.CategoryEntity;
 import com.qring.restaurant.domain.repository.CategoryRepository;

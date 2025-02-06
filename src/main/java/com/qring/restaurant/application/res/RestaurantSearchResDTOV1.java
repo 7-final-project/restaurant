@@ -53,7 +53,6 @@ public class RestaurantSearchResDTOV1 {
             private String address;
             private String addressDetails;
             private double averageRating;
-            private String operationStatus;
 
             public static List<Restaurant> from(List<RestaurantEntity> restaurantEntityList) {
                 return restaurantEntityList.stream()
@@ -71,7 +70,6 @@ public class RestaurantSearchResDTOV1 {
                         .address(restaurantEntity.getAddress())
                         .addressDetails(restaurantEntity.getAddressDetails())
                         .averageRating(calculateAverageRating(restaurantEntity)) // 평균 평점 계산
-                        .operationStatus(restaurantEntity.getOperationStatus().getDescription())
                         .build();
             }
 

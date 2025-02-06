@@ -44,6 +44,7 @@ public interface RestaurantControllerSwagger {
     ResponseEntity<ResDTO<RestaurantSearchResDTOV1>> searchBy(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                                               @RequestParam(name = "userId", required = false) Long userId,
                                                               @RequestParam(name = "name", required = false) String name,
+                                                              @RequestParam(name = "isOperation", required = false) Boolean isOperation,
                                                               @RequestParam(name = "sort", required = false) String sort,
                                                               @RequestParam(name = "address", required = false) String address,
                                                               @RequestParam(name = "category", required = false) String category);

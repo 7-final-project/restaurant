@@ -8,9 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalTime;
-import java.util.List;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,10 +16,6 @@ public class PutRestaurantReqDTOV1 {
     @Valid
     @NotNull(message = "식당 정보를 입력해주세요.")
     private Restaurant restaurant;
-
-    @Valid
-    @NotNull(message = "식당 운영 시간을 입력해주세요.")
-    List<OperatingHour> operatingHourList;
 
     @Getter
     public static class Restaurant {
@@ -46,22 +39,6 @@ public class PutRestaurantReqDTOV1 {
         private String address;
 
         private String addressDetails;
-
-    }
-
-    @Getter
-    public static class OperatingHour {
-
-        private Long id;
-
-        @NotNull(message = "요일을 입력해주세요")
-        private String operationDayOfWeek;
-
-        @NotNull(message = "오픈 시간을 입력해주세요")
-        private LocalTime openAt;
-
-        @NotNull(message = "마감 시간을 입력해주세요")
-        private LocalTime closedAt;
 
     }
 }

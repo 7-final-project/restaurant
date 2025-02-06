@@ -1,9 +1,7 @@
-package com.qring.restaurant.infrastructure.repository;
+package com.qring.restaurant.infrastructure.repository.restaurant;
 
 import com.qring.restaurant.domain.model.RestaurantEntity;
 import com.qring.restaurant.domain.repository.RestaurantRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,8 +14,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RestaurantRepositoryImpl implements RestaurantRepository {
 
-    @PersistenceContext
-    private EntityManager entityManager;
     private final JpaRestaurantRepository jpaRestaurantRepository;
     private final RestaurantQueryRepository restaurantQueryRepository;
 
@@ -27,13 +23,8 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     }
 
     @Override
-    public Optional<RestaurantEntity> findByIdWithOperatingHours(Long id) {
-        return jpaRestaurantRepository.findByIdWithOperatingHours(id);
-    }
-
-    @Override
-    public Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(Long userId, String name, String sort, String address, String category, Pageable pageable) {
-        return restaurantQueryRepository.findRestaurantPageByDeletedAtIsNullWithConditions(userId, name, sort, address, category, pageable);
+    public Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(Long userId, String name, Boolean isOperation, String sort, String address, String category, Pageable pageable) {
+        return restaurantQueryRepository.findRestaurantPageByDeletedAtIsNullWithConditions(userId, name, isOperation, sort, address, category, pageable);
     }
 
     @Override
@@ -43,9 +34,6 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
 
     @Override
     public List<Long> findIdListByUserIdAndDeletedAtIsNull(Long userId) {
-        String jpql = "SELECT o.id FROM RestaurantEntity o WHERE o.userId = :userId AND o.deletedAt IS NULL";
-        return entityManager.createQuery(jpql, Long.class)
-                .setParameter("userId", userId)
-                .getResultList();
+        return jpaRestaurantRepository.findIdsByUserIdAndDeletedAtIsNull(userId);
     }
 }

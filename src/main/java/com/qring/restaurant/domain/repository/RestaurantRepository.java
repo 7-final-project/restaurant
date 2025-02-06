@@ -9,15 +9,11 @@ import java.util.Optional;
 
 public interface RestaurantRepository {
 
-
-    // 특정 ID로 삭제되지 않은 식당과 운영시간 조회
-    Optional<RestaurantEntity> findByIdWithOperatingHours(Long id);
-
     // 특정 ID로 삭제되지 않은 식당 조회
     Optional<RestaurantEntity> findByIdAndDeletedAtIsNull(Long id);
 
     // 조건에 따른 식당 검색
-    Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(Long userId, String name, String sort, String address, String category, Pageable pageable);
+    Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(Long userId, String name, Boolean isOperation, String sort, String address, String category, Pageable pageable);
 
     // 식당 저장
     RestaurantEntity save(RestaurantEntity restaurantEntity);
