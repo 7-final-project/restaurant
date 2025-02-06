@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.qring.restaurant.domain.model.QOperatingHourEntity.operatingHourEntity;
@@ -42,9 +43,9 @@ public class RestaurantQueryRepository {
                         nameLike(name),
                         addressLike(address),
                         isOperationEq(isOperation, today, now),
-                        cursorIdLoe(cursor)
+                        cursorPagination(cursor, sort)
                 )
-                .orderBy(getOrderSpecifier(sort))
+                .orderBy(getOrderSpecifiers(sort).toArray(new OrderSpecifier<?>[0]))
                 .limit(limit + 1) // 다음 페이지 존재 여부 확인을 위해 limit보다 1개 더 조회
                 .fetch();
 
@@ -95,38 +96,43 @@ public class RestaurantQueryRepository {
         return address != null ? restaurantEntity.address.containsIgnoreCase(address) : null;
     }
 
-    private BooleanExpression cursorIdLoe(Long cursor) {
-        return cursor != null ? restaurantEntity.id.loe(cursor) : null;
+    private BooleanExpression cursorPagination(Long cursor, String sort) {
+        if (cursor == null) {
+            return null;
+        }
+
+        boolean isOldest = sort != null && sort.toLowerCase().contains("oldest");
+
+        return isOldest ? restaurantEntity.id.goe(cursor) : restaurantEntity.id.loe(cursor);
     }
 
-    private OrderSpecifier<?> getOrderSpecifier(String sort) {
-        if (sort == null || sort.isBlank()) {
-            return restaurantEntity.id.desc();
+    private List<OrderSpecifier<?>> getOrderSpecifiers(String sort) {
+        List<OrderSpecifier<?>> orders = new ArrayList<>();
+
+        boolean isOldest = sort != null && sort.toLowerCase().contains("oldest");
+
+        if (sort != null) {
+            if (sort.toLowerCase().contains("high")) {
+                // 평점 높은 순 정렬
+                orders.add(Expressions.numberTemplate(Double.class,
+                        "case when {0} > 0 then {1} / {0} else 0 end",
+                        restaurantEntity.reviewCount,
+                        restaurantEntity.totalRating
+                ).desc().nullsLast());
+            } else if (sort.toLowerCase().contains("low")) {
+                // 평점 낮은 순 정렬
+                orders.add(Expressions.numberTemplate(Double.class,
+                        "case when {0} > 0 then {1} / {0} else 0 end",
+                        restaurantEntity.reviewCount,
+                        restaurantEntity.totalRating
+                ).asc().nullsLast());
+            }
         }
 
-        switch (sort.toLowerCase()) {
-            case "high":
-                // 리뷰 평균 점수 높은 순 정렬
-                return Expressions.numberTemplate(Double.class,
-                        // SQL CASE 구문과 유사: reviewCount > 0이면 totalRating / reviewCount, 아니면 0 반환
-                        "case when {0} > 0 then {1} / {0} else 0 end",
-                        restaurantEntity.reviewCount,
-                        restaurantEntity.totalRating
-                ).desc(); // 내림차순 정렬
-            case "low":
-                // 리뷰 평균 점수 낮은 순 정렬
-                return Expressions.numberTemplate(Double.class,
-                        "case when {0} > 0 then {1} / {0} else 0 end",
-                        restaurantEntity.reviewCount,
-                        restaurantEntity.totalRating
-                ).asc(); // 오름차순 정렬
-            case "oldest":
-                // 오래된 순(생성일 오름차순) 정렬
-                return restaurantEntity.createdAt.asc();
-            default:
-                // 기본값: 최신 순(생성일 내림차순) 정렬
-                return restaurantEntity.createdAt.desc();
-        }
+        // 최신순 또는 오래된순 정렬 적용
+        orders.add(isOldest ? restaurantEntity.id.asc() : restaurantEntity.id.desc());
+
+        return orders;
     }
 
     private String getOperationDayOfWeek(DayOfWeek dayOfWeek) {
