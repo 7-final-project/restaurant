@@ -4,6 +4,7 @@ import com.qring.restaurant.domain.model.RestaurantEntity;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +13,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
+import static com.qring.restaurant.domain.model.QOperatingHourEntity.operatingHourEntity;
 import static com.qring.restaurant.domain.model.QRestaurantEntity.restaurantEntity;
 
 @Repository
@@ -24,7 +29,10 @@ public class RestaurantQueryRepository {
 
     // 조건에 따른 식당 검색
     public Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(
-            Long userId, String name, String sort, String address, String category, Pageable pageable) {
+            Long userId, String name, boolean isOperation, String sort, String address, String category, Pageable pageable) {
+
+        LocalTime now = LocalTime.now();
+        DayOfWeek today = LocalDate.now().getDayOfWeek();
 
         // 조건에 맞는 결과 조회
         List<RestaurantEntity> results = queryFactory
@@ -34,7 +42,8 @@ public class RestaurantQueryRepository {
                         userIdEq(userId),
                         categoryIdEq(category),
                         nameLike(name),
-                        addressLike(address)
+                        addressLike(address),
+                        isOperationEq(isOperation, today, now)
                 )
                 .orderBy(getOrderSpecifier(sort))
                 .offset(pageable.getOffset())
@@ -50,7 +59,8 @@ public class RestaurantQueryRepository {
                         userIdEq(userId),
                         categoryIdEq(category),
                         nameLike(name),
-                        addressLike(address)
+                        addressLike(address),
+                        isOperationEq(isOperation, today, now)
                 );
 
         // Page 반환
@@ -67,6 +77,23 @@ public class RestaurantQueryRepository {
         return category != null ? restaurantEntity.category.name.eq(category) : null;
     }
 
+    private BooleanExpression isOperationEq(boolean isOperation, DayOfWeek today, LocalTime now) {
+        String operationDayOfWeek = getOperationDayOfWeek(today);
+
+        BooleanExpression isOperating = JPAExpressions
+                .selectOne()
+                .from(operatingHourEntity)
+                .where(
+                        operatingHourEntity.restaurantEntity.id.eq(restaurantEntity.id),
+                        operatingHourEntity.operationDayOfWeek.eq(operationDayOfWeek),
+                        operatingHourEntity.openAt.loe(now),
+                        operatingHourEntity.closedAt.gt(now)
+                )
+                .exists();
+
+        return isOperation ? isOperating : isOperating.not();
+    }
+
     private BooleanExpression nameLike(String name) {
         return name != null ? restaurantEntity.name.containsIgnoreCase(name) : null;
     }
@@ -74,7 +101,6 @@ public class RestaurantQueryRepository {
     private BooleanExpression addressLike(String address) {
         return address != null ? restaurantEntity.address.containsIgnoreCase(address) : null;
     }
-
 
     private OrderSpecifier<?> getOrderSpecifier(String sort) {
         if (sort == null || sort.isBlank()) {
@@ -105,5 +131,8 @@ public class RestaurantQueryRepository {
         }
     }
 
-
+    private String getOperationDayOfWeek(DayOfWeek dayOfWeek) {
+        String[] koreanDays = {"월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"};
+        return koreanDays[dayOfWeek.getValue() - 1];
+    }
 }

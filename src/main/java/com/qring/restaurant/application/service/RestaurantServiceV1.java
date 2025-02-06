@@ -73,8 +73,8 @@ public class RestaurantServiceV1 {
 
     // 조건에 따른 식당 검색
     @Transactional(readOnly = true)
-    public RestaurantSearchResDTOV1 searchBy(Long userId, String name, String sort, String address, String category, Pageable pageable) {
-        return RestaurantSearchResDTOV1.of(restaurantRepository.findRestaurantPageByDeletedAtIsNullWithConditions(userId, name, sort, address, category, pageable));
+    public RestaurantSearchResDTOV1 searchBy(Long userId, String name, boolean isOperation, String sort, String address, String category, Pageable pageable) {
+        return RestaurantSearchResDTOV1.of(restaurantRepository.findRestaurantPageByDeletedAtIsNullWithConditions(userId, name, isOperation, sort, address, category, pageable));
     }
 
     // 식당 상세 조회

@@ -42,6 +42,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
     public ResponseEntity<ResDTO<RestaurantSearchResDTOV1>> searchBy(Pageable pageable,
                                                                      @RequestParam(name = "userId", required = false) Long userId,
                                                                      @RequestParam(name = "name", required = false) String name,
+                                                                     @RequestParam(name = "isOperation", required = false) Boolean isOperation,
                                                                      @RequestParam(name = "sort", required = false) String sort,
                                                                      @RequestParam(name = "address", required = false) String address,
                                                                      @RequestParam(name = "category", required = false) String category) {
@@ -49,7 +50,7 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
                 ResDTO.<RestaurantSearchResDTOV1>builder()
                         .code(HttpStatus.OK.value())
                         .message("식당 검색에 성공하였습니다.")
-                        .data(restaurantServiceV1.searchBy(userId, name, sort, address, category, pageable))
+                        .data(restaurantServiceV1.searchBy(userId, name, isOperation, sort, address, category, pageable))
                         .build(),
                 HttpStatus.OK
         );
