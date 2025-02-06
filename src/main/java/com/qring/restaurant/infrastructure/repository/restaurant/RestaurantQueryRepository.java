@@ -29,7 +29,7 @@ public class RestaurantQueryRepository {
 
     // 조건에 따른 식당 검색
     public Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(
-            Long userId, String name, boolean isOperation, String sort, String address, String category, Pageable pageable) {
+            Long userId, String name, Boolean isOperation, String sort, String address, String category, Pageable pageable) {
 
         LocalTime now = LocalTime.now();
         DayOfWeek today = LocalDate.now().getDayOfWeek();
@@ -77,7 +77,11 @@ public class RestaurantQueryRepository {
         return category != null ? restaurantEntity.category.name.eq(category) : null;
     }
 
-    private BooleanExpression isOperationEq(boolean isOperation, DayOfWeek today, LocalTime now) {
+    private BooleanExpression isOperationEq(Boolean isOperation, DayOfWeek today, LocalTime now) {
+        if (isOperation == null) {
+            return null;
+        }
+
         String operationDayOfWeek = getOperationDayOfWeek(today);
 
         BooleanExpression isOperating = JPAExpressions
