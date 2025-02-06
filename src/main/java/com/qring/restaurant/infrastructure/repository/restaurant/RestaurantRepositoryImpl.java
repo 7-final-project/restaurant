@@ -3,8 +3,7 @@ package com.qring.restaurant.infrastructure.repository.restaurant;
 import com.qring.restaurant.domain.model.RestaurantEntity;
 import com.qring.restaurant.domain.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,8 +22,8 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     }
 
     @Override
-    public Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(Long userId, String name, Boolean isOperation, String sort, String address, String category, Pageable pageable) {
-        return restaurantQueryRepository.findRestaurantPageByDeletedAtIsNullWithConditions(userId, name, isOperation, sort, address, category, pageable);
+    public Slice<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(Long userId, String name, Boolean isOperation, String sort, String address, String category, Long cursor, int limit) {
+        return restaurantQueryRepository.findRestaurantPageByDeletedAtIsNullWithConditions(userId, name, isOperation, sort, address, category, cursor, limit);
     }
 
     @Override

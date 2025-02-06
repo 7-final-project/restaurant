@@ -1,8 +1,7 @@
 package com.qring.restaurant.domain.repository;
 
 import com.qring.restaurant.domain.model.RestaurantEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +12,7 @@ public interface RestaurantRepository {
     Optional<RestaurantEntity> findByIdAndDeletedAtIsNull(Long id);
 
     // 조건에 따른 식당 검색
-    Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(Long userId, String name, Boolean isOperation, String sort, String address, String category, Pageable pageable);
+    Slice<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(Long userId, String name, Boolean isOperation, String sort, String address, String category, Long cursor, int limit);
 
     // 식당 저장
     RestaurantEntity save(RestaurantEntity restaurantEntity);
