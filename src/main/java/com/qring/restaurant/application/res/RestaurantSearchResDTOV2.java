@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
@@ -13,13 +13,12 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RestaurantSearchResDTOV1 {
-
+public class RestaurantSearchResDTOV2 {
     private RestaurantPage restaurantPage;
 
-    public static RestaurantSearchResDTOV1 of(Page<RestaurantEntity> restaurantEntityPage) {
-        return RestaurantSearchResDTOV1.builder()
-                .restaurantPage(RestaurantPage.from(restaurantEntityPage))
+    public static RestaurantSearchResDTOV2 of(Slice<RestaurantEntity> restaurantEntitySlice) {
+        return RestaurantSearchResDTOV2.builder()
+                .restaurantPage(RestaurantPage.from(restaurantEntitySlice))
                 .build();
     }
 
@@ -32,10 +31,10 @@ public class RestaurantSearchResDTOV1 {
         private List<Restaurant> restaurantList;
         private PageDetails page;
 
-        public static RestaurantPage from(Page<RestaurantEntity> restaurantEntityPage) {
+        public static RestaurantPage from(Slice<RestaurantEntity> restaurantEntitySlice) {
             return RestaurantPage.builder()
-                    .restaurantList(Restaurant.from(restaurantEntityPage.getContent()))
-                    .page(PageDetails.from(restaurantEntityPage))
+                    .restaurantList(Restaurant.from(restaurantEntitySlice.getContent()))
+                    .page(PageDetails.from(restaurantEntitySlice))
                     .build();
         }
 
@@ -87,15 +86,13 @@ public class RestaurantSearchResDTOV1 {
 
             private int size;
             private int number;
-            private long totalElements;
-            private int totalPages;
+            private boolean hasNext; // ✅ Slice 에서 `totalPages` 대신 사용
 
-            public static PageDetails from(Page<RestaurantEntity> restaurantEntityPage) {
+            public static PageDetails from(Slice<RestaurantEntity> restaurantEntitySlice) {
                 return PageDetails.builder()
-                        .size(restaurantEntityPage.getSize())
-                        .number(restaurantEntityPage.getNumber())
-                        .totalElements(restaurantEntityPage.getTotalElements())
-                        .totalPages(restaurantEntityPage.getTotalPages())
+                        .size(restaurantEntitySlice.getSize())
+                        .number(restaurantEntitySlice.getNumber())
+                        .hasNext(restaurantEntitySlice.hasNext()) // ✅ `hasNext` 필드 추가
                         .build();
             }
         }

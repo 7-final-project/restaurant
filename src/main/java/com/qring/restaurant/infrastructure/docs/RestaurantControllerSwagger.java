@@ -5,7 +5,7 @@ import com.qring.restaurant.application.global.dto.ResDTO;
 import com.qring.restaurant.application.res.RestaurantGetByIdResDTOV1;
 import com.qring.restaurant.application.res.RestaurantIdTableResDTOV1;
 import com.qring.restaurant.application.res.RestaurantPostResDTOV1;
-import com.qring.restaurant.application.res.RestaurantSearchResDTOV1;
+import com.qring.restaurant.application.res.RestaurantSearchResDTOV2;
 import com.qring.restaurant.presentation.req.PostRestaurantReqDTOV1;
 import com.qring.restaurant.presentation.req.PutRestaurantReqDTOV1;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,9 +15,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,13 +38,14 @@ public interface RestaurantControllerSwagger {
             @ApiResponse(responseCode = "400", description = "식상 검색 실패.", content = @Content(schema = @Schema(implementation = ResDTO.class)))
     })
     @GetMapping
-    ResponseEntity<ResDTO<RestaurantSearchResDTOV1>> searchBy(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                                                              @RequestParam(name = "userId", required = false) Long userId,
-                                                              @RequestParam(name = "name", required = false) String name,
-                                                              @RequestParam(name = "isOperation", required = false) Boolean isOperation,
-                                                              @RequestParam(name = "sort", required = false) String sort,
-                                                              @RequestParam(name = "address", required = false) String address,
-                                                              @RequestParam(name = "category", required = false) String category);
+    ResponseEntity<ResDTO<RestaurantSearchResDTOV2>> searchBy(@RequestParam(name = "userId", required = false) Long userId,
+                                                                     @RequestParam(name = "name", required = false) String name,
+                                                                     @RequestParam(name = "isOperation", required = false) Boolean isOperation,
+                                                                     @RequestParam(name = "sort", required = false) String sort,
+                                                                     @RequestParam(name = "address", required = false) String address,
+                                                                     @RequestParam(name = "category", required = false) String category,
+                                                                     @RequestParam(name = "cursor", required = false) Long cursor,
+                                                                     @RequestParam(name = "limit", required = false, defaultValue = "10") int limit);
 
 
     @Operation(summary = "식당 상세 조회", description = "식당을 상세 조회하는 API 입니다.")

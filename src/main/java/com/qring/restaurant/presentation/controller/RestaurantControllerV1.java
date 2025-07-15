@@ -4,14 +4,13 @@ import com.qring.restaurant.application.global.dto.ResDTO;
 import com.qring.restaurant.application.res.RestaurantGetByIdResDTOV1;
 import com.qring.restaurant.application.res.RestaurantIdTableResDTOV1;
 import com.qring.restaurant.application.res.RestaurantPostResDTOV1;
-import com.qring.restaurant.application.res.RestaurantSearchResDTOV1;
+import com.qring.restaurant.application.res.RestaurantSearchResDTOV2;
 import com.qring.restaurant.application.service.RestaurantServiceV1;
 import com.qring.restaurant.infrastructure.docs.RestaurantControllerSwagger;
 import com.qring.restaurant.presentation.req.PostRestaurantReqDTOV1;
 import com.qring.restaurant.presentation.req.PutRestaurantReqDTOV1;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,22 +38,24 @@ public class RestaurantControllerV1 implements RestaurantControllerSwagger {
 
     // 식당 검색
     @GetMapping
-    public ResponseEntity<ResDTO<RestaurantSearchResDTOV1>> searchBy(Pageable pageable,
-                                                                     @RequestParam(name = "userId", required = false) Long userId,
+    public ResponseEntity<ResDTO<RestaurantSearchResDTOV2>> searchBy(@RequestParam(name = "userId", required = false) Long userId,
                                                                      @RequestParam(name = "name", required = false) String name,
                                                                      @RequestParam(name = "isOperation", required = false) Boolean isOperation,
                                                                      @RequestParam(name = "sort", required = false) String sort,
                                                                      @RequestParam(name = "address", required = false) String address,
-                                                                     @RequestParam(name = "category", required = false) String category) {
-        return new ResponseEntity<>(
-                ResDTO.<RestaurantSearchResDTOV1>builder()
+                                                                     @RequestParam(name = "category", required = false) String category,
+                                                                     @RequestParam(name = "cursor", required = false) Long cursor,
+                                                                     @RequestParam(name = "limit", required = false, defaultValue = "10") int limit) {
+
+        return ResponseEntity.ok(
+                ResDTO.<RestaurantSearchResDTOV2>builder()
                         .code(HttpStatus.OK.value())
                         .message("식당 검색에 성공하였습니다.")
-                        .data(restaurantServiceV1.searchBy(userId, name, isOperation, sort, address, category, pageable))
-                        .build(),
-                HttpStatus.OK
+                        .data(restaurantServiceV1.searchBy(userId, name, isOperation, sort, address, category, cursor, limit))
+                        .build()
         );
     }
+
 
     // 식당 상세 조회
     @GetMapping("/{id}")

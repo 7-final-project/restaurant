@@ -5,7 +5,7 @@ import com.qring.restaurant.application.global.exception.UnauthorizedAccessExcep
 import com.qring.restaurant.application.res.RestaurantGetByIdResDTOV1;
 import com.qring.restaurant.application.res.RestaurantIdTableResDTOV1;
 import com.qring.restaurant.application.res.RestaurantPostResDTOV1;
-import com.qring.restaurant.application.res.RestaurantSearchResDTOV1;
+import com.qring.restaurant.application.res.RestaurantSearchResDTOV2;
 import com.qring.restaurant.domain.model.CategoryEntity;
 import com.qring.restaurant.domain.model.OperatingHourEntity;
 import com.qring.restaurant.domain.model.RegionEntity;
@@ -18,7 +18,6 @@ import com.qring.restaurant.infrastructure.util.PassportUtil;
 import com.qring.restaurant.presentation.req.PostRestaurantReqDTOV1;
 import com.qring.restaurant.presentation.req.PutRestaurantReqDTOV1;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,8 +72,8 @@ public class RestaurantServiceV1 {
 
     // 조건에 따른 식당 검색
     @Transactional(readOnly = true)
-    public RestaurantSearchResDTOV1 searchBy(Long userId, String name, Boolean isOperation, String sort, String address, String category, Pageable pageable) {
-        return RestaurantSearchResDTOV1.of(restaurantRepository.findRestaurantPageByDeletedAtIsNullWithConditions(userId, name, isOperation, sort, address, category, pageable));
+    public RestaurantSearchResDTOV2 searchBy(Long userId, String name, Boolean isOperation, String sort, String address, String category, Long cursor, int limit) {
+        return RestaurantSearchResDTOV2.of(restaurantRepository.findRestaurantPageByDeletedAtIsNullWithConditions(userId, name, isOperation, sort, address, category, cursor, limit));
     }
 
     // 식당 상세 조회

@@ -5,17 +5,15 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.qring.restaurant.domain.model.QOperatingHourEntity.operatingHourEntity;
@@ -27,46 +25,38 @@ public class RestaurantQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    // 조건에 따른 식당 검색
-    public Page<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(
-            Long userId, String name, Boolean isOperation, String sort, String address, String category, Pageable pageable) {
+    // 커서 기반 페이지네이션 적용
+    public Slice<RestaurantEntity> findRestaurantPageByDeletedAtIsNullWithConditions(
+            Long userId, String name, Boolean isOperation, String sort, String address, String category, Long cursor, int limit) {
 
         LocalTime now = LocalTime.now();
         DayOfWeek today = LocalDate.now().getDayOfWeek();
 
-        // 조건에 맞는 결과 조회
         List<RestaurantEntity> results = queryFactory
                 .selectFrom(restaurantEntity)
+                .join(restaurantEntity.region).fetchJoin()
+                .join(restaurantEntity.category).fetchJoin()
                 .where(
                         restaurantEntity.deletedAt.isNull(),
                         userIdEq(userId),
                         categoryIdEq(category),
                         nameLike(name),
                         addressLike(address),
-                        isOperationEq(isOperation, today, now)
+                        isOperationEq(isOperation, today, now),
+                        cursorPagination(cursor, sort)
                 )
-                .orderBy(getOrderSpecifier(sort))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .orderBy(getOrderSpecifiers(sort).toArray(new OrderSpecifier<?>[0]))
+                .limit(limit + 1) // 다음 페이지 존재 여부 확인을 위해 limit보다 1개 더 조회
                 .fetch();
 
-        // 총 개수 조회
-        JPQLQuery<Long> countQuery = queryFactory
-                .select(restaurantEntity.count())
-                .from(restaurantEntity)
-                .where(
-                        restaurantEntity.deletedAt.isNull(),
-                        userIdEq(userId),
-                        categoryIdEq(category),
-                        nameLike(name),
-                        addressLike(address),
-                        isOperationEq(isOperation, today, now)
-                );
+        // 다음 페이지 존재 여부 확인
+        boolean hasNext = results.size() > limit;
+        if (hasNext) {
+            results.remove(results.size() - 1); // 초과한 1개 제거
+        }
 
-        // Page 반환
-        return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
+        return new SliceImpl<>(results, PageRequest.of(0, limit), hasNext);
     }
-
 
     // 조건 메서드들
     private BooleanExpression userIdEq(Long userId) {
@@ -106,33 +96,43 @@ public class RestaurantQueryRepository {
         return address != null ? restaurantEntity.address.containsIgnoreCase(address) : null;
     }
 
-    private OrderSpecifier<?> getOrderSpecifier(String sort) {
-        if (sort == null || sort.isBlank()) {
-            return restaurantEntity.createdAt.desc(); // 기본값: 생성일 내림차순 정렬
+    private BooleanExpression cursorPagination(Long cursor, String sort) {
+        if (cursor == null) {
+            return null;
         }
-        switch (sort.toLowerCase()) {
-            case "high":
-                // 리뷰 평균 점수 높은 순 정렬
-                return Expressions.numberTemplate(Double.class,
-                        // SQL CASE 구문과 유사: reviewCount > 0이면 totalRating / reviewCount, 아니면 0 반환
+
+        boolean isOldest = sort != null && sort.toLowerCase().contains("oldest");
+
+        return isOldest ? restaurantEntity.id.goe(cursor) : restaurantEntity.id.loe(cursor);
+    }
+
+    private List<OrderSpecifier<?>> getOrderSpecifiers(String sort) {
+        List<OrderSpecifier<?>> orders = new ArrayList<>();
+
+        boolean isOldest = sort != null && sort.toLowerCase().contains("oldest");
+
+        if (sort != null) {
+            if (sort.toLowerCase().contains("high")) {
+                // 평점 높은 순 정렬
+                orders.add(Expressions.numberTemplate(Double.class,
                         "case when {0} > 0 then {1} / {0} else 0 end",
                         restaurantEntity.reviewCount,
                         restaurantEntity.totalRating
-                ).desc(); // 내림차순 정렬
-            case "low":
-                // 리뷰 평균 점수 낮은 순 정렬
-                return Expressions.numberTemplate(Double.class,
+                ).desc().nullsLast());
+            } else if (sort.toLowerCase().contains("low")) {
+                // 평점 낮은 순 정렬
+                orders.add(Expressions.numberTemplate(Double.class,
                         "case when {0} > 0 then {1} / {0} else 0 end",
                         restaurantEntity.reviewCount,
                         restaurantEntity.totalRating
-                ).asc(); // 오름차순 정렬
-            case "oldest":
-                // 오래된 순(생성일 오름차순) 정렬
-                return restaurantEntity.createdAt.asc();
-            default:
-                // 기본값: 최신 순(생성일 내림차순) 정렬
-                return restaurantEntity.createdAt.desc();
+                ).asc().nullsLast());
+            }
         }
+
+        // 최신순 또는 오래된순 정렬 적용
+        orders.add(isOldest ? restaurantEntity.id.asc() : restaurantEntity.id.desc());
+
+        return orders;
     }
 
     private String getOperationDayOfWeek(DayOfWeek dayOfWeek) {
